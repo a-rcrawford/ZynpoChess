@@ -2,6 +2,7 @@ package com.zynpo.impls;
 
 import com.zynpo.interfaces.*;
 
+
 class ChessBoardImpl implements ChessBoard {
 
     private ChessSquare[] _squares;
