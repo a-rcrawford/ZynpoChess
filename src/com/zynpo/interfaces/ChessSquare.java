@@ -20,6 +20,8 @@ public interface ChessSquare {
      */
     SideColor getSideColor();
 
+    ChessBoard getBoard();
+
     boolean isOccupied();
     boolean isUnoccupied();
     ChessPiece getPiece();
@@ -43,6 +45,4 @@ public interface ChessSquare {
     int rowDistanceFrom(ChessSquare other);
     int colDistanceFrom(ChessSquare other);
 
-
-    ChessBoard getBoard();
 }
