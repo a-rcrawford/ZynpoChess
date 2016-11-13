@@ -19,5 +19,35 @@ http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.h
 jre-8u112-windows-x64.exe
 
 Java SE Development Kit (JDK):<br>
-http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html
+http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html<br>
 jdk-8u112-windows-x64.exe
+
+
+### Compiling and Running
+
+ZynpoChess.java:<br>
+```Java
+public class ZynpoChess {
+
+    public static void main(String[] args) {
+        System.out.println("Hello, World");
+        
+        for(int i = 0; i < args.length; ++i) {
+            System.out.println(String.format("args[%d] = %s", i, args[i]));
+        }
+    }
+
+}
+```
+
+Command Prompt:<br>
+```Command
+> set PATH=C:\Program Files\Java\jdk1.8.0_112\bin;%PATH%
+> javac ZynpoChess.java
+> java ZynpoChess Hello World "Hello World!"
+
+args[0] = Hello
+args[1] = World
+args[2] = Hello World!
+```
+
