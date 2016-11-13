@@ -1,3 +1,4 @@
+package com.zynpo;
 
 public class ZynpoChess {
 
