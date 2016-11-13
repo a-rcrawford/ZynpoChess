@@ -11,7 +11,7 @@ class ChessSquareImpl implements ChessSquare {
     private int _col;
     private ChessPiece _piece;
 
-    public ChessSquareImpl(ChessBoard board, int row, int col) {
+    ChessSquareImpl(ChessBoard board, int row, int col) {
         _board = board;
         _row = row;
         _col = col;

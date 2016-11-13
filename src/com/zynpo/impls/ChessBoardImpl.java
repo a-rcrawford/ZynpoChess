@@ -2,20 +2,21 @@ package com.zynpo.impls;
 
 import com.zynpo.interfaces.*;
 
-public class ChessBoardImpl implements ChessBoard {
+class ChessBoardImpl implements ChessBoard {
 
     private ChessSquare[] _squares;
 
     public int getRowCount() { return 8; }
     public int getColCount() { return 8; }
+    public int getSquareCount() { return getRowCount() * getColCount(); }
 
-    public ChessBoardImpl() {
+    ChessBoardImpl() {
         _squares = new ChessSquare[getRowCount() * getColCount()];
 
         for (int row = 0; row < getRowCount(); ++row) {
             for (int col = 0; col < getColCount(); ++col) {
                 int i = row * getColCount() + col;
-                _squares[i] = new ChessSquareImpl(this, row, col);
+                _squares[i] = ChessFactory.createSquare(this, row, col);
             }
         }
     }
@@ -39,7 +40,7 @@ public class ChessBoardImpl implements ChessBoard {
 
     public ChessSquare getSquare(String notation) {
         notation = notation.trim().toLowerCase();
-        
+
         if (notation.length() != 2)
             throw new IllegalArgumentException("Unexpected square notation: " + notation);
 
