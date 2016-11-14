@@ -2,6 +2,8 @@ package com.zynpo.impls;
 
 import com.zynpo.interfaces.*;
 
+import java.util.Set;
+
 
 public class ChessFactory {
 
@@ -14,5 +16,7 @@ public class ChessFactory {
     public static ChessBoard createBoard() {
         return new ChessBoardImpl();
     }
+
+    public static Set<ChessSquare> createChessSquareSet() { return new ChessSquareSet(); }
 
 }

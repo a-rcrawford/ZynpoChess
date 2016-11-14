@@ -7,9 +7,12 @@ class ChessBoardImpl implements ChessBoard {
 
     private ChessSquare[] _squares;
 
+    @Override
     public int getRowCount() { return 8; }
+
+    @Override
     public int getColCount() { return 8; }
-    public int getSquareCount() { return getRowCount() * getColCount(); }
+
 
     ChessBoardImpl() {
         _squares = new ChessSquare[getRowCount() * getColCount()];
@@ -22,7 +25,7 @@ class ChessBoardImpl implements ChessBoard {
         }
     }
 
-
+    @Override
     public boolean squareExists(int row, int col) {
         return (0 <= row) &&
                 (row < getRowCount()) &&
@@ -30,7 +33,7 @@ class ChessBoardImpl implements ChessBoard {
                 (col < getColCount());
     }
 
-
+    @Override
     public ChessSquare getSquare(int row, int col) {
         if (squareExists(row, col))
             return _squares[row * getColCount() + col];
@@ -38,7 +41,7 @@ class ChessBoardImpl implements ChessBoard {
             return null;
     }
 
-
+    @Override
     public ChessSquare getSquare(String notation) {
         notation = notation.trim().toLowerCase();
 
@@ -52,5 +55,8 @@ class ChessBoardImpl implements ChessBoard {
 
         return getSquare(row, col);
     }
+
+    @Override
+    public ChessSquare getSquare(int index) { return _squares[index]; }
 
 }

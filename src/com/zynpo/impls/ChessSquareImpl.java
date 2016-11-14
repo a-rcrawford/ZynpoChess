@@ -19,11 +19,16 @@ class ChessSquareImpl implements ChessSquare {
         _piece = null;
     }
 
+    @Override
+    public int getIndex() { return (_row * _board.getRowCount()) + _col; }
 
+    @Override
     public int getRow(){ return _row; }
+
+    @Override
     public int getCol(){ return _col; }
 
-
+    @Override
     public SideColor getSideColor() {
         if (((_row + _col) & 1) == 1)
             return SideColor.White;
@@ -31,14 +36,22 @@ class ChessSquareImpl implements ChessSquare {
             return SideColor.Black;
     }
 
+    @Override
     public ChessBoard getBoard(){ return _board; }
+
+    @Override
     public boolean isOccupied() { return (null != _piece); }
+
+    @Override
     public boolean isUnoccupied() { return (null == _piece); }
+
+    @Override
     public ChessPiece getPiece() { return _piece; }
 
+    @Override
     public void setPiece(ChessPiece piece) { _piece = piece; }
 
-
+    @Override
     public int rowsAwayFromCount(ChessSquare other) {
         if (other.getBoard() != _board) {
             throw new IllegalArgumentException("Can't calculate rows away from Square on different board");
@@ -47,7 +60,7 @@ class ChessSquareImpl implements ChessSquare {
         return other.getRow() - _row;
     }
 
-
+    @Override
     public int colsAwayFromCount(ChessSquare other) {
         if (other.getBoard() != _board) {
             throw new IllegalArgumentException("Can't calculate columns away from Square on different board");
@@ -56,15 +69,17 @@ class ChessSquareImpl implements ChessSquare {
         return other.getCol() - _col;
     }
 
-
+    @Override
     public int rowDistanceFrom(ChessSquare other) {
         return Math.abs(rowsAwayFromCount(other));
     }
+
+    @Override
     public int colDistanceFrom(ChessSquare other) {
         return Math.abs(colsAwayFromCount(other));
     }
 
-
+    @Override
     public ChessSquare getRelativeSquare(int rowOffset, int colOffset) {
         int row = _row + rowOffset;
         int col = _col + colOffset;
@@ -72,7 +87,7 @@ class ChessSquareImpl implements ChessSquare {
         return _board.getSquare(row, col);
     }
 
-
+    @Override
     public String toString() {
         return String.format("%c%c", 'a' + _col, '1' + _row);
     }

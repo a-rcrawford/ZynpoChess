@@ -5,6 +5,8 @@ import com.zynpo.enums.SideColor;
 
 public interface ChessSquare {
 
+    int getIndex();
+
     /**
      * @return the row this Square sits on.
      */
