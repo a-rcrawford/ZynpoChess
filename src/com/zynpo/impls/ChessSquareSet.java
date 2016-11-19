@@ -214,4 +214,39 @@ public class ChessSquareSet implements Set<ChessSquare> {
 
         return array;
     }
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("    a   b   c   d   e   f   g   h\r\n");
+        sb.append("  +---+---+---+---+---+---+---+---+\r\n");
+
+        for (char row = '8'; row >= '1'; --row)
+        {
+            sb.append(String.format("%c |", row));
+
+            for (char col = 'a'; col <= 'h'; ++col)
+            {
+                ChessSquare square = (null == _board) ? null : _board.getSquare(String.format("%c%c", col, row));
+
+                String representation;
+
+                if (this.contains(square))
+                    representation = "(0)";
+                else
+                    representation = "   ";
+
+                sb.append(String.format("%s|", representation));
+            }
+
+            sb.append(String.format(" %c\r\n", row));
+            sb.append("  +---+---+---+---+---+---+---+---+\r\n");
+        }
+
+        sb.append("    a   b   c   d   e   f   g   h\r\n");
+
+        return sb.toString();
+    }
 }

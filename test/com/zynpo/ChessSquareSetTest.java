@@ -61,6 +61,9 @@ public class ChessSquareSetTest {
                     fail(String.format("Unexpected square: %s", square.toString()));
             }
 
+            assertTrue(foundA1);
+            assertTrue(foundH8);
+            assertTrue(foundD4);
             assertEquals(3, count);
         }
 
@@ -77,6 +80,30 @@ public class ChessSquareSetTest {
         assertTrue(squareSet.remove(board.getSquare("d4")));
         assertEquals(0, squareSet.size());
         assertTrue(squareSet.isEmpty());
+    }
+
+
+    @Test
+    public void addRemoveEntireBoard() {
+        ChessBoard board = ChessFactory.createBoard();
+        Set<ChessSquare> chessSquareSet = ChessFactory.createChessSquareSet();
+
+        int expectedCount = 0;
+        assertEquals(expectedCount, chessSquareSet.size());
+
+        for (int row = 0; row < board.getColCount(); ++row) {
+            for (int col = 0; col < board.getRowCount(); ++col) {
+                chessSquareSet.add(board.getSquare(row, col));
+                assertEquals(++expectedCount, chessSquareSet.size());
+            }
+        }
+
+        for (int col = 0; col < board.getColCount(); ++col) {
+             for (int row = 0; row < board.getRowCount(); ++row) {
+                chessSquareSet.remove(board.getSquare(row, col));
+                assertEquals(--expectedCount, chessSquareSet.size());
+            }
+        }
     }
 
 
