@@ -9,6 +9,9 @@ public enum SideColor {
     private int value;
 
     SideColor(int value) {
+        if ((value < -1) || (1 < value))
+            throw new IllegalArgumentException(String.format("Invalid SideColor: %d", value));
+
         this.value = value;
     }
 }

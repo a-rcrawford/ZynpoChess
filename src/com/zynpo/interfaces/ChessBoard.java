@@ -1,7 +1,7 @@
 package com.zynpo.interfaces;
 
 
-public interface ChessBoard {
+public interface ChessBoard extends Iterable<ChessSquare> {
 
     int getRowCount();
     int getColCount();

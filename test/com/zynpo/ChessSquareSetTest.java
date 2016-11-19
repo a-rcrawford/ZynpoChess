@@ -1,8 +1,6 @@
 package com.zynpo;
 
-import com.zynpo.enums.SideColor;
 import com.zynpo.impls.ChessFactory;
-import com.zynpo.impls.ChessSquareSet;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
 import org.junit.Test;
@@ -107,4 +105,29 @@ public class ChessSquareSetTest {
     }
 
 
+    @Test(expected = IllegalArgumentException.class)
+    public void cantHoldSquaresFrom2BoardsAtSameTime() {
+        ChessBoard board1 = ChessFactory.createBoard();
+        ChessBoard board2 = ChessFactory.createBoard();
+
+        Set<ChessSquare> chessSquareSet = ChessFactory.createChessSquareSet();
+
+        chessSquareSet.add(board1.getSquare("a1"));
+        chessSquareSet.add(board2.getSquare("H1"));
+    }
+
+
+    @Test
+    public void canHoldSquarsFrom2BoardsAtDifferentTimes() {
+        ChessBoard board1 = ChessFactory.createBoard();
+        ChessBoard board2 = ChessFactory.createBoard();
+
+        Set<ChessSquare> chessSquareSet = ChessFactory.createChessSquareSet();
+
+        chessSquareSet.add(board1.getSquare("a1"));
+        chessSquareSet.clear();
+        chessSquareSet.add(board2.getSquare("H1"));
+        chessSquareSet.remove(board2.getSquare("h1"));
+        chessSquareSet.add(board1.getSquare("c4"));
+    }
 }

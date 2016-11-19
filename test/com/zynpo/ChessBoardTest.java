@@ -2,6 +2,7 @@ package com.zynpo;
 
 import com.zynpo.impls.ChessFactory;
 import com.zynpo.interfaces.ChessBoard;
+import com.zynpo.interfaces.ChessSquare;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -48,6 +49,19 @@ public class ChessBoardTest {
 
         assertNull(board.getSquare("a9"));
         assertNull(board.getSquare("I1"));
+    }
+
+
+    @Test
+    public void iteratorTest() {
+        ChessBoard board = ChessFactory.createBoard();
+        int squareCount = 0;
+
+        for(ChessSquare square : board) {
+            ++squareCount;
+        }
+
+        assertEquals(board.getRowCount() * board.getColCount(), squareCount);
     }
 
 }

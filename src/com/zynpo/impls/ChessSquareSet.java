@@ -7,7 +7,7 @@ import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
 
 
-public class ChessSquareSet implements Set<ChessSquare> {
+class ChessSquareSet implements Set<ChessSquare> {
 
     long _bitMask;
     ChessBoard _board;
@@ -18,8 +18,17 @@ public class ChessSquareSet implements Set<ChessSquare> {
         _board = null;
     }
 
+    /**
+     * Construct a ChessSquareSet that contains all Squares of the given board.
+     * @param board containing all Squares in the constructed ChessSquareSet.
+     */
+    ChessSquareSet(ChessBoard board) {
+        _bitMask = 0xFFFFFFFFFFFFFFFFL;
+        _board = board;
+    }
+
     @Override
-    public boolean add(ChessSquare square) {
+    public synchronized boolean add(ChessSquare square) {
 
         if (null == _board) {
             _board = square.getBoard();
@@ -49,10 +58,13 @@ public class ChessSquareSet implements Set<ChessSquare> {
     }
 
     @Override
-    public void clear() { _bitMask = 0L; }
+    public synchronized void clear() {
+        _bitMask = 0L;
+        _board = null;
+    }
 
     @Override
-    public boolean contains(Object square) {
+    public synchronized boolean contains(Object square) {
         if (square instanceof ChessSquare) {
             ChessSquare chessSquare = (ChessSquare) square;
 
@@ -76,7 +88,7 @@ public class ChessSquareSet implements Set<ChessSquare> {
     }
 
     @Override
-    public boolean equals(Object squareSet) {
+    public synchronized boolean equals(Object squareSet) {
         if (squareSet instanceof ChessSquareSet) {
             ChessSquareSet squares = (ChessSquareSet) squareSet;
             return (_board == squares._board) && (_bitMask == squares._bitMask);
@@ -86,12 +98,12 @@ public class ChessSquareSet implements Set<ChessSquare> {
     }
 
     @Override
-    public int hashCode() {
+    public synchronized int hashCode() {
         return Objects.hash(_board, _bitMask);
     }
 
     @Override
-    public boolean isEmpty() { return 0L == _bitMask; }
+    public synchronized boolean isEmpty() { return 0L == _bitMask; }
 
     @Override
     public Iterator<ChessSquare> iterator() {
@@ -127,7 +139,7 @@ public class ChessSquareSet implements Set<ChessSquare> {
     }
 
     @Override
-    public boolean remove(Object square) {
+    public synchronized boolean remove(Object square) {
         if (square instanceof ChessSquare) {
             ChessSquare chessSquare = (ChessSquare) square;
 
@@ -136,6 +148,12 @@ public class ChessSquareSet implements Set<ChessSquare> {
 
                 if ((_bitMask & bit) == bit) {
                     _bitMask &= ~bit; // Turn this bit off
+
+                    if (0L == _bitMask) {
+                        // This empty Set longer pertains to any particular ChessBoard ...
+                        _board = null;
+                    }
+
                     return true;
                 }
             }
@@ -180,7 +198,7 @@ public class ChessSquareSet implements Set<ChessSquare> {
     }
 
     @Override
-    public int size() { return Long.bitCount(_bitMask); }
+    public synchronized int size() { return Long.bitCount(_bitMask); }
 
     @Override
     public Object[] toArray() {

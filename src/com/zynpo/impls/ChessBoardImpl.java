@@ -2,6 +2,8 @@ package com.zynpo.impls;
 
 import com.zynpo.interfaces.*;
 
+import java.util.Iterator;
+
 
 class ChessBoardImpl implements ChessBoard {
 
@@ -59,4 +61,8 @@ class ChessBoardImpl implements ChessBoard {
     @Override
     public ChessSquare getSquare(int index) { return _squares[index]; }
 
+    @Override
+    public Iterator<ChessSquare> iterator() {
+        return new ChessSquareSet(this).iterator();
+    }
 }
