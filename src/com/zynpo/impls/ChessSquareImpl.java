@@ -2,6 +2,7 @@ package com.zynpo.impls;
 
 import com.zynpo.enums.SideColor;
 import com.zynpo.interfaces.*;
+import com.zynpo.interfaces.pieces.ChessPiece;
 
 
 class ChessSquareImpl implements ChessSquare {
@@ -49,7 +50,21 @@ class ChessSquareImpl implements ChessSquare {
     public ChessPiece getPiece() { return _piece; }
 
     @Override
-    public void setPiece(ChessPiece piece) { _piece = piece; }
+    public ChessPiece setPiece(ChessPiece piece) {
+        if (piece == _piece)
+            return _piece;
+
+        ChessPiece priorPiece = _piece;
+        _piece = piece;
+
+        if ((null != _piece) && (_piece.getSquare() != this))
+            _piece.setSquare(this);
+
+        if ((null != priorPiece) && (priorPiece.getSquare() == this))
+            priorPiece.setSquare(null);
+
+        return priorPiece;
+    }
 
     @Override
     public int rowsAwayFromCount(ChessSquare other) {
@@ -70,9 +85,7 @@ class ChessSquareImpl implements ChessSquare {
     }
 
     @Override
-    public int rowDistanceFrom(ChessSquare other) {
-        return Math.abs(rowsAwayFromCount(other));
-    }
+    public int rowDistanceFrom(ChessSquare other) { return Math.abs(rowsAwayFromCount(other)); }
 
     @Override
     public int colDistanceFrom(ChessSquare other) {

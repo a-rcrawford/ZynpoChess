@@ -1,10 +1,20 @@
 package com.zynpo.enums;
 
 
+import javafx.geometry.Side;
+
 public enum SideColor {
     None(-1),
-    White(0),
-    Black(1);
+
+    White(0) {
+        @Override
+        public SideColor opposingSideColor() { return Black; }
+    },
+
+    Black(1) {
+        @Override
+        public SideColor opposingSideColor() { return White; }
+    };
 
     private int value;
 
@@ -14,4 +24,6 @@ public enum SideColor {
 
         this.value = value;
     }
+
+    public SideColor opposingSideColor() { return None; }
 }

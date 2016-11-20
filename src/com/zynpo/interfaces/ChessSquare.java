@@ -1,6 +1,7 @@
 package com.zynpo.interfaces;
 
 import com.zynpo.enums.SideColor;
+import com.zynpo.interfaces.pieces.ChessPiece;
 
 
 public interface ChessSquare {
@@ -27,7 +28,13 @@ public interface ChessSquare {
     boolean isOccupied();
     boolean isUnoccupied();
     ChessPiece getPiece();
-    void setPiece(ChessPiece piece);
+
+    /**
+     * Set this Square's piece to the given parameter
+     * @param piece to occupy this Square
+     * @return the piece that was occupying this Square prior
+     */
+    ChessPiece setPiece(ChessPiece piece);
 
     ChessSquare getRelativeSquare(int rowOffset, int colOffset);
 
@@ -47,4 +54,36 @@ public interface ChessSquare {
     int rowDistanceFrom(ChessSquare other);
     int colDistanceFrom(ChessSquare other);
 
+
+    static boolean canCompare(ChessSquare first, ChessSquare second) {
+        if (null == first)
+            return false;
+
+        if (null == second)
+            return false;
+
+        if (first.getBoard() != second.getBoard()) {
+            throw new IllegalArgumentException("Shouldn't be comparing Squares from different Boards");
+        }
+
+        if (first == second) {
+            throw new IllegalArgumentException("Shouldn't be comparing a Square with itself");
+        }
+
+        return true;
+    }
+
+
+    static boolean onSameRow(ChessSquare first, ChessSquare second) {
+        return canCompare(first, second) && (first.getRow() == second.getRow());
+    }
+
+    static boolean onSameCol(ChessSquare first, ChessSquare second) {
+        return canCompare(first, second) && (first.getCol() == second.getCol());
+    }
+
+    static boolean onSameDiagonal(ChessSquare first, ChessSquare second) {
+        return canCompare(first, second) &&
+                (first.rowDistanceFrom(second) == first.colDistanceFrom(second));
+    }
 }
