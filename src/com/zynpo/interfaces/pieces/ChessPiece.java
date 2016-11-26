@@ -1,6 +1,7 @@
 package com.zynpo.interfaces.pieces;
 
 import com.zynpo.enums.PieceIndex;
+import com.zynpo.enums.PotentialMoveReason;
 import com.zynpo.enums.SideColor;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
@@ -10,7 +11,7 @@ import java.util.Set;
 
 public interface ChessPiece {
 
-    //static public final int NEVER_MOVED = -1;
+    static final int PIECES_PER_BOARD_COUNT = 32;
 
     ChessSquare getSquare();
 
@@ -40,12 +41,11 @@ public interface ChessPiece {
     boolean neverMoved();
 
     PieceIndex getIndex();
+    int materialValue();
 
     boolean mightMoveTo(ChessSquare square);
     boolean covers(ChessSquare square);
     boolean coversAnyOf(Iterable<ChessSquare> squares);
 
-    Set<ChessSquare> coveredSquares();
-    Set<ChessSquare> potentialMoveSquares();
-    Set<ChessSquare> preemptivePotentialMoveSquares();
+    Set<ChessSquare> potentialMoveSquares(PotentialMoveReason reason);
 }

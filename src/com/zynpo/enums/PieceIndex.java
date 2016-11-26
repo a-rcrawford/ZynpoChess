@@ -1,8 +1,9 @@
 package com.zynpo.enums;
 
 
+import com.zynpo.interfaces.ChessBoard;
+
 public enum PieceIndex {
-    None(-1),
     WhiteLeftCastle(0),
     WhiteLeftKnight(1),
     WhiteLeftBishop(2),
@@ -39,14 +40,37 @@ public enum PieceIndex {
     BlackRightKnight(30),
     BlackRightCastle(31);
 
-    private int value;
+    private int _value;
+    private static PieceIndex[] _allValues = values();
 
     PieceIndex(int value) {
         if ((value < -1) || (31 < value))
             throw new IllegalArgumentException(String.format("Invalid Piece Index: %d", value));
 
-        this.value = value;
+        this._value = value;
     }
 
-    public int getValue() { return value; }
+    public int getValue() { return _value; }
+
+    public static PieceIndex fromOrdinal(int i) { return _allValues[i]; }
+
+    public int origRow() {
+        int rowIndex = _value / ChessBoard.COL_COUNT;
+
+        if (3 <= rowIndex)
+            rowIndex += 3;
+
+        return rowIndex;
+    }
+
+    public int origCol() {
+        return _value % ChessBoard.COL_COUNT;
+    }
+
+    public SideColor origSideColor() {
+        if (_value <= WhitePawnH.getValue())
+            return SideColor.White;
+        else
+            return SideColor.Black;
+    }
 }

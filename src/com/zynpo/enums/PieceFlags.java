@@ -40,12 +40,26 @@ public enum PieceFlags {
     BlackRightCastle(PieceIndex.BlackRightCastle),
 
     AllWhitePieces(0x0000FFFF),
-    AllWhitePawns(0x0000FF00),
-
     AllBlackPieces(0xFFFF0000),
-    AllBlackPawns(0x00FF0000),
 
+    AllWhitePawns(0x0000FF00),
+    AllBlackPawns(0x00FF0000),
     AllPawns(AllWhitePawns.value | AllBlackPawns.value),
+
+    WhiteCastles(WhiteLeftCastle.value | WhiteRightCastle.value),
+    BlackCastles(BlackLeftCastle.value | BlackRightCastle.value),
+    AllCastles(WhiteCastles.value | BlackCastles.value),
+
+    WhiteKnights(WhiteLeftKnight.value | WhiteRightKnight.value),
+    BlackKnights(BlackLeftKnight.value | BlackRightKnight.value),
+    AllKnights(WhiteKnights.value | BlackKnights.value),
+
+    WhiteBishops(WhiteLeftBishop.value | WhiteRightBishop.value),
+    BlackBishops(BlackLeftBishop.value | BlackRightBishop.value),
+    AllBishops(WhiteBishops.value | BlackBishops.value),
+
+    BothQueens(WhiteQueen.value | BlackQueen.value),
+
     BothKings(WhiteKing.value | BlackKing.value),
 
     AllPieces(0xFFFFFFFF);

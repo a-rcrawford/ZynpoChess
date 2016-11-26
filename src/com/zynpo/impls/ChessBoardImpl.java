@@ -1,6 +1,9 @@
 package com.zynpo.impls;
 
+import com.zynpo.enums.PieceIndex;
+import com.zynpo.impls.pieces.ChessPieceFactory;
 import com.zynpo.interfaces.*;
+import com.zynpo.interfaces.pieces.ChessPiece;
 
 import java.util.Iterator;
 
@@ -8,12 +11,13 @@ import java.util.Iterator;
 class ChessBoardImpl implements ChessBoard {
 
     private ChessSquare[] _squares;
+    private ChessPiece[] _pieces;
 
     @Override
-    public int getRowCount() { return 8; }
+    public int getRowCount() { return ROW_COUNT; }
 
     @Override
-    public int getColCount() { return 8; }
+    public int getColCount() { return COL_COUNT; }
 
 
     ChessBoardImpl() {
@@ -24,6 +28,12 @@ class ChessBoardImpl implements ChessBoard {
                 int i = row * getColCount() + col;
                 _squares[i] = ChessFactory.createSquare(this, row, col);
             }
+        }
+
+        _pieces = new ChessPiece[ChessPiece.PIECES_PER_BOARD_COUNT];
+
+        for (int i = 0; i < _pieces.length; ++i) {
+            _pieces[i] = ChessPieceFactory.createPiece(i, this);
         }
     }
 
@@ -64,5 +74,15 @@ class ChessBoardImpl implements ChessBoard {
     @Override
     public Iterator<ChessSquare> iterator() {
         return new ChessSquareSet(this).iterator();
+    }
+
+    @Override
+    public ChessPiece getPiece(int index) {
+        return _pieces[index];
+    }
+
+    @Override
+    public ChessPiece getPiece(PieceIndex index) {
+        return getPiece(index.getValue());
     }
 }

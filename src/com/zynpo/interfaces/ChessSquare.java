@@ -67,7 +67,7 @@ public interface ChessSquare {
         }
 
         if (first == second) {
-            throw new IllegalArgumentException("Shouldn't be comparing a Square with itself");
+            return false; // Shouldn't be comparing a Square with itself
         }
 
         return true;
