@@ -234,10 +234,6 @@ class ChessPieceSet implements Set<ChessPiece> {
         for(ChessPiece piece : this) {
             String notation = piece.notation();
 
-            if ("" == notation) {
-                notation = "P";
-            }
-
             switch (piece.getSideColor()) {
                 case White:
                     notation = notation.toUpperCase();

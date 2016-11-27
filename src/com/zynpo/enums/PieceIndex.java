@@ -22,7 +22,7 @@ public enum PieceIndex {
     WhitePawnG(14),
     WhitePawnH(15),
 
-    BlackPawnA(15),
+    BlackPawnA(16),
     BlackPawnB(17),
     BlackPawnC(18),
     BlackPawnD(19),
@@ -57,8 +57,8 @@ public enum PieceIndex {
     public int origRow() {
         int rowIndex = _value / ChessBoard.COL_COUNT;
 
-        if (3 <= rowIndex)
-            rowIndex += 3;
+        if (2 <= rowIndex)
+            rowIndex += 4;
 
         return rowIndex;
     }

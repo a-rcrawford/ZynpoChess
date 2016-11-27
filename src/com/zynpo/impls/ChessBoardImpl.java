@@ -1,6 +1,7 @@
 package com.zynpo.impls;
 
 import com.zynpo.enums.PieceIndex;
+import com.zynpo.enums.SideColor;
 import com.zynpo.impls.pieces.ChessPieceFactory;
 import com.zynpo.interfaces.*;
 import com.zynpo.interfaces.pieces.ChessPiece;
@@ -84,5 +85,49 @@ class ChessBoardImpl implements ChessBoard {
     @Override
     public ChessPiece getPiece(PieceIndex index) {
         return getPiece(index.getValue());
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("    a   b   c   d   e   f   g   h\r\n");
+        sb.append("  +---+---+---+---+---+---+---+---+\r\n");
+
+        for (char row = '8'; row >= '1'; --row)
+        {
+            sb.append(String.format("%c |", row));
+
+            for (char col = 'a'; col <= 'h'; ++col)
+            {
+                ChessSquare square = this.getSquare(String.format("%c%c", col, row));
+
+                String notation;
+
+                if (null == square.getPiece())
+                    notation = " ";
+                else {
+                    notation = square.getPiece().notation();
+
+                    if (square.getPiece().getSideColor() == SideColor.White) {
+                        notation = notation.toUpperCase();
+                    } else {
+                        notation = notation.toLowerCase();
+                    }
+                }
+
+
+                sb.append(String.format(" %s |", notation));
+            }
+
+            sb.append(String.format(" %c\r\n", row));
+            sb.append("  +---+---+---+---+---+---+---+---+\r\n");
+        }
+
+        sb.append("    a   b   c   d   e   f   g   h\r\n");
+
+        return sb.toString();
+
     }
 }
