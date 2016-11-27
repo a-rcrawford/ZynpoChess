@@ -20,4 +20,6 @@ public interface ChessBoard extends Iterable<ChessSquare> {
 
     ChessPiece getPiece(int index);
     ChessPiece getPiece(PieceIndex index);
+
+    ChessSquare enPassantSquare();
 }

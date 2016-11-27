@@ -88,6 +88,12 @@ class ChessBoardImpl implements ChessBoard {
     }
 
     @Override
+    public ChessSquare enPassantSquare() {
+        // TODO: Implement enPessantSquare() ...
+        return null;
+    }
+
+    @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
