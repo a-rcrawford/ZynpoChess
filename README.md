@@ -16,11 +16,13 @@ idealC-2016.2.5.exe
 
 Java SE Runtime Environment (JRE):<br>
 http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html<br>
-jre-8u112-windows-x64.exe
+jre-8u112-windows-x64.exe<br>
+Installed to `C:\Program Files\Java\jre1.8.0_112`
 
 Java SE Development Kit (JDK):<br>
-http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html<br>
-jdk-8u112-windows-x64.exe
+http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html<br>
+jdk-8u112-windows-x64.exe<br>
+Installed to `C:\Program Files\Java\jdk1.8.0_112`
 
 
 ### Compiling and Running
