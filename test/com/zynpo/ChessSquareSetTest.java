@@ -118,7 +118,7 @@ public class ChessSquareSetTest {
 
 
     @Test
-    public void canHoldSquarsFrom2BoardsAtDifferentTimes() {
+    public void canHoldSquaresFrom2BoardsAtDifferentTimes() {
         ChessBoard board1 = ChessFactory.createBoard();
         ChessBoard board2 = ChessFactory.createBoard();
 
