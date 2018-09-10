@@ -4,25 +4,25 @@
 
 Git:<br>
 https://git-scm.com/download<br>
-Git-2.10.2-64-bit.exe
+Git-2.18.0-64-bit.exe
 
 SourceTree:<br>
 https://www.sourcetreeapp.com/
-SourceTreeSetup_1.9.6.1.exe
+SourceTreeSetup-2.6.10.exe
 
 IntelliJ (Community edition):<br>
 https://www.jetbrains.com/idea/download/<br>
-idealC-2016.2.5.exe
+ideaIC-2018.2.3.exe
 
 Java SE Runtime Environment (JRE):<br>
 http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html<br>
 jre-8u112-windows-x64.exe<br>
 Installed to `C:\Program Files\Java\jre1.8.0_112`
 
-Java SE Development Kit (JDK):<br>
+Java SE Development Kit (JDK) installs the JRE:<br>
 http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html<br>
-jdk-8u112-windows-x64.exe<br>
-Installed to `C:\Program Files\Java\jdk1.8.0_112`
+jdk-10.0.2_windows-x64_bin.exe<br>
+Installed to `C:\Program Files\Java\jdk-10.0.2`
 
 
 ### Compiling and Running
