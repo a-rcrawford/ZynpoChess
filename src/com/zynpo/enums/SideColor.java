@@ -1,8 +1,5 @@
 package com.zynpo.enums;
 
-
-import javafx.geometry.Side;
-
 public enum SideColor {
     None(-1),
 

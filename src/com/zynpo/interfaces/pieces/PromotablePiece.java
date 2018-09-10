@@ -5,6 +5,9 @@ package com.zynpo.interfaces.pieces;
  */
 public interface PromotablePiece extends ChessPiece {
 
+    /**
+     * @return the original pawn this piece was born out of, or null.
+     */
     Pawn getOrigPawn();
 
 }

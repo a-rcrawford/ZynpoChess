@@ -100,4 +100,51 @@ public class ChessSquareTest {
         squareFromBoard1.colDistanceFrom(squareFromBoard2);
     }
 
+
+    @Test
+    public void rowsAwayFromCount() {
+        ChessBoard board = ChessFactory.createBoard();
+
+        ChessSquare squareB3 = board.getSquare("B3");
+        ChessSquare squareG5 = board.getSquare("g5");
+
+        assertEquals(-2, squareB3.rowsAwayFromCount(squareG5));
+        assertEquals(2, squareG5.rowsAwayFromCount(squareB3));
+    }
+
+
+    @Test
+    public void colsAwayFromCount() {
+        ChessBoard board = ChessFactory.createBoard();
+
+        ChessSquare squareA2 = board.getSquare("a2");
+        ChessSquare squareF4 = board.getSquare("F4");
+
+        assertEquals(-5, squareA2.colsAwayFromCount(squareF4));
+        assertEquals(5, squareF4.colsAwayFromCount(squareA2));
+    }
+
+
+    @Test
+    public void rowDistance() {
+        ChessBoard board = ChessFactory.createBoard();
+
+        ChessSquare squareC4 = board.getSquare("C4");
+        ChessSquare squareD8 = board.getSquare("d8");
+
+        assertEquals(4, squareC4.rowDistanceFrom(squareD8));
+        assertEquals(4, squareD8.rowDistanceFrom(squareC4));
+    }
+
+    @Test
+    public void colDistance() {
+        ChessBoard board = ChessFactory.createBoard();
+
+        ChessSquare squareB3 = board.getSquare("b3");
+        ChessSquare squareE6 = board.getSquare("E6");
+
+        assertEquals(3, squareB3.colDistanceFrom(squareE6));
+        assertEquals(3, squareE6.colDistanceFrom(squareB3));
+    }
+
 }

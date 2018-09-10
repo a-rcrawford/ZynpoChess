@@ -72,7 +72,7 @@ class ChessSquareImpl implements ChessSquare {
             throw new IllegalArgumentException("Can't calculate rows away from Square on different board");
         }
 
-        return other.getRow() - _row;
+        return _row - other.getRow();
     }
 
     @Override
@@ -81,7 +81,7 @@ class ChessSquareImpl implements ChessSquare {
             throw new IllegalArgumentException("Can't calculate columns away from Square on different board");
         }
 
-        return other.getCol() - _col;
+        return _col - other.getCol();
     }
 
     @Override

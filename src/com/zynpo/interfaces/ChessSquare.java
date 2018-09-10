@@ -27,6 +27,10 @@ public interface ChessSquare {
 
     boolean isOccupied();
     boolean isUnoccupied();
+
+    /**
+     * @return the ChessPiece occupying this Square, or null for no Piece.
+     */
     ChessPiece getPiece();
 
     /**
@@ -67,7 +71,7 @@ public interface ChessSquare {
         }
 
         if (first == second) {
-            return false; // Shouldn't be comparing a Square with itself
+            throw new IllegalArgumentException("Shouldn't be comparing Square with itself: " + first);
         }
 
         return true;
