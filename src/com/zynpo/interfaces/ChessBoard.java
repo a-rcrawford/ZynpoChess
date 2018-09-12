@@ -6,9 +6,6 @@ import com.zynpo.interfaces.pieces.ChessPiece;
 
 public interface ChessBoard extends Iterable<ChessSquare> {
 
-    static final int ROW_COUNT = 8;
-    static final int COL_COUNT = 8;
-
     int getRowCount();
     int getColCount();
 

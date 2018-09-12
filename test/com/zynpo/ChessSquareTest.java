@@ -4,6 +4,7 @@ import com.zynpo.enums.SideColor;
 import com.zynpo.impls.ChessFactory;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
+import com.zynpo.interfaces.pieces.ChessPiece;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -114,6 +115,31 @@ public class ChessSquareTest {
 
 
     @Test
+    public void rowsAwayFromCountSameRow() {
+        ChessBoard board = ChessFactory.createBoard();
+
+        ChessSquare squareD4 = board.getSquare("D4");
+        ChessSquare squareH4 = board.getSquare("h4");
+
+        assertEquals(0, squareD4.rowsAwayFromCount(squareH4));
+        assertEquals(0, squareH4.rowsAwayFromCount(squareD4));
+    }
+
+
+    @Test
+    public void rowsAwayFromCountSameSquare() {
+        ChessBoard board = ChessFactory.createBoard();
+
+        ChessSquare square1 = board.getSquare("F7");
+        ChessSquare square2 = board.getSquare("f7");
+
+        assertEquals(square1, square2);
+        assertEquals(0, square1.rowsAwayFromCount(square2));
+        assertEquals(0, square2.rowsAwayFromCount(square1));
+    }
+
+
+    @Test
     public void colsAwayFromCount() {
         ChessBoard board = ChessFactory.createBoard();
 
@@ -122,6 +148,31 @@ public class ChessSquareTest {
 
         assertEquals(-5, squareA2.colsAwayFromCount(squareF4));
         assertEquals(5, squareF4.colsAwayFromCount(squareA2));
+    }
+
+
+    @Test
+    public void colsAwayFromCountSameCol() {
+        ChessBoard board = ChessFactory.createBoard();
+
+        ChessSquare squareD4 = board.getSquare("d4");
+        ChessSquare squareD1 = board.getSquare("D1");
+
+        assertEquals(0, squareD4.colsAwayFromCount(squareD1));
+        assertEquals(0, squareD1.colsAwayFromCount(squareD4));
+    }
+
+
+    @Test
+    public void colsAwayFromCountSameSquare() {
+        ChessBoard board = ChessFactory.createBoard();
+
+        ChessSquare square1 = board.getSquare("a2");
+        ChessSquare square2 = board.getSquare("A2");
+
+        assertEquals(square1, square2);
+        assertEquals(0, square1.colsAwayFromCount(square2));
+        assertEquals(0, square2.colsAwayFromCount(square1));
     }
 
 
@@ -136,6 +187,7 @@ public class ChessSquareTest {
         assertEquals(4, squareD8.rowDistanceFrom(squareC4));
     }
 
+
     @Test
     public void colDistance() {
         ChessBoard board = ChessFactory.createBoard();
@@ -145,6 +197,73 @@ public class ChessSquareTest {
 
         assertEquals(3, squareB3.colDistanceFrom(squareE6));
         assertEquals(3, squareE6.colDistanceFrom(squareB3));
+    }
+
+
+    @Test
+    public void rowDistanceSameSquare() {
+        ChessBoard board = ChessFactory.createBoard();
+
+        ChessSquare square1 = board.getSquare("c6");
+        ChessSquare square2 = board.getSquare("C6");
+
+        assertEquals(square1, square2);
+        assertEquals(0, square1.colDistanceFrom(square2));
+        assertEquals(0, square2.colDistanceFrom(square1));
+    }
+
+
+    @Test
+    public void colDistanceSameSquare() {
+        ChessBoard board = ChessFactory.createBoard();
+
+        ChessSquare square1 = board.getSquare("E2");
+        ChessSquare square2 = board.getSquare("e2");
+
+        assertEquals(square1, square2);
+        assertEquals(0, square1.rowDistanceFrom(square2));
+        assertEquals(0, square2.rowDistanceFrom(square1));
+    }
+
+
+    @Test
+    public void getRelativeSquare() {
+        ChessBoard board = ChessFactory.createBoard();
+
+        ChessSquare squareH6 = board.getSquare("h6");
+        ChessSquare squareC3 = board.getSquare("C3");
+
+        ChessSquare square = squareH6.getRelativeSquare(-3, -5);
+        assertEquals(squareC3, square);
+        square = squareC3.getRelativeSquare(3, 5);
+        assertEquals(squareH6, square);
+    }
+
+    @Test
+    public void getRelativeSquaresOffBoard() {
+        ChessBoard board = ChessFactory.createBoard();
+
+        ChessSquare squareD4 = board.getSquare("d4");
+        ChessSquare square = squareD4.getRelativeSquare(0, -4);
+        assertNull(square);
+        square = squareD4.getRelativeSquare(0, 5);
+        assertNull(square);
+        square = squareD4.getRelativeSquare(-4, 0);
+        assertNull(square);
+        square = squareD4.getRelativeSquare(5, 0);
+        assertNull(square);
+        square = squareD4.getRelativeSquare(-3, 2);
+        assertEquals(board.getSquare("f1"), square);
+    }
+
+
+    @Test
+    public void getRelativeSquareSameSquare() {
+        ChessBoard board = ChessFactory.createBoard();
+
+        ChessSquare squareE5 = board.getSquare("E5");
+        ChessSquare square = squareE5.getRelativeSquare(0, 0);
+        assertEquals(squareE5, square);
     }
 
 }

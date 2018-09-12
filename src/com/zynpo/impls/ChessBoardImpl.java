@@ -15,10 +15,10 @@ class ChessBoardImpl implements ChessBoard {
     private ChessPiece[] _pieces;
 
     @Override
-    public int getRowCount() { return ROW_COUNT; }
+    public int getRowCount() { return PieceIndex.ROW_COUNT; }
 
     @Override
-    public int getColCount() { return COL_COUNT; }
+    public int getColCount() { return PieceIndex.COL_COUNT; }
 
 
     ChessBoardImpl() {
@@ -48,10 +48,11 @@ class ChessBoardImpl implements ChessBoard {
 
     @Override
     public ChessSquare getSquare(int row, int col) {
-        if (squareExists(row, col))
+        if (squareExists(row, col)) {
             return _squares[row * getColCount() + col];
-        else
+        } else {
             return null;
+        }
     }
 
     @Override
