@@ -4,13 +4,11 @@ import com.zynpo.enums.SideColor;
 import com.zynpo.impls.ChessFactory;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
-import com.zynpo.interfaces.pieces.ChessPiece;
+import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 
-
-public class ChessSquareTest {
+public class ChessSquareTest extends Assert {
 
     @Test
     public void blackSquares() {

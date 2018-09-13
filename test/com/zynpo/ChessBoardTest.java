@@ -3,12 +3,11 @@ package com.zynpo;
 import com.zynpo.impls.ChessFactory;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
+import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 
-
-public class ChessBoardTest {
+public class ChessBoardTest extends Assert {
 
     @Test
     public void squareExists() throws Exception {

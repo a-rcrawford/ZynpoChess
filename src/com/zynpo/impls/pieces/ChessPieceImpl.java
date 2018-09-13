@@ -1,14 +1,10 @@
 package com.zynpo.impls.pieces;
 
-import com.zynpo.enums.PieceFlags;
 import com.zynpo.enums.PieceIndex;
 import com.zynpo.enums.SideColor;
-import com.zynpo.impls.ChessFactory;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.pieces.ChessPiece;
 import com.zynpo.interfaces.ChessSquare;
-
-import java.util.Set;
 
 
 abstract class ChessPieceImpl implements ChessPiece {

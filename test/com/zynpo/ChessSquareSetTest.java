@@ -3,14 +3,13 @@ package com.zynpo;
 import com.zynpo.impls.ChessFactory;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Set;
 
-import static org.junit.Assert.*;
 
-
-public class ChessSquareSetTest {
+public class ChessSquareSetTest extends Assert {
 
     @Test
     public void addRemoveAFew() {

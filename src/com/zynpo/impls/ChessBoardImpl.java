@@ -15,6 +15,8 @@ class ChessBoardImpl implements ChessBoard {
     private ChessSquare[] _squares;
     private ChessPiece[] _pieces;
 
+    private ChessSquare _enPassantSquare = null;
+
     @Override
     public int getRowCount() { return ChessBoardSpecs.ROW_COUNT; }
 
@@ -32,7 +34,7 @@ class ChessBoardImpl implements ChessBoard {
             }
         }
 
-        _pieces = new ChessPiece[ChessPiece.PIECES_PER_BOARD_COUNT];
+        _pieces = new ChessPiece[PieceIndex.values().length];
 
         for (int i = 0; i < _pieces.length; ++i) {
             _pieces[i] = ChessPieceFactory.createPiece(i, this);
@@ -90,9 +92,21 @@ class ChessBoardImpl implements ChessBoard {
     }
 
     @Override
-    public ChessSquare enPassantSquare() {
-        // TODO: Implement enPessantSquare() ...
-        return null;
+    public void setEnPassantSquare(ChessSquare enPassantSquare) {
+        _enPassantSquare = enPassantSquare;
+
+        if ((null != _enPassantSquare) && _enPassantSquare.isOccupied()) {
+            throw new InternalError("Occupied square " + _enPassantSquare + "can't be the en passant square");
+        }
+    }
+
+    @Override
+    public ChessSquare getEnPassantSquare() {
+        if ((null != _enPassantSquare) && _enPassantSquare.isOccupied()) {
+            throw new InternalError("Occupied square " + _enPassantSquare + "can't be the en passant square");
+        }
+
+        return _enPassantSquare;
     }
 
     @Override

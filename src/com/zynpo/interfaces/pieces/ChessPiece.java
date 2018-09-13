@@ -11,8 +11,6 @@ import java.util.Set;
 
 public interface ChessPiece {
 
-    static final int PIECES_PER_BOARD_COUNT = 32;
-
     ChessSquare getSquare();
 
     /**

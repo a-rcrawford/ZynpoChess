@@ -145,17 +145,15 @@ public class PawnImpl extends ChessPieceImpl implements Pawn {
 
         if (this.covers(square)) {
             if (null == square.getPiece()) {
-                // TODO: Better check for possible en passant ...
-                ChessSquare besideSquare = square.getRelativeSquare(-this.advanceUnit(), 0);
-                ChessPiece besidePiece = besideSquare.getPiece();
 
-                if ((null != besidePiece) && (besidePiece.opposesSideOf(this)) && (besidePiece instanceof Pawn)) {
+                if (this.getBoard().getEnPassantSquare() == square) {
                     return true;
                 }
 
             } else {
-                if (square.getPiece().opposesSideOf(this))
+                if (square.getPiece().opposesSideOf(this)) {
                     return true;
+                }
             }
         }
 
@@ -179,7 +177,7 @@ public class PawnImpl extends ChessPieceImpl implements Pawn {
 
         potential = this.jumpTwoSquare();
 
-        if ((null != potential) && (this.neverMoved())) {
+        if ((null != potential) && (this.getSquare().getRow() == this.gameStartRow()) && (this.neverMoved())) {
             if (PotentialMoveReason.ForMoveAfterNext == reason) {
                 potentials.add(potential); // Simply assume we might be able to move there
             } else if (this.mightMoveTo(potential)) {
