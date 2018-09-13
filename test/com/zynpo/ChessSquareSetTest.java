@@ -65,6 +65,22 @@ public class ChessSquareSetTest {
             assertEquals(3, count);
         }
 
+        {
+            Object[] squareObjectArray = squareSet.toArray();
+            assertEquals(3, squareObjectArray.length);
+            assertEquals(board.getSquare("a1"), squareObjectArray[0]);
+            assertEquals(board.getSquare("d4"), squareObjectArray[1]);
+            assertEquals(board.getSquare("h8"), squareObjectArray[2]);
+        }
+
+        {
+            ChessSquare[] squareArray = new ChessSquare[3];
+            squareSet.toArray(squareArray);
+            assertEquals(board.getSquare("a1"), squareArray[0]);
+            assertEquals(board.getSquare("d4"), squareArray[1]);
+            assertEquals(board.getSquare("h8"), squareArray[2]);
+        }
+
         assertTrue(squareSet.remove(board.getSquare("h8")));
         assertEquals(2, squareSet.size());
 

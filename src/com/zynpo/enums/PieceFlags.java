@@ -68,16 +68,20 @@ public enum PieceFlags {
     public int getValue() { return _value; }
     static public int fromIndex(PieceIndex index) { return 1 << index.getValue(); }
 
-    PieceFlags(int value) { _value = _value; }
+    PieceFlags(int value) { _value = value; }
     PieceFlags(PieceIndex index) { _value = fromIndex(index); }
 
 
     public boolean containsAllOf(int pieceFlags) {
-        return (this.getValue() == (this.getValue() | pieceFlags));
+        return this.getValue() == (this.getValue() | pieceFlags);
+    }
+
+    public boolean containsAnyOf(int pieceFlags) {
+        return 0 != (this.getValue() & pieceFlags);
     }
 
     public boolean containsNoneOf(int pieceFlags) {
-        return (0 == (this.getValue() & pieceFlags));
+        return 0 == (this.getValue() & pieceFlags);
     }
 
     public boolean contains(PieceIndex index) {

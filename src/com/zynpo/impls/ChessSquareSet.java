@@ -204,8 +204,9 @@ class ChessSquareSet implements Set<ChessSquare> {
     public Object[] toArray() {
         Object[] array = new Object[size()];
 
-        for(int i = 0; i < array.length; ++i) {
-            array[i] = _board.getSquare(i);
+        int i = 0;
+        for(ChessSquare square : this) {
+            array[i++] = square;
         }
 
         return array;
@@ -226,8 +227,7 @@ class ChessSquareSet implements Set<ChessSquare> {
         for (ChessSquare e: this) {
             // No need for checked cast - ArrayStoreException will be thrown
             // if types are incompatible, just as required
-            array[i] = (T) e;
-            i++;
+            array[i++] = (T) e;
         }
 
         return array;
