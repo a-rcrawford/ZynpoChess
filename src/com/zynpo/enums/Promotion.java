@@ -10,6 +10,6 @@ public enum Promotion {
     private int _value;
 
     Promotion(int value) {
-        this._value = value;
+        _value = value;
     }
 }

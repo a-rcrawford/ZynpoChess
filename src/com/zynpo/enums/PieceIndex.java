@@ -46,7 +46,7 @@ public enum PieceIndex {
         if ((value < -1) || (31 < value))
             throw new IllegalArgumentException(String.format("Invalid Piece Index: %d", value));
 
-        this._value = value;
+        _value = value;
     }
 
     public int getValue() { return _value; }

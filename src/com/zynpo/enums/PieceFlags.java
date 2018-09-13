@@ -68,7 +68,7 @@ public enum PieceFlags {
     public int getValue() { return _value; }
     static public int fromIndex(PieceIndex index) { return 1 << index.getValue(); }
 
-    PieceFlags(int _value) { this._value = _value; }
+    PieceFlags(int value) { _value = _value; }
     PieceFlags(PieceIndex index) { _value = fromIndex(index); }
 
 

@@ -17,5 +17,5 @@ public enum GameStatus {
 
     private int _value;
 
-    GameStatus(int value) { this._value = value; }
+    GameStatus(int value) { _value = value; }
 }

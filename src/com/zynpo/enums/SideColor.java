@@ -13,13 +13,13 @@ public enum SideColor {
         public SideColor opposingSideColor() { return White; }
     };
 
-    private int value;
+    private int _value;
 
     SideColor(int value) {
         if ((value < -1) || (1 < value))
             throw new IllegalArgumentException(String.format("Invalid SideColor: %d", value));
 
-        this.value = value;
+        _value = value;
     }
 
     public SideColor opposingSideColor() { return None; }
