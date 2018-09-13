@@ -49,6 +49,11 @@ public class ChessBoardTest {
 
         assertNull(board.getSquare("a9"));
         assertNull(board.getSquare("I1"));
+
+        assertEquals(board.getSquare(0, 0), board.getSquare("a1"));
+        assertEquals(board.getSquare(0, 7), board.getSquare("h1"));
+        assertEquals(board.getSquare(7, 0), board.getSquare("a8"));
+        assertEquals(board.getSquare(7, 7), board.getSquare("h8"));
     }
 
 
