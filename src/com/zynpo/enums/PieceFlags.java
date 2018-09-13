@@ -44,32 +44,32 @@ public enum PieceFlags {
 
     AllWhitePawns(0x0000FF00),
     AllBlackPawns(0x00FF0000),
-    AllPawns(AllWhitePawns.value | AllBlackPawns.value),
+    AllPawns(AllWhitePawns._value | AllBlackPawns._value),
 
-    WhiteCastles(WhiteLeftCastle.value | WhiteRightCastle.value),
-    BlackCastles(BlackLeftCastle.value | BlackRightCastle.value),
-    AllCastles(WhiteCastles.value | BlackCastles.value),
+    WhiteCastles(WhiteLeftCastle._value | WhiteRightCastle._value),
+    BlackCastles(BlackLeftCastle._value | BlackRightCastle._value),
+    AllCastles(WhiteCastles._value | BlackCastles._value),
 
-    WhiteKnights(WhiteLeftKnight.value | WhiteRightKnight.value),
-    BlackKnights(BlackLeftKnight.value | BlackRightKnight.value),
-    AllKnights(WhiteKnights.value | BlackKnights.value),
+    WhiteKnights(WhiteLeftKnight._value | WhiteRightKnight._value),
+    BlackKnights(BlackLeftKnight._value | BlackRightKnight._value),
+    AllKnights(WhiteKnights._value | BlackKnights._value),
 
-    WhiteBishops(WhiteLeftBishop.value | WhiteRightBishop.value),
-    BlackBishops(BlackLeftBishop.value | BlackRightBishop.value),
-    AllBishops(WhiteBishops.value | BlackBishops.value),
+    WhiteBishops(WhiteLeftBishop._value | WhiteRightBishop._value),
+    BlackBishops(BlackLeftBishop._value | BlackRightBishop._value),
+    AllBishops(WhiteBishops._value | BlackBishops._value),
 
-    BothQueens(WhiteQueen.value | BlackQueen.value),
+    BothQueens(WhiteQueen._value | BlackQueen._value),
 
-    BothKings(WhiteKing.value | BlackKing.value),
+    BothKings(WhiteKing._value | BlackKing._value),
 
     AllPieces(0xFFFFFFFF);
 
-    private int value;
-    public int getValue() { return value; }
+    private int _value;
+    public int getValue() { return _value; }
     static public int fromIndex(PieceIndex index) { return 1 << index.getValue(); }
 
-    PieceFlags(int value) { this.value = value; }
-    PieceFlags(PieceIndex index) { value = fromIndex(index); }
+    PieceFlags(int _value) { this._value = _value; }
+    PieceFlags(PieceIndex index) { _value = fromIndex(index); }
 
 
     public boolean containsAllOf(int pieceFlags) {

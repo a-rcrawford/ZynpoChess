@@ -1,8 +1,6 @@
 package com.zynpo.enums;
 
-
-import com.zynpo.impls.ChessFactory;
-import com.zynpo.interfaces.ChessBoard;
+import com.zynpo.constant.ChessBoardSpecs;
 
 public enum PieceIndex {
     WhiteLeftCastle(0),
@@ -55,11 +53,8 @@ public enum PieceIndex {
 
     public static PieceIndex fromOrdinal(int i) { return _allValues[i]; }
 
-    public static final int ROW_COUNT = 8;
-    public static final int COL_COUNT = 8;
-
     public int origRow() {
-        int rowIndex = _value / COL_COUNT;
+        int rowIndex = _value / ChessBoardSpecs.ROW_COUNT;
 
         if (2 <= rowIndex)
             rowIndex += 4;
@@ -68,7 +63,7 @@ public enum PieceIndex {
     }
 
     public int origCol() {
-        return _value % COL_COUNT;
+        return _value % ChessBoardSpecs.COL_COUNT;
     }
 
     public SideColor origSideColor() {

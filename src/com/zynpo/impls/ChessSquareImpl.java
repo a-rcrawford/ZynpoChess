@@ -21,7 +21,7 @@ class ChessSquareImpl implements ChessSquare {
     }
 
     @Override
-    public int getIndex() { return (_row * _board.getRowCount()) + _col; }
+    public int getIndex() { return (_row * _board.getColCount()) + _col; }
 
     @Override
     public int getRow(){ return _row; }

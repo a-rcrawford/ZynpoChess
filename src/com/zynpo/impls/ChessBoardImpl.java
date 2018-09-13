@@ -1,5 +1,6 @@
 package com.zynpo.impls;
 
+import com.zynpo.constant.ChessBoardSpecs;
 import com.zynpo.enums.PieceIndex;
 import com.zynpo.enums.SideColor;
 import com.zynpo.impls.pieces.ChessPieceFactory;
@@ -15,10 +16,10 @@ class ChessBoardImpl implements ChessBoard {
     private ChessPiece[] _pieces;
 
     @Override
-    public int getRowCount() { return PieceIndex.ROW_COUNT; }
+    public int getRowCount() { return ChessBoardSpecs.ROW_COUNT; }
 
     @Override
-    public int getColCount() { return PieceIndex.COL_COUNT; }
+    public int getColCount() { return ChessBoardSpecs.COL_COUNT; }
 
 
     ChessBoardImpl() {
