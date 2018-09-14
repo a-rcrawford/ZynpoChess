@@ -50,38 +50,41 @@ public class CastleImpl extends PromotablePieceImpl implements Castle {
         Set<ChessSquare> potentials = ChessFactory.createChessSquareSet();
 
         for(int rowDirection = -1; rowDirection <= 1; ++rowDirection ) {
-            for (int colDirection = -1; colDirection <= -1; ++colDirection ) {
+            for (int colDirection = -1; colDirection <= 1; ++colDirection) {
                 if (Math.abs(rowDirection) == Math.abs(colDirection))
                     continue;
 
                 for (int step = 1; ; ++step) {
                     ChessSquare potential = this.getSquare().getRelativeSquare(rowDirection * step, colDirection * step);
 
-                    if (null != potential) {
-                        ChessPiece piece = potential.getPiece();
+                    if (null == potential) {
+                        // We already ran off the end of the board ...
+                        break;
+                    }
 
-                        if (null == piece) {
-                            // Always assume this Castle can move to an empty Square ...
-                            potentials.add(potential);
-                        } else {
-                            if (PotentialMoveReason.ForNextMove == reason) {
-                                if (piece.opposesSideOf(this)) {
-                                    // Assume this Castle can take an opposing Piece ...
-                                    potentials.add(potential);
-                                }
+                    ChessPiece piece = potential.getPiece();
 
-                                // Step no further in this direction, because this
-                                // Castle is blocked from here on ...
-                                break;
-                            } else if (PotentialMoveReason.ForMoveAfterNext == reason) {
-                                // Only assume this Castle won't land on, or move through, its own King
-                                // for the move after next ...
-                                if ((piece instanceof King) && piece.onSameSideAs(this)) {
-                                    break;
-                                }
-
+                    if (null == piece) {
+                        // Always assume this Castle can move to an empty Square ...
+                        potentials.add(potential);
+                    } else {
+                        if (PotentialMoveReason.ForNextMove == reason) {
+                            if (piece.opposesSideOf(this)) {
+                                // Assume this Castle can take an opposing Piece ...
                                 potentials.add(potential);
                             }
+
+                            // Step no further in this direction, because this
+                            // Castle is blocked from here on ...
+                            break;
+                        } else if (PotentialMoveReason.ForMoveAfterNext == reason) {
+                            // Only assume this Castle won't land on, or move through, its own King
+                            // for the move after next ...
+                            if ((piece instanceof King) && piece.onSameSideAs(this)) {
+                                break;
+                            }
+
+                            potentials.add(potential);
                         }
                     }
                 }

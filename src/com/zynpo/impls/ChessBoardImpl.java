@@ -8,6 +8,7 @@ import com.zynpo.interfaces.*;
 import com.zynpo.interfaces.pieces.ChessPiece;
 
 import java.util.Iterator;
+import java.util.Set;
 
 
 class ChessBoardImpl implements ChessBoard {
@@ -50,6 +51,9 @@ class ChessBoardImpl implements ChessBoard {
     }
 
     @Override
+    public ChessSquare getSquare(int index) { return _squares[index]; }
+
+    @Override
     public ChessSquare getSquare(int row, int col) {
         if (squareExists(row, col)) {
             return _squares[row * getColCount() + col];
@@ -74,7 +78,15 @@ class ChessBoardImpl implements ChessBoard {
     }
 
     @Override
-    public ChessSquare getSquare(int index) { return _squares[index]; }
+    public Set<ChessSquare> getSquares(String... notations) {
+        Set<ChessSquare> squares = ChessFactory.createChessSquareSet();
+
+        for (String notation : notations) {
+            squares.add(getSquare(notation));
+        }
+
+        return squares;
+    }
 
     @Override
     public Iterator<ChessSquare> iterator() {

@@ -51,7 +51,7 @@ class ChessSquareSet implements Set<ChessSquare> {
         boolean overallResult = false;
 
         for(ChessSquare square : squares) {
-            overallResult = overallResult || add(square);
+            overallResult = add(square) || overallResult;
         }
 
         return overallResult;

@@ -4,6 +4,7 @@ import com.zynpo.enums.PotentialMoveReason;
 import com.zynpo.impls.ChessFactory;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
+import com.zynpo.interfaces.pieces.Castle;
 import com.zynpo.interfaces.pieces.Pawn;
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,16 +29,13 @@ public class ChessPieceTest extends Assert {
         assertFalse(whitePawn.mightMoveTo(board.getSquare("a3")));
         assertFalse(whitePawn.mightMoveTo(board.getSquare("c3")));
 
-        Set<ChessSquare> expectedPotentialMoveSquares = ChessFactory.createChessSquareSet(
-                board.getSquare("b3"),
-                board.getSquare("b4"));
+        Set<ChessSquare> expectedPotentialMoveSquares = board.getSquares("b3", "b4");
 
         // For the next move, we expect this pawn may jump up one or two squares ...
         assertEquals(expectedPotentialMoveSquares, whitePawn.potentialMoveSquares(PotentialMoveReason.ForNextMove));
 
         // For the move after next, we assume this pawn may be able to take something on its own forward diagonals ...
-        expectedPotentialMoveSquares.add(board.getSquare("a3"));
-        expectedPotentialMoveSquares.add(board.getSquare("c3"));
+        expectedPotentialMoveSquares.addAll(board.getSquares("a3", "c3"));
         assertEquals(expectedPotentialMoveSquares, whitePawn.potentialMoveSquares(PotentialMoveReason.ForMoveAfterNext));
     }
 
@@ -69,15 +67,50 @@ public class ChessPieceTest extends Assert {
         assertFalse("White pawn forward blocked", whitePawn.mightMoveTo(whitePawn.squareJustInFront()));
         assertFalse("White pawn can't take anything on e4", whitePawn.mightMoveTo(board.getSquare("e6")));
 
-        Set<ChessSquare> expectedPotentialMoveSquares = ChessFactory.createChessSquareSet(board.getSquare("c6"));
+        Set<ChessSquare> expectedPotentialMoveSquares = board.getSquares("c6");
 
         // For the next move, we only expect this white pawn might move to the en passant square ...
         assertEquals(expectedPotentialMoveSquares, whitePawn.potentialMoveSquares(PotentialMoveReason.ForNextMove));
 
         // For the move after next, we assume this pawn may be able to move forward, or take from the other forward diagonal square ...
-        expectedPotentialMoveSquares.add(board.getSquare("d6"));
-        expectedPotentialMoveSquares.add(board.getSquare("e6"));
+        expectedPotentialMoveSquares.addAll(board.getSquares("d6", "e6"));
         assertEquals(expectedPotentialMoveSquares, whitePawn.potentialMoveSquares(PotentialMoveReason.ForMoveAfterNext));
+    }
+
+
+    @Test
+    public void castleMightMoveTo() {
+        ChessBoard board = ChessFactory.createBoard();
+
+        Pawn whitePawn = (Pawn) board.getSquare("h2").getPiece();
+        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+        whitePawn.incrementMovedCount();
+
+        Pawn blackPawn = (Pawn) board.getSquare("d7").getPiece();
+        blackPawn.setSquare(blackPawn.jumpTwoSquare());
+        blackPawn.incrementMovedCount();
+        assertEquals(board.getSquare("d5"), blackPawn.getSquare());
+
+        Castle whiteCastle = (Castle) board.getSquare("h1").getPiece();
+        whiteCastle.setSquare(board.getSquare("h3"));
+        whiteCastle.incrementMovedCount();
+
+        blackPawn.setSquare(blackPawn.squareJustInFront());
+        blackPawn.incrementMovedCount();
+        assertEquals(board.getSquare("d4"), blackPawn.getSquare());
+
+        whiteCastle.setSquare(board.getSquare("b3"));
+        whiteCastle.incrementMovedCount();
+
+        blackPawn.setSquare(blackPawn.squareJustInFront());
+        blackPawn.incrementMovedCount();
+        assertEquals(board.getSquare("d3"), blackPawn.getSquare());
+
+        Set<ChessSquare> expectedPotentialMoveSquares = board.getSquares("a3", "c3", "d3", "b4", "b5", "b6", "b7");
+        assertEquals(expectedPotentialMoveSquares, whiteCastle.potentialMoveSquares(PotentialMoveReason.ForNextMove));
+
+        expectedPotentialMoveSquares.addAll(board.getSquares("e3", "f3", "g3", "h3", "b2", "b1", "b8"));
+        assertEquals(expectedPotentialMoveSquares, whiteCastle.potentialMoveSquares(PotentialMoveReason.ForMoveAfterNext));
     }
 
 }
