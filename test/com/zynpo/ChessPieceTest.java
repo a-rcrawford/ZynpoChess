@@ -5,6 +5,7 @@ import com.zynpo.impls.ChessFactory;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
 import com.zynpo.interfaces.pieces.Castle;
+import com.zynpo.interfaces.pieces.Knight;
 import com.zynpo.interfaces.pieces.Pawn;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,6 +22,10 @@ public class ChessPieceTest extends Assert {
 
         assertEquals(board.getSquare("b3"), whitePawn.squareJustInFront());
         assertEquals(board.getSquare("b4"), whitePawn.jumpTwoSquare());
+        assertTrue(whitePawn.covers(board.getSquare("a3")));
+        assertFalse(whitePawn.covers(board.getSquare("b3")));
+        assertFalse(whitePawn.covers(board.getSquare("b4")));
+        assertTrue(whitePawn.covers(board.getSquare("c3")));
 
         assertTrue(whitePawn.mightMoveTo(board.getSquare("b3")));
         assertTrue(whitePawn.mightMoveTo(board.getSquare("b4")));
@@ -67,6 +72,10 @@ public class ChessPieceTest extends Assert {
         assertFalse("White pawn forward blocked", whitePawn.mightMoveTo(whitePawn.squareJustInFront()));
         assertFalse("White pawn can't take anything on e4", whitePawn.mightMoveTo(board.getSquare("e6")));
 
+        assertTrue(whitePawn.covers(board.getSquare("c6")));
+        assertFalse(whitePawn.covers(board.getSquare("d6")));
+        assertTrue(whitePawn.covers(board.getSquare("e6")));
+
         Set<ChessSquare> expectedPotentialMoveSquares = board.getSquares("c6");
 
         // For the next move, we only expect this white pawn might move to the en passant square ...
@@ -109,8 +118,68 @@ public class ChessPieceTest extends Assert {
         Set<ChessSquare> expectedPotentialMoveSquares = board.getSquares("a3", "c3", "d3", "b4", "b5", "b6", "b7");
         assertEquals(expectedPotentialMoveSquares, whiteCastle.potentialMoveSquares(PotentialMoveReason.ForNextMove));
 
+        for(ChessSquare square : expectedPotentialMoveSquares) {
+            assertTrue(whiteCastle.covers(square));
+            assertTrue(whiteCastle.mightMoveTo(square));
+        }
+
+        assertTrue(whiteCastle.covers(board.getSquare("b2")));
+        assertFalse(whiteCastle.covers(board.getSquare("b1")));
+        assertFalse(whiteCastle.covers(board.getSquare("d4")));
+        assertFalse(whiteCastle.covers(board.getSquare("b8")));
+        assertFalse(whiteCastle.covers(whiteCastle.getSquare()));
+
         expectedPotentialMoveSquares.addAll(board.getSquares("e3", "f3", "g3", "h3", "b2", "b1", "b8"));
         assertEquals(expectedPotentialMoveSquares, whiteCastle.potentialMoveSquares(PotentialMoveReason.ForMoveAfterNext));
     }
 
+
+    @Test
+    public void knightMightMoveTo() {
+        ChessBoard board = ChessFactory.createBoard();
+
+        Knight whiteKnight = (Knight) board.getSquare("b1").getPiece();
+
+        // The Knight covers/protects the pawn on d2, but can't potentially move to take a pawn on its own side ...
+        assertTrue(whiteKnight.covers(board.getSquare("d2")));
+        assertFalse(whiteKnight.mightMoveTo(board.getSquare("d2")));
+
+        Set<ChessSquare> expectedPotentialMoveSquares = board.getSquares("a3", "c3");
+        assertEquals(expectedPotentialMoveSquares, whiteKnight.potentialMoveSquares(PotentialMoveReason.ForNextMove));
+
+        whiteKnight.setSquare(board.getSquare("c3"));
+        whiteKnight.incrementMovedCount();
+
+        Knight blackNight = (Knight) board.getSquare("b8").getPiece();
+        blackNight.setSquare(board.getSquare("a6"));
+        blackNight.incrementMovedCount();
+
+        whiteKnight.setSquare(board.getSquare("b5"));
+        whiteKnight.incrementMovedCount();
+
+        expectedPotentialMoveSquares = board.getSquares("b8", "c5", "b4");
+        assertEquals(expectedPotentialMoveSquares, blackNight.potentialMoveSquares(PotentialMoveReason.ForNextMove));
+
+        for (ChessSquare square : expectedPotentialMoveSquares) {
+            assertTrue(blackNight.mightMoveTo(square));
+            assertTrue(blackNight.covers(square));
+        }
+
+        // Black knight covers black pawn on c7 ...
+        assertTrue(blackNight.covers(board.getSquare("c7")));
+        // Black knight can't take black pawn ...
+        assertFalse(blackNight.mightMoveTo(board.getSquare("c7")));
+
+        expectedPotentialMoveSquares.add(board.getSquare("c7"));
+        assertEquals(expectedPotentialMoveSquares, blackNight.potentialMoveSquares(PotentialMoveReason.ForMoveAfterNext));
+
+        expectedPotentialMoveSquares = board.getSquares("a7", "c7", "d6", "d4", "c3", "a3");
+        assertEquals(expectedPotentialMoveSquares, whiteKnight.potentialMoveSquares(PotentialMoveReason.ForNextMove));
+        assertEquals(expectedPotentialMoveSquares, whiteKnight.potentialMoveSquares(PotentialMoveReason.ForMoveAfterNext));
+
+        for(ChessSquare square : expectedPotentialMoveSquares) {
+            assertTrue(whiteKnight.covers(square));
+            assertTrue(whiteKnight.mightMoveTo(square));
+        }
+    }
 }
