@@ -127,7 +127,6 @@ public class ChessPieceTest extends Assert {
         assertFalse(whiteCastle.covers(board.getSquare("b1")));
         assertFalse(whiteCastle.covers(board.getSquare("d4")));
         assertFalse(whiteCastle.covers(board.getSquare("b8")));
-        assertFalse(whiteCastle.covers(whiteCastle.getSquare()));
 
         expectedPotentialMoveSquares.addAll(board.getSquares("e3", "f3", "g3", "h3", "b2", "b1", "b8"));
         assertEquals(expectedPotentialMoveSquares, whiteCastle.potentialMoveSquares(PotentialMoveReason.ForMoveAfterNext));
