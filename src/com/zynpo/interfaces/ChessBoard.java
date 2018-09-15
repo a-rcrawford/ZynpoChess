@@ -21,6 +21,5 @@ public interface ChessBoard extends Iterable<ChessSquare> {
     ChessPiece getPiece(int index);
     ChessPiece getPiece(PieceIndex index);
 
-    void setEnPassantSquare(ChessSquare square);
     ChessSquare getEnPassantSquare();
 }

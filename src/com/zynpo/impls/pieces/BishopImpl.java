@@ -24,6 +24,11 @@ public class BishopImpl extends PromotablePieceImpl implements Bishop {
     BishopImpl(Pawn pawn) { super(pawn); }
 
     @Override
+    protected String name() {
+        return "Bishop";
+    }
+
+    @Override
     public String notation() { return "B"; }
 
     @Override

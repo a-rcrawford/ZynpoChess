@@ -3,6 +3,7 @@ package com.zynpo.impls.pieces;
 import com.zynpo.enums.PieceIndex;
 import com.zynpo.enums.PotentialMoveReason;
 import com.zynpo.enums.SideColor;
+import com.zynpo.impls.ChessBoardImpl;
 import com.zynpo.impls.ChessFactory;
 import com.zynpo.interfaces.ChessSquare;
 import com.zynpo.interfaces.pieces.ChessPiece;
@@ -19,6 +20,11 @@ public class PawnImpl extends ChessPieceImpl implements Pawn {
     PawnImpl(PieceIndex index, ChessSquare square) { super(index, square); }
 
     PawnImpl(PieceIndex index, ChessSquare square, SideColor sideColor) { super(index, square, sideColor); }
+
+    @Override
+    protected String name() {
+        return "Pawn";
+    }
 
     @Override
     public String notation() { return "P"; }
@@ -86,10 +92,30 @@ public class PawnImpl extends ChessPieceImpl implements Pawn {
     public ChessSquare jumpTwoSquare() {
         // Pawns initially placed or dropped on the proper start row have the
         // option of jumping two squares initially ...
-        if (this.getOrigSquare().getRow() == this.gameStartRow())
-            return this.getOrigSquare().getRelativeSquare(2 * this.advanceUnit(), 0);
-        else
+        if (null == this.getOrigSquare()) {
             return null;
+        }
+
+        if (this.getOrigSquare().getRow() == this.gameStartRow()) {
+            return this.getOrigSquare().getRelativeSquare(2 * this.advanceUnit(), 0);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public ChessSquare setSquare(ChessSquare square) {
+        ChessSquare possibleEnPassantSquare = null;
+
+        if ((this.getSquare() == this.getOrigSquare())
+            && (this.jumpTwoSquare() == square)) {
+            possibleEnPassantSquare = this.squareJustInFront();
+        }
+
+        ChessSquare priorSquare = super.setSquare(square);
+        ((ChessBoardImpl) this.getBoard()).setEnPassantSquare(possibleEnPassantSquare);
+
+        return priorSquare;
     }
 
     @Override
@@ -123,8 +149,19 @@ public class PawnImpl extends ChessPieceImpl implements Pawn {
 
     @Override
     public boolean mightMoveTo(ChessSquare square) {
-        if (!this.shallowMightMoveTo(square))
+        if (this.getSquare() == square) {
             return false;
+        }
+
+        if (!ChessSquare.canCompare(this.getSquare(), square)) {
+            return false;
+        }
+
+        ChessPiece otherPiece = square.getPiece();
+
+        if ((null != otherPiece) && (this.onSameSideAs(otherPiece))) {
+            return false; // Pieces never capture pieces from their own side
+        }
 
         if (null == square.getPiece()) {
             // Pawns should always have a SquareJustInFront because they can't sit

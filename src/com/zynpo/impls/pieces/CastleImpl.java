@@ -22,6 +22,11 @@ public class CastleImpl extends PromotablePieceImpl implements Castle {
     CastleImpl(Pawn pawn) { super(pawn); }
 
     @Override
+    protected String name() {
+        return "Castle";
+    }
+
+    @Override
     public String notation() { return "R"; } // ... for Rook
 
     @Override

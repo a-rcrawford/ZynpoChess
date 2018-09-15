@@ -5,6 +5,7 @@ import com.zynpo.impls.ChessFactory;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
 import com.zynpo.interfaces.pieces.Castle;
+import com.zynpo.interfaces.pieces.ChessPiece;
 import com.zynpo.interfaces.pieces.Knight;
 import com.zynpo.interfaces.pieces.Pawn;
 import org.junit.Assert;
@@ -22,26 +23,11 @@ public class ChessPieceTest extends Assert {
 
         assertEquals(board.getSquare("b3"), whitePawn.squareJustInFront());
         assertEquals(board.getSquare("b4"), whitePawn.jumpTwoSquare());
-        assertTrue(whitePawn.covers(board.getSquare("a3")));
-        assertFalse(whitePawn.covers(board.getSquare("b3")));
-        assertFalse(whitePawn.covers(board.getSquare("b4")));
-        assertTrue(whitePawn.covers(board.getSquare("c3")));
 
-        assertTrue(whitePawn.mightMoveTo(board.getSquare("b3")));
-        assertTrue(whitePawn.mightMoveTo(board.getSquare("b4")));
-
-        assertFalse(whitePawn.mightMoveTo(board.getSquare("b5")));
-        assertFalse(whitePawn.mightMoveTo(board.getSquare("a3")));
-        assertFalse(whitePawn.mightMoveTo(board.getSquare("c3")));
-
-        Set<ChessSquare> expectedPotentialMoveSquares = board.getSquares("b3", "b4");
-
-        // For the next move, we expect this pawn may jump up one or two squares ...
-        assertEquals(expectedPotentialMoveSquares, whitePawn.potentialMoveSquares(PotentialMoveReason.ForNextMove));
-
-        // For the move after next, we assume this pawn may be able to take something on its own forward diagonals ...
-        expectedPotentialMoveSquares.addAll(board.getSquares("a3", "c3"));
-        assertEquals(expectedPotentialMoveSquares, whitePawn.potentialMoveSquares(PotentialMoveReason.ForMoveAfterNext));
+        assertCoveredSquares(whitePawn, "a3", "c3");
+        assertMightMoveToSquares(whitePawn, "b3", "b4");
+        assertMightMoveToNextSquares(whitePawn, "a3", "b3", "c3", "b4");
+        assertEquals(0, whitePawn.getMovedCount());
     }
 
     @Test
@@ -49,41 +35,33 @@ public class ChessPieceTest extends Assert {
         ChessBoard board = ChessFactory.createBoard();
 
         Pawn whitePawn = (Pawn) board.getSquare("d2").getPiece();
+        assertEquals(0, whitePawn.getMovedCount());
         whitePawn.setSquare(whitePawn.jumpTwoSquare());
-        whitePawn.incrementMovedCount();
         assertEquals(board.getSquare("d4"), whitePawn.getSquare());
+        assertEquals(board.getSquare("d3"), board.getEnPassantSquare());
+        assertEquals(1, whitePawn.getMovedCount());
 
         Pawn blackPawn = (Pawn) board.getSquare("d7").getPiece();
+        assertEquals(0, blackPawn.getMovedCount());
         blackPawn.setSquare(blackPawn.squareJustInFront());
-        blackPawn.incrementMovedCount();
         assertEquals(board.getSquare("d6"), blackPawn.getSquare());
+        assertNull(board.getEnPassantSquare());
+        assertEquals(1, blackPawn.getMovedCount());
 
         whitePawn.setSquare(whitePawn.squareJustInFront());
-        whitePawn.incrementMovedCount();
         assertEquals(board.getSquare("d5"), whitePawn.getSquare());
+        assertNull(board.getEnPassantSquare());
+        assertEquals(2, whitePawn.getMovedCount());
 
         blackPawn = (Pawn) board.getSquare("c7").getPiece();
         blackPawn.setSquare(blackPawn.jumpTwoSquare());
-        blackPawn.incrementMovedCount();
         assertEquals(board.getSquare("c5"), blackPawn.getSquare());
-        board.setEnPassantSquare(board.getSquare("c6"));
+        assertEquals(board.getSquare("c6"), board.getEnPassantSquare());
+        assertEquals(1, blackPawn.getMovedCount());
 
-        assertTrue("White pawn might dxc5ep", whitePawn.mightMoveTo(board.getSquare("c6")));
-        assertFalse("White pawn forward blocked", whitePawn.mightMoveTo(whitePawn.squareJustInFront()));
-        assertFalse("White pawn can't take anything on e4", whitePawn.mightMoveTo(board.getSquare("e6")));
-
-        assertTrue(whitePawn.covers(board.getSquare("c6")));
-        assertFalse(whitePawn.covers(board.getSquare("d6")));
-        assertTrue(whitePawn.covers(board.getSquare("e6")));
-
-        Set<ChessSquare> expectedPotentialMoveSquares = board.getSquares("c6");
-
-        // For the next move, we only expect this white pawn might move to the en passant square ...
-        assertEquals(expectedPotentialMoveSquares, whitePawn.potentialMoveSquares(PotentialMoveReason.ForNextMove));
-
-        // For the move after next, we assume this pawn may be able to move forward, or take from the other forward diagonal square ...
-        expectedPotentialMoveSquares.addAll(board.getSquares("d6", "e6"));
-        assertEquals(expectedPotentialMoveSquares, whitePawn.potentialMoveSquares(PotentialMoveReason.ForMoveAfterNext));
+        assertCoveredSquares(whitePawn, "c6", "e6");
+        assertMightMoveToSquares(whitePawn,"c6"); // dxc5ep
+        assertMightMoveToNextSquares(whitePawn,"c6", "d6", "e6");
     }
 
 
@@ -92,27 +70,36 @@ public class ChessPieceTest extends Assert {
         ChessBoard board = ChessFactory.createBoard();
 
         Pawn whitePawn = (Pawn) board.getSquare("h2").getPiece();
+        assertEquals(0, whitePawn.getMovedCount());
+        assertNull(board.getEnPassantSquare());
         whitePawn.setSquare(whitePawn.jumpTwoSquare());
-        whitePawn.incrementMovedCount();
+        assertEquals(board.getSquare("h4"), whitePawn.getSquare());
+        assertEquals(board.getSquare("h3"), board.getEnPassantSquare());
+        assertEquals(1, whitePawn.getMovedCount());
 
         Pawn blackPawn = (Pawn) board.getSquare("d7").getPiece();
         blackPawn.setSquare(blackPawn.jumpTwoSquare());
-        blackPawn.incrementMovedCount();
         assertEquals(board.getSquare("d5"), blackPawn.getSquare());
+        assertEquals(board.getSquare("d6"), board.getEnPassantSquare());
+        assertEquals(1, blackPawn.getMovedCount());
 
         Castle whiteCastle = (Castle) board.getSquare("h1").getPiece();
+        assertEquals(0, whiteCastle.getMovedCount());
         whiteCastle.setSquare(board.getSquare("h3"));
-        whiteCastle.incrementMovedCount();
+        assertEquals(1, whiteCastle.getMovedCount());
+        assertNull(board.getEnPassantSquare());
 
         blackPawn.setSquare(blackPawn.squareJustInFront());
-        blackPawn.incrementMovedCount();
         assertEquals(board.getSquare("d4"), blackPawn.getSquare());
+        assertEquals(2, blackPawn.getMovedCount());
+        assertNull(board.getEnPassantSquare());
 
         whiteCastle.setSquare(board.getSquare("b3"));
-        whiteCastle.incrementMovedCount();
+        assertEquals(2, whiteCastle.getMovedCount());
+        assertNull(board.getEnPassantSquare());
 
+        // TODO: Pick up from here ...
         blackPawn.setSquare(blackPawn.squareJustInFront());
-        blackPawn.incrementMovedCount();
         assertEquals(board.getSquare("d3"), blackPawn.getSquare());
 
         Set<ChessSquare> expectedPotentialMoveSquares = board.getSquares("a3", "c3", "d3", "b4", "b5", "b6", "b7");
@@ -147,14 +134,11 @@ public class ChessPieceTest extends Assert {
         assertEquals(expectedPotentialMoveSquares, whiteKnight.potentialMoveSquares(PotentialMoveReason.ForNextMove));
 
         whiteKnight.setSquare(board.getSquare("c3"));
-        whiteKnight.incrementMovedCount();
 
         Knight blackNight = (Knight) board.getSquare("b8").getPiece();
         blackNight.setSquare(board.getSquare("a6"));
-        blackNight.incrementMovedCount();
 
         whiteKnight.setSquare(board.getSquare("b5"));
-        whiteKnight.incrementMovedCount();
 
         expectedPotentialMoveSquares = board.getSquares("b8", "c5", "b4");
         assertEquals(expectedPotentialMoveSquares, blackNight.potentialMoveSquares(PotentialMoveReason.ForNextMove));
@@ -180,5 +164,56 @@ public class ChessPieceTest extends Assert {
             assertTrue(whiteKnight.covers(square));
             assertTrue(whiteKnight.mightMoveTo(square));
         }
+    }
+
+    private Set<ChessSquare> getAllBoardSquares(ChessBoard board) {
+        return board.getSquares(
+                "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1",
+                "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2",
+                "a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3",
+                "a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4",
+                "a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5",
+                "a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6",
+                "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7",
+                "a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8");
+    }
+
+    private void assertCoveredSquares(ChessPiece piece, String... squares) {
+        final Set<ChessSquare> expectedCoveredSquares = piece.getBoard().getSquares(squares);
+        final Set<ChessSquare> expectedNotToBeCoveredSquares = getAllBoardSquares(piece.getBoard());
+        expectedNotToBeCoveredSquares.removeAll(expectedCoveredSquares);
+
+        for (ChessSquare expectedCoveredSquare : expectedCoveredSquares) {
+            assertTrue(String.format("%s should cover %s", piece.toString(), expectedCoveredSquare.toString()),
+                    piece.covers(expectedCoveredSquare));
+        }
+
+        for (ChessSquare notToBeCoveredSquare : expectedNotToBeCoveredSquares) {
+            assertFalse(String.format("%s should not cover %s", piece.toString(), notToBeCoveredSquare.toString()),
+                    piece.covers(notToBeCoveredSquare));
+        }
+    }
+
+    private void assertMightMoveToSquares(ChessPiece piece, String... squares) {
+        final Set<ChessSquare> expectedMightMoveToSquares = piece.getBoard().getSquares(squares);
+        final Set<ChessSquare> expectedCantMoveToSquares = getAllBoardSquares(piece.getBoard());
+        expectedCantMoveToSquares.removeAll(expectedMightMoveToSquares);
+
+        for (ChessSquare expectedMightMoveToSquare : expectedMightMoveToSquares) {
+            assertTrue(String.format("%s might move to %s", piece.toString(), expectedMightMoveToSquare.toString()),
+                    piece.mightMoveTo(expectedMightMoveToSquare));
+        }
+
+        for (ChessSquare cantMoveToSquares : expectedCantMoveToSquares) {
+            assertFalse(String.format("%s can't move to %s", piece.toString(), cantMoveToSquares.toString()),
+                    piece.mightMoveTo(cantMoveToSquares));
+        }
+
+        assertEquals(expectedMightMoveToSquares, piece.potentialMoveSquares(PotentialMoveReason.ForNextMove));
+    }
+
+    private void assertMightMoveToNextSquares(ChessPiece piece, String... squares) {
+        final Set<ChessSquare> expectedMightMoveToNextSquares = piece.getBoard().getSquares(squares);
+        assertEquals(expectedMightMoveToNextSquares, piece.potentialMoveSquares(PotentialMoveReason.ForMoveAfterNext));
     }
 }

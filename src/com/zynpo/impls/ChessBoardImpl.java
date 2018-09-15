@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 
-class ChessBoardImpl implements ChessBoard {
+public class ChessBoardImpl implements ChessBoard {
 
     private ChessSquare[] _squares;
     private ChessPiece[] _pieces;
@@ -103,7 +103,6 @@ class ChessBoardImpl implements ChessBoard {
         return getPiece(index.getValue());
     }
 
-    @Override
     public void setEnPassantSquare(ChessSquare enPassantSquare) {
         _enPassantSquare = enPassantSquare;
 

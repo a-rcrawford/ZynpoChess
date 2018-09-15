@@ -22,6 +22,11 @@ public class QueenImpl extends PromotablePieceImpl implements Queen {
     QueenImpl(Pawn pawn) { super(pawn); }
 
     @Override
+    protected String name() {
+        return "Queen";
+    }
+
+    @Override
     public String notation() { return "Q"; }
 
     @Override

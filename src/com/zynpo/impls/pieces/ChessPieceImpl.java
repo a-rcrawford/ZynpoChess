@@ -2,6 +2,7 @@ package com.zynpo.impls.pieces;
 
 import com.zynpo.enums.PieceIndex;
 import com.zynpo.enums.SideColor;
+import com.zynpo.impls.ChessBoardImpl;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.pieces.ChessPiece;
 import com.zynpo.interfaces.ChessSquare;
@@ -34,30 +35,58 @@ abstract class ChessPieceImpl implements ChessPiece {
         this.setSquare(square);
     }
 
+    abstract protected String name();
+
     @Override
-    public ChessSquare getSquare() { return _square; }
+    public String toString() {
+        if (null == this.getSquare()) {
+            return "Taken " + _sideColor + " " + name();
+        } else {
+            return "" + _sideColor + " " + name() + " on " + this.getSquare();
+        }
+    }
+
+    @Override
+    public ChessSquare getSquare() {
+        return _square;
+    }
 
     @Override
     public ChessSquare setSquare(ChessSquare square) {
-        if (square == _square)
+        if (square == _square) {
             return _square;
+        }
+
+        if (null != _board) {
+            ((ChessBoardImpl) _board).setEnPassantSquare(null);
+        }
 
         ChessSquare priorSquare = _square;
         _square = square;
 
         if (null != square) {
-            if (null == _board)
+            if (null == _board) {
                 _board = square.getBoard();
+            }
 
-            if (null == _origSquare)
+            if (null == _origSquare) {
                 _origSquare = _square;
+            }
 
-            if (_square.getPiece() != this)
+            if (_square.getPiece() != this) {
                 _square.setPiece(this);
+            }
         }
 
-        if ((null != priorSquare) && (priorSquare.getPiece() == this))
+        if ((null != priorSquare) && (priorSquare.getPiece() == this)) {
             priorSquare.setPiece(null);
+        }
+
+        if ((null != square) && (null != priorSquare)) {
+            // If we just moved from a prior square to a new one,
+            // that means this piece has been moved in the game ...
+            ++_movedCount;
+        }
 
         return priorSquare;
     }
@@ -82,9 +111,6 @@ abstract class ChessPieceImpl implements ChessPiece {
 
     @Override
     public int getMovedCount() { return _movedCount; }
-
-    @Override
-    public int incrementMovedCount() { return ++_movedCount; }
 
     @Override
     public boolean hasEverMoved() { return 0 < _movedCount; }
@@ -142,6 +168,10 @@ abstract class ChessPieceImpl implements ChessPiece {
 
 
     protected boolean coversLikeCastle(ChessSquare square) {
+        if (square == _square) {
+            return false;
+        }
+
         if (ChessSquare.onSameRow(_square, square) || ChessSquare.onSameCol(_square, square)) {
             return coversStraightWay(square);
         }
@@ -151,6 +181,10 @@ abstract class ChessPieceImpl implements ChessPiece {
 
 
     protected  boolean coversLikeBishop(ChessSquare square) {
+        if (square == _square) {
+            return false;
+        }
+
         if (ChessSquare.onSameDiagonal(_square, square)) {
             return coversStraightWay(square);
         }
@@ -160,8 +194,13 @@ abstract class ChessPieceImpl implements ChessPiece {
 
 
     protected boolean coversLikeKnight(ChessSquare square) {
-        if (!ChessSquare.canCompare(_square, square))
+        if (square == _square) {
             return false;
+        }
+
+        if (!ChessSquare.canCompare(_square, square)) {
+            return false;
+        }
 
         if (!ChessSquare.onSameRow(_square, square)) {
             if (!ChessSquare.onSameCol(_square, square)) {
@@ -170,20 +209,6 @@ abstract class ChessPieceImpl implements ChessPiece {
         }
 
         return false;
-    }
-
-
-    protected boolean shallowMightMoveTo(ChessSquare square) {
-        if (!ChessSquare.canCompare(_square, square))
-            return false;
-
-        ChessPiece otherPiece = square.getPiece();
-
-        if ((null != otherPiece) && (this.onSameSideAs(otherPiece)))
-            return false; // Pieces never capture pieces from their own side
-
-        // So far it looks like this piece might move to the other Square ...
-        return true;
     }
 
 }

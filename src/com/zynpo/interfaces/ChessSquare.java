@@ -70,10 +70,6 @@ public interface ChessSquare {
             throw new IllegalArgumentException("Shouldn't be comparing Squares from different Boards");
         }
 
-        if (first == second) {
-            throw new IllegalArgumentException("Shouldn't be comparing Square with itself: " + first);
-        }
-
         return true;
     }
 

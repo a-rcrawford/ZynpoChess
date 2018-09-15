@@ -8,18 +8,20 @@ import com.zynpo.interfaces.ChessSquare;
 import com.zynpo.interfaces.pieces.Castle;
 import com.zynpo.interfaces.pieces.ChessPiece;
 import com.zynpo.interfaces.pieces.King;
-import com.zynpo.interfaces.pieces.Pawn;
 
 import java.util.Set;
 
 
-public class KingImpl extends PromotablePieceImpl implements King {
+public class KingImpl extends ChessPieceImpl implements King {
 
     KingImpl(PieceIndex index, ChessSquare square) { super(index, square); }
 
     KingImpl(PieceIndex index, ChessSquare square, SideColor sideColor) { super(index, square, sideColor); }
 
-    KingImpl(Pawn pawn) { super(pawn); }
+    @Override
+    protected String name() {
+        return "King";
+    }
 
     @Override
     public String notation() { return "K"; }

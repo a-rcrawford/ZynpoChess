@@ -23,6 +23,11 @@ public class KnightImpl extends PromotablePieceImpl implements Knight {
     KnightImpl(Pawn pawn) { super(pawn); }
 
     @Override
+    protected String name() {
+        return "Knight";
+    }
+
+    @Override
     public String notation() { return "N"; } // can't use "K" because that's for King
 
     @Override

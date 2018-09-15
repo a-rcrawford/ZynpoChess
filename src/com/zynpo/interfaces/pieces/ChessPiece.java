@@ -30,11 +30,6 @@ public interface ChessPiece {
 
     int getMovedCount();
 
-    /**
-     * Increment the count of times this piece was moved
-     * @return the end resulting number of times this piece was moved
-     */
-    int incrementMovedCount();
     boolean hasEverMoved();
     boolean neverMoved();
 
