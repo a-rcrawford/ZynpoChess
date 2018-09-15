@@ -48,31 +48,33 @@ public class BishopImpl extends PromotablePieceImpl implements Bishop {
                 for (int step = 1; ; ++step) {
                     ChessSquare potential = this.getSquare().getRelativeSquare(rowDirection * step, colDirection * step);
 
-                    if (null != potential) {
-                        ChessPiece piece = potential.getPiece();
+                    if (null == potential) {
+                        break;
+                    }
 
-                        if (null == piece) {
-                            // Always assume this Bishop can move to an empty Square ...
-                            potentials.add(potential);
-                        } else {
-                            if (PotentialMoveReason.ForNextMove == reason) {
-                                if (piece.opposesSideOf(this)) {
-                                    // Assume this Bishop can take an opposing Piece ...
-                                    potentials.add(potential);
-                                }
+                    ChessPiece piece = potential.getPiece();
 
-                                // Step no further in this direction, because this
-                                // Bishop is blocked from here on ...
-                                break;
-                            } else if (PotentialMoveReason.ForMoveAfterNext == reason) {
-                                // Only assume this Bishop won't land on, or move through, its own King
-                                // for the move after next ...
-                                if ((piece instanceof King) && piece.onSameSideAs(this)) {
-                                    break;
-                                }
-
+                    if (null == piece) {
+                        // Always assume this Bishop can move to an empty Square ...
+                        potentials.add(potential);
+                    } else {
+                        if (PotentialMoveReason.ForNextMove == reason) {
+                            if (piece.opposesSideOf(this)) {
+                                // Assume this Bishop can take an opposing Piece ...
                                 potentials.add(potential);
                             }
+
+                            // Step no further in this direction, because this
+                            // Bishop is blocked from here on ...
+                            break;
+                        } else if (PotentialMoveReason.ForMoveAfterNext == reason) {
+                            // Only assume this Bishop won't land on, or move through, its own King
+                            // for the move after next ...
+                            if ((piece instanceof King) && piece.onSameSideAs(this)) {
+                                break;
+                            }
+
+                            potentials.add(potential);
                         }
                     }
                 }

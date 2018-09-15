@@ -4,10 +4,7 @@ import com.zynpo.enums.PotentialMoveReason;
 import com.zynpo.impls.ChessFactory;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
-import com.zynpo.interfaces.pieces.Castle;
-import com.zynpo.interfaces.pieces.ChessPiece;
-import com.zynpo.interfaces.pieces.Knight;
-import com.zynpo.interfaces.pieces.Pawn;
+import com.zynpo.interfaces.pieces.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -141,6 +138,45 @@ public class ChessPieceTest extends Assert {
         // The black knight should know that it can't possibly move onto its own king after white moves ...
         assertMightMoveToNextSquares(blackKnight, "g8", "h7", "h5", "g4", "e4", "d5", "d7");
     }
+
+
+    @Test
+    public void bishopMightMoveTo() {
+        ChessBoard board = ChessFactory.createBoard();
+
+        Bishop whiteBishop = (Bishop) board.getSquare("c1").getPiece();
+
+        assertCoveredSquares(whiteBishop, "b2", "d2");
+        assertMightMoveToSquares(whiteBishop); // Can't move anywhere yet.
+        assertMightMoveToNextSquares(whiteBishop, "b2", "a3", "d2", "e3", "f4", "g5", "h6");
+
+        Pawn whitePawn = (Pawn) board.getSquare("d2").getPiece();
+        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+
+        Pawn blackPawn = (Pawn) board.getSquare("g7").getPiece();
+        blackPawn.setSquare(blackPawn.jumpTwoSquare());
+
+        whiteBishop.setSquare(board.getSquare("d2"));
+        assertEquals(1, whiteBishop.getMovedCount());
+
+        blackPawn = (Pawn) board.getSquare("a7").getPiece();
+        blackPawn.setSquare(board.getSquare("a5"));
+
+        assertCoveredSquares(whiteBishop, "c1", "c3", "b4", "a5", "e1", "e3", "f4", "g5");
+        assertMightMoveToSquares(whiteBishop, "c1", "c3", "b4", "a5", "e3", "f4", "g5");
+        // The bishop should know that it can't possibly move onto its own king ...
+        assertMightMoveToNextSquares(whiteBishop, "c1", "c3", "b4", "a5", "e3", "f4", "g5", "h6");
+
+        Bishop blackBishop = (Bishop) board.getSquare("f8").getPiece();
+        blackBishop.setSquare(board.getSquare("g7"));
+
+        whiteBishop.setSquare(board.getSquare("g5"));
+
+        assertCoveredSquares(blackBishop, "f8", "h8", "h6", "f6", "e5", "d4");
+        assertMightMoveToSquares(blackBishop, "f8", "h6", "f6", "e5", "d4");
+        assertMightMoveToNextSquares(blackBishop, "f8", "h8", "h6", "f6", "e5", "d4", "c3", "b2", "a1");
+    }
+    
 
     private Set<ChessSquare> getAllBoardSquares(ChessBoard board) {
         return board.getSquares(
