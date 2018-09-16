@@ -176,7 +176,47 @@ public class ChessPieceTest extends Assert {
         assertMightMoveToSquares(blackBishop, "f8", "h6", "f6", "e5", "d4");
         assertMightMoveToNextSquares(blackBishop, "f8", "h8", "h6", "f6", "e5", "d4", "c3", "b2", "a1");
     }
-    
+
+    @Test
+    public void queenMightMoveTo() {
+        ChessBoard board = ChessFactory.createBoard();
+
+        Queen whiteQueen = (Queen) board.getSquare("d1").getPiece();
+
+        assertCoveredSquares(whiteQueen, "c1", "c2", "d2", "e2", "e1");
+        assertMightMoveToSquares(whiteQueen); // The queen shouldn't be able to move anywhere at first
+        assertMightMoveToNextSquares(whiteQueen,
+                "c1", "b1", "a1", "c2", "b3", "a4",
+                "d2", "d3", "d4", "d5", "d6", "d7", "d8",
+                "e2", "f3", "g4", "h5");
+
+        Pawn whitePawn = (Pawn) board.getSquare("d2").getPiece();
+        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+
+        Pawn blackPawn = (Pawn) board.getSquare("e7").getPiece();
+        blackPawn.setSquare(blackPawn.jumpTwoSquare());
+
+        whitePawn.setSquare(board.getSquare("e5"));
+
+        Queen blackQueen = (Queen) board.getSquare("d8").getPiece();
+
+        assertCoveredSquares(blackQueen, "c8", "c7", "d7", "e7", "f6", "g5", "h4", "e8");
+        assertMightMoveToSquares(blackQueen, "e7", "f6", "g5", "h4");
+        assertMightMoveToNextSquares(blackQueen,
+                "c8", "b8", "a8", "c7", "b6", "a5",
+                "d7", "d6", "d5", "d4", "d3", "d2", "d1",
+                "e7", "f6", "g5", "h4");
+
+        blackPawn.setSquare(board.getSquare("h4"));
+
+        assertCoveredSquares(whiteQueen, "c1", "c2", "d2", "d3", "d4", "d5", "d6", "d7", "e2", "e1");
+        assertMightMoveToSquares(whiteQueen, "d2", "d3", "d4", "d5", "d6", "d7"); // The queen shouldn't be able to move anywhere at first
+        assertMightMoveToNextSquares(whiteQueen,
+                "c1", "b1", "a1", "c2", "b3", "a4",
+                "d2", "d3", "d4", "d5", "d6", "d7", "d8",
+                "e2", "f3", "g4", "h5");
+    }
+
 
     private Set<ChessSquare> getAllBoardSquares(ChessBoard board) {
         return board.getSquares(
