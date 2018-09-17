@@ -121,6 +121,37 @@ public class ChessBoardImpl implements ChessBoard {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (null == obj) {
+            return false;
+        }
+
+        if (!ChessBoardImpl.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+
+        ChessBoardImpl other = (ChessBoardImpl) obj;
+
+        // TODO: This isn't good enough, because if neither board could en-passant,
+        // it wouldn't matter that the en-passant square was different.
+        if (null != this.getEnPassantSquare()) {
+            if (!this.getEnPassantSquare().equals(other.getEnPassantSquare())) {
+                return false;
+            }
+        }
+
+        for (int row = 0; row < this.getRowCount(); ++row) {
+            for (int col = 0; col < this.getColCount(); ++col) {
+                if (!this.getSquare(row, col).equals(other.getSquare(row, col))) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();

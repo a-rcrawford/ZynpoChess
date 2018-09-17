@@ -3,6 +3,7 @@ package com.zynpo;
 import com.zynpo.impls.ChessFactory;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
+import com.zynpo.interfaces.pieces.Pawn;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -66,6 +67,50 @@ public class ChessBoardTest extends Assert {
         }
 
         assertEquals(board.getRowCount() * board.getColCount(), squareCount);
+    }
+
+
+    @Test
+    public void equalityTest() {
+        ChessBoard board = ChessFactory.createBoard();
+        ChessBoard board2 = ChessFactory.createBoard();
+
+        assertEquals(board, board2);
+
+        Pawn whitePawn = (Pawn) board.getSquare("a2").getPiece();
+        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+
+        assertNotEquals(board, board2);
+
+        whitePawn = (Pawn) board2.getSquare("a2").getPiece();
+        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+
+        assertEquals(board, board2);
+
+        Pawn blackPawn = (Pawn) board.getSquare("a7").getPiece();
+        blackPawn.setSquare(blackPawn.jumpTwoSquare());
+
+        assertNotEquals(board, board2);
+
+        blackPawn = (Pawn) board2.getSquare("b7").getPiece();
+        blackPawn.setSquare(blackPawn.jumpTwoSquare());
+
+        whitePawn = (Pawn) board.getSquare("b2").getPiece();
+        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+
+        whitePawn = (Pawn) board2.getSquare("b2").getPiece();
+        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+
+        blackPawn = (Pawn) board.getSquare("b7").getPiece();
+        blackPawn.setSquare(blackPawn.jumpTwoSquare());
+
+        blackPawn = (Pawn) board2.getSquare("a7").getPiece();
+        blackPawn.setSquare(blackPawn.jumpTwoSquare());
+
+        System.out.println(board);
+        System.out.println(board2);
+
+        assertEquals(board, board2);
     }
 
 }

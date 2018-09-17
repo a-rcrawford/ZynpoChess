@@ -101,6 +101,41 @@ class ChessSquareImpl implements ChessSquare {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (null == obj) {
+            return false;
+        }
+
+        if (!ChessSquareImpl.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+
+        ChessSquareImpl other = (ChessSquareImpl) obj;
+
+        if (this.getRow() != other.getRow()) {
+            return false;
+        }
+
+        if (this.getCol() != other.getCol()) {
+            return false;
+        }
+
+        if ((null == this.getPiece()) && (null == other.getPiece())) {
+            return true;
+        }
+
+        if (null == this.getPiece()) {
+            return false;
+        }
+
+        if (this.getPiece().equals(other.getPiece())) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
     public String toString() {
         return String.format("%c%c", 'a' + _col, '1' + _row);
     }

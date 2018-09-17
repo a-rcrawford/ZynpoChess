@@ -4,6 +4,7 @@ import com.zynpo.enums.SideColor;
 import com.zynpo.impls.ChessFactory;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
+import com.zynpo.interfaces.pieces.Knight;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -262,6 +263,53 @@ public class ChessSquareTest extends Assert {
         ChessSquare squareE5 = board.getSquare("E5");
         ChessSquare square = squareE5.getRelativeSquare(0, 0);
         assertEquals(squareE5, square);
+    }
+
+
+    @Test
+    public void equalityTest() {
+
+        String str = new String("Hello World!");
+        String str2 = new String("Hello World!");
+
+        // Not the same reference ...
+        assertFalse(str == str2);
+        // Are counted as the same value ...
+        assertTrue(str.equals(str2));
+        // assertEquals() checks that values equal, not references ...
+        assertEquals(str, str2);
+
+        ChessBoard board = ChessFactory.createBoard();
+        ChessBoard board2 = ChessFactory.createBoard();
+
+        assertEquals(board.getSquare("a1"), board2.getSquare("a1"));
+
+        for (char col = 'a'; col <= 'h'; ++col) {
+            for (char row = '1'; row <= '8'; ++row) {
+                String notation = "" + col + row;
+                assertEquals(
+                        board.getSquare(notation),
+                        board2.getSquare(notation));
+            }
+        }
+
+        Knight knight = (Knight) board.getSquare("b1").getPiece();
+        Knight knight2 = (Knight) board2.getSquare("b1").getPiece();
+
+        knight.setSquare(board.getSquare("c3"));
+
+        knight2.setSquare(board2.getSquare("a3"));
+        knight2.setSquare(board2.getSquare("b5"));
+        knight2.setSquare(board2.getSquare("c3"));
+
+        // The knights on this square haven't moved the same number of times ...
+        assertNotEquals(board.getSquare("c3"), board2.getSquare("c3"));
+
+        knight.setSquare(board.getSquare("a2"));
+        knight.setSquare(board.getSquare("c3"));
+
+        // Now the knights on this square have moved the same number of times ...
+        assertEquals(board.getSquare("c3"), board2.getSquare("c3"));
     }
 
 }

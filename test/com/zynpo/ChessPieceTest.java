@@ -12,6 +12,57 @@ import java.util.Set;
 
 public class ChessPieceTest extends Assert {
 
+    @Test(expected = InternalError.class)
+    public void cantMovePieceFromOneBoardToAnother() {
+        ChessBoard board = ChessFactory.createBoard();
+        ChessBoard board2 = ChessFactory.createBoard();
+
+        Pawn pawn = (Pawn) board.getSquare("a2").getPiece();
+        pawn.setSquare(board2.getSquare("a4"));
+    }
+
+    @Test
+    public void equalityTest() {
+        ChessBoard board = ChessFactory.createBoard();
+        ChessBoard board2 = ChessFactory.createBoard();
+
+        Castle castle = (Castle) board.getSquare("a1").getPiece();
+        Castle castle2 = (Castle) board2.getSquare("a1").getPiece();
+
+        assertEquals(castle, castle);
+        assertEquals(castle, castle2);
+
+        castle2 = (Castle) board2.getSquare("h1").getPiece();
+        assertEquals(castle, castle2);
+
+        castle2 = (Castle) board2.getSquare("a8").getPiece();
+        assertNotEquals(castle, castle2); // Not the same side color.
+
+        Knight knight = (Knight) board.getSquare("b1").getPiece();
+        Knight knight2 = (Knight) board2.getSquare("b1").getPiece();
+
+        assertEquals(knight, knight2);
+        assertNotEquals(knight, castle);
+        assertNotEquals(knight, castle2);
+
+        for (char col = 'a'; col <= 'h'; ++col) {
+            for (char row = '1'; row <= '8'; ++row) {
+                String notation = "" + col + row;
+                assertEquals(
+                        board.getSquare(notation).getPiece(),
+                        board2.getSquare(notation).getPiece());
+            }
+        }
+
+        // Pieces aren't counted as equal if they haven't moved the same number of times ...
+        knight2.setSquare(board2.getSquare("c3"));
+        assertNotEquals(knight, knight2);
+
+        // Pieces are considered equal if they are the same, and have moved the same number of times ...
+        knight.setSquare(board.getSquare("a3"));
+        assertEquals(knight, knight2);
+    }
+
     @Test
     public void pawnMightMoveToBeginning() {
         ChessBoard board = ChessFactory.createBoard();

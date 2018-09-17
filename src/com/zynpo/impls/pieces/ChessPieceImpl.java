@@ -47,6 +47,33 @@ abstract class ChessPieceImpl implements ChessPiece {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (null == obj) {
+            return false;
+        }
+
+        if (!ChessPieceImpl.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+
+        ChessPieceImpl other = (ChessPieceImpl) obj;
+
+        if (this.getSideColor() != other.getSideColor()) {
+            return false;
+        }
+
+        if (!this.name().equals(other.name())) {
+            return false;
+        }
+
+        if (this.getMovedCount() != other.getMovedCount()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
     public ChessSquare getSquare() {
         return _square;
     }
@@ -86,6 +113,10 @@ abstract class ChessPieceImpl implements ChessPiece {
             // If we just moved from a prior square to a new one,
             // that means this piece has been moved in the game ...
             ++_movedCount;
+
+            if (square.getBoard() != priorSquare.getBoard()) {
+                throw new InternalError("Can't move " + this + " from one board to another");
+            }
         }
 
         return priorSquare;
