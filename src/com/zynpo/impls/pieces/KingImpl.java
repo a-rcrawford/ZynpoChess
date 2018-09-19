@@ -29,44 +29,24 @@ public class KingImpl extends ChessPieceImpl implements King {
     @Override
     public int materialValue() { return Integer.MAX_VALUE; }
 
-    private ChessSquare castleLeftSquare() { return this.getSquare().getRelativeSquare(0, -2); }
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) {
+            return false;
+        }
 
-    private ChessSquare castleRightSquare() { return this.getSquare().getRelativeSquare(0, 2); }
+        King other = (King) obj;
 
-    private Castle leftCastle() {
-        Castle leftCastle = null;
+        for (int colOffset : new int[] { 2, -2}) {
+            boolean thisMightCastle = this.mightMoveTo(this.getSquare().getRelativeSquare(0, colOffset));
+            boolean otherMightCastle = other.mightMoveTo(other.getSquare().getRelativeSquare(0, colOffset));
 
-        if (0 == this.getMovedCount()) {
-            ChessPiece leftPiece = this.getSquare().getRelativeSquare(0, -4).getPiece();
-
-            if ((null != leftPiece) && (leftPiece instanceof Castle)) {
-                leftCastle = (Castle) leftPiece;
-
-                if (leftCastle.opposesSideOf(this) || (0 < leftCastle.getMovedCount())) {
-                    leftCastle = null;
-                }
+            if (thisMightCastle != otherMightCastle) {
+                return false;
             }
         }
 
-        return leftCastle;
-    }
-
-    private Castle rightCastle() {
-        Castle rightCastle = null;
-
-        if (0 == this.getMovedCount()) {
-            ChessPiece rightPiece = this.getSquare().getRelativeSquare(0, 3).getPiece();
-
-            if ((null != rightPiece) && (rightPiece instanceof Castle)) {
-                rightCastle = (Castle) rightPiece;
-
-                if (rightCastle.opposesSideOf(this) || (0 < rightCastle.getMovedCount())) {
-                    rightCastle = null;
-                }
-            }
-        }
-
-        return rightCastle;
+        return true;
     }
 
     @Override
@@ -104,10 +84,10 @@ public class KingImpl extends ChessPieceImpl implements King {
             {
                 ChessPiece piece = null;
 
-                if (this.getSquare().colsAwayFromCount(square) == -2) {
+                if (this.getSquare().colsAwayFromCount(square) == 2) {
                     piece = this.getSquare().getRelativeSquare(0, -4).getPiece();
                     castleDestSquare = this.getSquare().getRelativeSquare(0, -1);
-                } else if (this.castleRightSquare() == square) {
+                } else {
                     piece = this.getSquare().getRelativeSquare(0, 3).getPiece();
                     castleDestSquare = this.getSquare().getRelativeSquare(0, 1);
                 }

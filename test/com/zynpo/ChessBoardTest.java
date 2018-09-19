@@ -3,8 +3,7 @@ package com.zynpo;
 import com.zynpo.impls.ChessFactory;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
-import com.zynpo.interfaces.pieces.Knight;
-import com.zynpo.interfaces.pieces.Pawn;
+import com.zynpo.interfaces.pieces.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -156,6 +155,82 @@ public class ChessBoardTest extends Assert {
         blackNight2.setSquare(board2.getSquare("g8"));
 
         // Should now be equal ...
+        assertEquals(board, board2);
+    }
+
+
+    @Test
+    public void equalityTestCanCastle() {
+        ChessBoard board = ChessFactory.createBoard();
+        ChessBoard board2 = ChessFactory.createBoard();
+
+        //--------------------------------------------------------
+        // Position the first board for a king's castle right ...
+        //--------------------------------------------------------
+
+        Pawn whitePawn = (Pawn) board.getSquare("e2").getPiece();
+        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+
+        Knight blackNight = (Knight) board.getSquare("g8").getPiece();
+        blackNight.setSquare(board.getSquare("h6"));
+
+        Bishop whiteBishop = (Bishop) board.getSquare("f1").getPiece();
+        whiteBishop.setSquare(board.getSquare("e2"));
+
+        blackNight.setSquare(board.getSquare("g8"));
+
+        Knight whiteKnight = (Knight) board.getSquare("g1").getPiece();
+        whiteKnight.setSquare(board.getSquare("f3"));
+
+        blackNight.setSquare(board.getSquare("h6"));
+
+        King whiteKing = (King) board.getSquare("e1").getPiece();
+        assertTrue(whiteKing.mightMoveTo(board.getSquare("g1")));
+
+        //--------------------------------------------------------
+        // Position the second board for a king's castle right ...
+        //--------------------------------------------------------
+
+        Pawn whitePawn2 = (Pawn) board2.getSquare("e2").getPiece();
+        whitePawn2.setSquare(whitePawn2.jumpTwoSquare());
+
+        Knight blackNight2 = (Knight) board2.getSquare("g8").getPiece();
+        blackNight2.setSquare(board2.getSquare("h6"));
+
+        Bishop whiteBishop2 = (Bishop) board2.getSquare("f1").getPiece();
+        whiteBishop2.setSquare(board2.getSquare("e2"));
+
+        blackNight2.setSquare(board2.getSquare("g8"));
+
+        Knight whiteKnight2 = (Knight) board2.getSquare("g1").getPiece();
+        whiteKnight2.setSquare(board2.getSquare("f3"));
+
+        blackNight2.setSquare(board2.getSquare("h6"));
+
+        King whiteKing2 = (King) board2.getSquare("e1").getPiece();
+        assertTrue(whiteKing2.mightMoveTo(board2.getSquare("g1")));
+
+        // At this point both boards should be equal ...
+        assertEquals(board, board2);
+
+        // Make the first board different, because the white king can no longer castle ...
+        Castle whiteCastle = (Castle) board.getSquare("h1").getPiece();
+        whiteCastle.setSquare(board.getSquare("f1"));
+        blackNight.setSquare(board.getSquare("g8"));
+        whiteCastle.setSquare(whiteCastle.getOrigSquare());
+        blackNight.setSquare(board.getSquare("h6"));
+
+        // Now the boards are different because the king can only castle on the second board ...
+        assertNotEquals(board, board2);
+
+        // Make the second board the same, because its white king can no longer castle ...
+        Castle whiteCastle2 = (Castle) board2.getSquare("h1").getPiece();
+        whiteCastle2.setSquare(board2.getSquare("g1"));
+        blackNight2.setSquare(board2.getSquare("g8"));
+        whiteCastle2.setSquare(whiteCastle2.getOrigSquare());
+        blackNight2.setSquare(board2.getSquare("h6"));
+
+        // Now the boards should be the same again ...
         assertEquals(board, board2);
     }
 
