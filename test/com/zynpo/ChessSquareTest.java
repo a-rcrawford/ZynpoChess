@@ -302,8 +302,9 @@ public class ChessSquareTest extends Assert {
         knight2.setSquare(board2.getSquare("b5"));
         knight2.setSquare(board2.getSquare("c3"));
 
-        // The knights on this square haven't moved the same number of times ...
-        assertNotEquals(board.getSquare("c3"), board2.getSquare("c3"));
+        // Though they have moved a different number of times, the
+        // knights on this square are considered equal ...
+        assertEquals(board.getSquare("c3"), board2.getSquare("c3"));
 
         knight.setSquare(board.getSquare("a2"));
         knight.setSquare(board.getSquare("c3"));

@@ -126,13 +126,12 @@ public class ChessBoardImpl implements ChessBoard {
             return false;
         }
 
-        if (!ChessBoardImpl.class.isAssignableFrom(obj.getClass())) {
+        if (!(obj instanceof ChessBoard)) {
             return false;
         }
 
-        ChessBoardImpl other = (ChessBoardImpl) obj;
+        ChessBoard other = (ChessBoard) obj;
 
-        // TODO: This isn't good enough, because if neither board could en-passant,
         // it wouldn't matter that the en-passant square was different.
         if (null != this.getEnPassantSquare()) {
             if (!this.getEnPassantSquare().equals(other.getEnPassantSquare())) {

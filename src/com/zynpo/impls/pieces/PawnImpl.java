@@ -107,9 +107,21 @@ public class PawnImpl extends ChessPieceImpl implements Pawn {
     public ChessSquare setSquare(ChessSquare square) {
         ChessSquare possibleEnPassantSquare = null;
 
-        if ((this.getSquare() == this.getOrigSquare())
-            && (this.jumpTwoSquare() == square)) {
-            possibleEnPassantSquare = this.squareJustInFront();
+        if ((this.getSquare() == this.getOrigSquare()) && (this.jumpTwoSquare() == square)) {
+
+            for (int colOffset : new int[]{ -1, 1 }) {
+                ChessSquare besideSquare = square.getRelativeSquare(0, colOffset);
+                ChessPiece opposingPawn = null;
+
+                if (null != besideSquare) {
+                    opposingPawn = besideSquare.getPiece();
+
+                    if ((null != opposingPawn) && (opposingPawn instanceof Pawn) && (opposingPawn.opposesSideOf(this))) {
+                        possibleEnPassantSquare = this.squareJustInFront();
+                        break;
+                    }
+                }
+            }
         }
 
         ChessSquare priorSquare = super.setSquare(square);
@@ -173,7 +185,7 @@ public class PawnImpl extends ChessPieceImpl implements Pawn {
                     return true;
                 }
 
-                if (this.neverMoved() && (this.jumpTwoSquare() == square)) {
+                if ((0 == this.getMovedCount()) && (this.jumpTwoSquare() == square)) {
                     return true;
                 }
 
@@ -214,7 +226,7 @@ public class PawnImpl extends ChessPieceImpl implements Pawn {
 
         potential = this.jumpTwoSquare();
 
-        if ((null != potential) && (this.getSquare().getRow() == this.gameStartRow()) && (this.neverMoved())) {
+        if ((null != potential) && (this.getSquare().getRow() == this.gameStartRow()) && (0 == this.getMovedCount())) {
             if (PotentialMoveReason.ForMoveAfterNext == reason) {
                 potentials.add(potential); // Simply assume we might be able to move there
             } else if (this.mightMoveTo(potential)) {

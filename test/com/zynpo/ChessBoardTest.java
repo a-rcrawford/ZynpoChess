@@ -3,6 +3,7 @@ package com.zynpo;
 import com.zynpo.impls.ChessFactory;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
+import com.zynpo.interfaces.pieces.Knight;
 import com.zynpo.interfaces.pieces.Pawn;
 import org.junit.Assert;
 import org.junit.Test;
@@ -71,7 +72,7 @@ public class ChessBoardTest extends Assert {
 
 
     @Test
-    public void equalityTest() {
+    public void equalityTestSimplePawns() {
         ChessBoard board = ChessFactory.createBoard();
         ChessBoard board2 = ChessFactory.createBoard();
 
@@ -107,9 +108,54 @@ public class ChessBoardTest extends Assert {
         blackPawn = (Pawn) board2.getSquare("a7").getPiece();
         blackPawn.setSquare(blackPawn.jumpTwoSquare());
 
-        System.out.println(board);
-        System.out.println(board2);
+        assertEquals(board, board2);
+    }
 
+    @Test
+    public void equalityTestEnPassant() {
+        ChessBoard board = ChessFactory.createBoard();
+        ChessBoard board2 = ChessFactory.createBoard();
+
+        //-----------------------------------------------
+        // Position the first board for en-passant ...
+        //-----------------------------------------------
+
+        Pawn whitePawn = (Pawn) board.getSquare("a2").getPiece();
+        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+
+        Knight blackNight = (Knight) board.getSquare("g8").getPiece();
+        blackNight.setSquare(board.getSquare("h6"));
+
+        whitePawn.setSquare(whitePawn.squareJustInFront());
+
+        Pawn blackPawn = (Pawn) board.getSquare("b7").getPiece();
+        blackPawn.setSquare(blackPawn.jumpTwoSquare());
+
+        //-----------------------------------------------
+        // Position the second board just like it,
+        // but without en-passant ...
+        //-----------------------------------------------
+
+        Pawn whitePawn2 = (Pawn) board2.getSquare("a2").getPiece();
+        whitePawn2.setSquare(whitePawn2.squareJustInFront());
+
+        Knight blackNight2 = (Knight) board2.getSquare("g8").getPiece();
+        blackNight2.setSquare(board2.getSquare("h6"));
+
+        whitePawn2.setSquare(whitePawn2.squareJustInFront());
+
+        Pawn blackPawn2 = (Pawn) board2.getSquare("b7").getPiece();
+        blackPawn2.setSquare(blackPawn2.squareJustInFront());
+        whitePawn2.setSquare(whitePawn2.squareJustInFront());
+        blackPawn2.setSquare(blackPawn2.squareJustInFront());
+
+        // Should not be equal because the first board can en-passant, and the second can't ...
+        assertNotEquals(board, board2);
+
+        blackNight.setSquare(board.getSquare("g8"));
+        blackNight2.setSquare(board2.getSquare("g8"));
+
+        // Should now be equal ...
         assertEquals(board, board2);
     }
 

@@ -52,7 +52,7 @@ abstract class ChessPieceImpl implements ChessPiece {
             return false;
         }
 
-        if (!ChessPieceImpl.class.isAssignableFrom(obj.getClass())) {
+        if (!(obj instanceof ChessPieceImpl)) {
             return false;
         }
 
@@ -63,10 +63,6 @@ abstract class ChessPieceImpl implements ChessPiece {
         }
 
         if (!this.name().equals(other.name())) {
-            return false;
-        }
-
-        if (this.getMovedCount() != other.getMovedCount()) {
             return false;
         }
 
@@ -142,12 +138,6 @@ abstract class ChessPieceImpl implements ChessPiece {
 
     @Override
     public int getMovedCount() { return _movedCount; }
-
-    @Override
-    public boolean hasEverMoved() { return 0 < _movedCount; }
-
-    @Override
-    public boolean neverMoved() { return 0 == _movedCount; }
 
     @Override
     public PieceIndex getIndex() { return _index; }

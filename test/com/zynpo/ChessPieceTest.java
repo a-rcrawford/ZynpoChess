@@ -54,11 +54,9 @@ public class ChessPieceTest extends Assert {
             }
         }
 
-        // Pieces aren't counted as equal if they haven't moved the same number of times ...
+        // Pieces are still counted as equal if they haven't moved the same number of times ...
         knight2.setSquare(board2.getSquare("c3"));
-        assertNotEquals(knight, knight2);
-
-        // Pieces are considered equal if they are the same, and have moved the same number of times ...
+        assertEquals(knight, knight2);
         knight.setSquare(board.getSquare("a3"));
         assertEquals(knight, knight2);
     }
@@ -86,7 +84,8 @@ public class ChessPieceTest extends Assert {
         assertEquals(0, whitePawn.getMovedCount());
         whitePawn.setSquare(whitePawn.jumpTwoSquare());
         assertEquals(board.getSquare("d4"), whitePawn.getSquare());
-        assertEquals(board.getSquare("d3"), board.getEnPassantSquare());
+        // Not considered the en-passant square if no pawn can ever move to it ...
+        assertNull(board.getEnPassantSquare());
         assertEquals(1, whitePawn.getMovedCount());
 
         Pawn blackPawn = (Pawn) board.getSquare("d7").getPiece();
@@ -104,6 +103,7 @@ public class ChessPieceTest extends Assert {
         blackPawn = (Pawn) board.getSquare("c7").getPiece();
         blackPawn.setSquare(blackPawn.jumpTwoSquare());
         assertEquals(board.getSquare("c5"), blackPawn.getSquare());
+        // The white pawn on d5 can take the black pawn on c5 via en-passant ...
         assertEquals(board.getSquare("c6"), board.getEnPassantSquare());
         assertEquals(1, blackPawn.getMovedCount());
 
@@ -122,13 +122,13 @@ public class ChessPieceTest extends Assert {
         assertNull(board.getEnPassantSquare());
         whitePawn.setSquare(whitePawn.jumpTwoSquare());
         assertEquals(board.getSquare("h4"), whitePawn.getSquare());
-        assertEquals(board.getSquare("h3"), board.getEnPassantSquare());
+        // No pawn is able to take the pawn on h4 via en-passant ...
+        assertNull(board.getEnPassantSquare());
         assertEquals(1, whitePawn.getMovedCount());
 
         Pawn blackPawn = (Pawn) board.getSquare("d7").getPiece();
         blackPawn.setSquare(blackPawn.jumpTwoSquare());
         assertEquals(board.getSquare("d5"), blackPawn.getSquare());
-        assertEquals(board.getSquare("d6"), board.getEnPassantSquare());
         assertEquals(1, blackPawn.getMovedCount());
 
         Castle whiteCastle = (Castle) board.getSquare("h1").getPiece();

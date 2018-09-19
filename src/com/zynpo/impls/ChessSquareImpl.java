@@ -106,11 +106,11 @@ class ChessSquareImpl implements ChessSquare {
             return false;
         }
 
-        if (!ChessSquareImpl.class.isAssignableFrom(obj.getClass())) {
+        if (!(obj instanceof ChessSquare)) {
             return false;
         }
 
-        ChessSquareImpl other = (ChessSquareImpl) obj;
+        ChessSquare other = (ChessSquare) obj;
 
         if (this.getRow() != other.getRow()) {
             return false;

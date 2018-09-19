@@ -30,9 +30,6 @@ public interface ChessPiece {
 
     int getMovedCount();
 
-    boolean hasEverMoved();
-    boolean neverMoved();
-
     PieceIndex getIndex();
     int materialValue();
 

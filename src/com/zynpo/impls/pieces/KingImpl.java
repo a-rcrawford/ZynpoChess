@@ -29,23 +29,20 @@ public class KingImpl extends ChessPieceImpl implements King {
     @Override
     public int materialValue() { return Integer.MAX_VALUE; }
 
-    @Override
-    public ChessSquare castleLeftSquare() { return this.getSquare().getRelativeSquare(0, -2); }
+    private ChessSquare castleLeftSquare() { return this.getSquare().getRelativeSquare(0, -2); }
 
-    @Override
-    public ChessSquare castleRightSquare() { return this.getSquare().getRelativeSquare(0, 2); }
+    private ChessSquare castleRightSquare() { return this.getSquare().getRelativeSquare(0, 2); }
 
-    @Override
-    public Castle leftCastle() {
+    private Castle leftCastle() {
         Castle leftCastle = null;
 
-        if (this.neverMoved()) {
+        if (0 == this.getMovedCount()) {
             ChessPiece leftPiece = this.getSquare().getRelativeSquare(0, -4).getPiece();
 
             if ((null != leftPiece) && (leftPiece instanceof Castle)) {
                 leftCastle = (Castle) leftPiece;
 
-                if (leftCastle.opposesSideOf(this) || leftCastle.hasEverMoved()) {
+                if (leftCastle.opposesSideOf(this) || (0 < leftCastle.getMovedCount())) {
                     leftCastle = null;
                 }
             }
@@ -54,17 +51,16 @@ public class KingImpl extends ChessPieceImpl implements King {
         return leftCastle;
     }
 
-    @Override
-    public Castle rightCastle() {
+    private Castle rightCastle() {
         Castle rightCastle = null;
 
-        if (this.neverMoved()) {
+        if (0 == this.getMovedCount()) {
             ChessPiece rightPiece = this.getSquare().getRelativeSquare(0, 3).getPiece();
 
             if ((null != rightPiece) && (rightPiece instanceof Castle)) {
                 rightCastle = (Castle) rightPiece;
 
-                if (rightCastle.opposesSideOf(this) || rightCastle.hasEverMoved()) {
+                if (rightCastle.opposesSideOf(this) || (0 < rightCastle.getMovedCount())) {
                     rightCastle = null;
                 }
             }
@@ -93,33 +89,40 @@ public class KingImpl extends ChessPieceImpl implements King {
 
     @Override
     public boolean mightMoveTo(ChessSquare square) {
-        if (super.mightMoveTo(square))
+        if (super.mightMoveTo(square)) {
             return true;
+        }
 
-        if (this.neverMoved() &&
+        if ((0 == this.getMovedCount()) &&
             (2 == square.colDistanceFrom(this.getSquare())) &&
             ChessSquare.onSameRow(this.getSquare(), square)) {
 
             // It looks like the caller is asking whether a castle is valid ...
             Castle castle = null;
+            ChessSquare castleDestSquare = null;
 
-            if (this.castleLeftSquare() == square) {
-                castle = this.leftCastle();
-            } else if (this.castleRightSquare() == square) {
-                castle = this.rightCastle();
-            }
+            {
+                ChessPiece piece = null;
 
-            if (null != castle) {
-                if (castle.mightMoveTo(castle.castleWithKingDestinationSquare())) {
-                    // TODO: If this King is not in Check
-                    // TODO: castleWithKingDestinationSquare is not covered by an opposing piece
-                    // TODO: The King isn't castling into Check
-                    // TODO: Then the king may castle ...
-                    // Just assume we can for now ...
-                    return true;
+                if (this.getSquare().colsAwayFromCount(square) == -2) {
+                    piece = this.getSquare().getRelativeSquare(0, -4).getPiece();
+                    castleDestSquare = this.getSquare().getRelativeSquare(0, -1);
+                } else if (this.castleRightSquare() == square) {
+                    piece = this.getSquare().getRelativeSquare(0, 3).getPiece();
+                    castleDestSquare = this.getSquare().getRelativeSquare(0, 1);
+                }
+
+                if ((null != piece) && (piece instanceof Castle)) {
+                    castle = (Castle) piece;
                 }
             }
 
+
+            if ((null != castle) && (0 == castle.getMovedCount()) && castle.mightMoveTo(castleDestSquare)) {
+                // Later make sure that the King must not
+                // 1) be in check, 2) move through check, 3) move into check.
+                return true;
+            }
         }
 
         return false;
@@ -128,6 +131,15 @@ public class KingImpl extends ChessPieceImpl implements King {
     @Override
     public Set<ChessSquare> potentialMoveSquares(PotentialMoveReason reason) {
         Set<ChessSquare> potentials = ChessFactory.createChessSquareSet();
+
+        if (this.getMovedCount() == 0) {
+            for (int colOffset : new int[] { 2, -2 }) {
+                ChessSquare castleToSquare = this.getSquare().getRelativeSquare(0, colOffset);
+                if (this.mightMoveTo(castleToSquare)) {
+                    potentials.add(castleToSquare);
+                }
+            }
+        }
 
         for(int rowDirection = -1; rowDirection <= 1; ++rowDirection ) {
             for (int colDirection = -1; colDirection <= 1; ++colDirection ) {

@@ -38,19 +38,6 @@ public class CastleImpl extends PromotablePieceImpl implements Castle {
     }
 
     @Override
-    public ChessSquare castleWithKingDestinationSquare() {
-        int leftmostCol = 0;
-        int rightmostCol = this.getBoard().getColCount() - 1;
-
-        if (this.getOrigSquare().getCol() == leftmostCol)
-            return this.getOrigSquare().getRelativeSquare(0, 3);
-        else if (this.getOrigSquare().getCol() == rightmostCol)
-            return this.getOrigSquare().getRelativeSquare(0, -2);
-        else
-            return null;
-    }
-
-    @Override
     public Set<ChessSquare> potentialMoveSquares(PotentialMoveReason reason) {
         Set<ChessSquare> potentials = ChessFactory.createChessSquareSet();
 
