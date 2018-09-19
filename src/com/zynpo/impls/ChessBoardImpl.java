@@ -132,11 +132,12 @@ public class ChessBoardImpl implements ChessBoard {
 
         ChessBoard other = (ChessBoard) obj;
 
-        // it wouldn't matter that the en-passant square was different.
         if (null != this.getEnPassantSquare()) {
             if (!this.getEnPassantSquare().equals(other.getEnPassantSquare())) {
                 return false;
             }
+        } else if (null != other.getEnPassantSquare()) {
+            return false;
         }
 
         for (int row = 0; row < this.getRowCount(); ++row) {
