@@ -34,8 +34,8 @@ public class KnightImpl extends PromotablePieceImpl implements Knight {
     public int materialValue() { return 3; }
 
     @Override
-    public boolean covers(ChessSquare square) {
-        return this.coversLikeKnight(square);
+    protected boolean movesLikeKnight() {
+        return true;
     }
 
     @Override

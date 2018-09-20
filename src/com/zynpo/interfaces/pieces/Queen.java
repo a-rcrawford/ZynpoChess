@@ -1,4 +1,6 @@
 package com.zynpo.interfaces.pieces;
 
 
-public interface Queen extends PromotablePiece { }
+public interface Queen extends PromotablePiece {
+
+}

@@ -1,7 +1,8 @@
 package com.zynpo.impls;
 
 import com.zynpo.enums.SideColor;
-import com.zynpo.interfaces.*;
+import com.zynpo.interfaces.ChessBoard;
+import com.zynpo.interfaces.ChessSquare;
 import com.zynpo.interfaces.pieces.ChessPiece;
 
 
@@ -39,12 +40,6 @@ class ChessSquareImpl implements ChessSquare {
 
     @Override
     public ChessBoard getBoard(){ return _board; }
-
-    @Override
-    public boolean isOccupied() { return (null != _piece); }
-
-    @Override
-    public boolean isUnoccupied() { return (null == _piece); }
 
     @Override
     public ChessPiece getPiece() { return _piece; }

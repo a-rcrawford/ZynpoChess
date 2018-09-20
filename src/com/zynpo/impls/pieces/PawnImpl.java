@@ -165,8 +165,16 @@ public class PawnImpl extends ChessPieceImpl implements Pawn {
             return false;
         }
 
-        if (!ChessSquare.canCompare(this.getSquare(), square)) {
+        if (null == this.getSquare()) {
             return false;
+        }
+
+        if (null == square) {
+            return false;
+        }
+
+        if (this.getBoard() != square.getBoard()) {
+            throw new IllegalArgumentException("Shouldn't be asking whether a piece from one board covers a square on another.");
         }
 
         ChessPiece otherPiece = square.getPiece();

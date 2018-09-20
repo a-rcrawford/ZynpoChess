@@ -55,8 +55,13 @@ public class KingImpl extends ChessPieceImpl implements King {
             return false;
         }
 
-        if (!ChessSquare.canCompare(this.getOrigSquare(), square))
+        if (null == square) {
             return false;
+        }
+
+        if (this.getBoard() != square.getBoard()) {
+            throw new IllegalArgumentException("Shouldn't be asking whether a king from one board covers a square on another.");
+        }
 
         if (this.getSquare().colDistanceFrom(square) <= 1) {
             if (this.getSquare().rowDistanceFrom(square) <= 1) {
@@ -75,7 +80,7 @@ public class KingImpl extends ChessPieceImpl implements King {
 
         if ((0 == this.getMovedCount()) &&
             (2 == square.colDistanceFrom(this.getSquare())) &&
-            ChessSquare.onSameRow(this.getSquare(), square)) {
+            (this.getSquare().getRow() == square.getRow())) {
 
             // It looks like the caller is asking whether a castle is valid ...
             Castle castle = null;

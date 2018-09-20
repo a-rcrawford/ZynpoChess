@@ -1,4 +1,6 @@
 package com.zynpo.interfaces.pieces;
 
 
-public interface Bishop extends PromotablePiece { }
+public interface Bishop extends PromotablePiece {
+
+}

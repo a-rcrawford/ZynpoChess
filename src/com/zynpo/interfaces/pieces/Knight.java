@@ -1,4 +1,6 @@
 package com.zynpo.interfaces.pieces;
 
 
-public interface Knight extends PromotablePiece { }
+public interface Knight extends PromotablePiece {
+
+}

@@ -3,9 +3,7 @@ package com.zynpo.impls;
 import java.lang.reflect.Array;
 import java.util.*;
 
-import com.zynpo.enums.SideColor;
 import com.zynpo.interfaces.ChessBoard;
-import com.zynpo.interfaces.ChessSquare;
 import com.zynpo.interfaces.pieces.ChessPiece;
 
 

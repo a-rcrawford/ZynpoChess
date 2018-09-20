@@ -106,14 +106,14 @@ public class ChessBoardImpl implements ChessBoard {
     public void setEnPassantSquare(ChessSquare enPassantSquare) {
         _enPassantSquare = enPassantSquare;
 
-        if ((null != _enPassantSquare) && _enPassantSquare.isOccupied()) {
+        if ((null != _enPassantSquare) && (null !=_enPassantSquare.getPiece())) {
             throw new InternalError("Occupied square " + _enPassantSquare + "can't be the en passant square");
         }
     }
 
     @Override
     public ChessSquare getEnPassantSquare() {
-        if ((null != _enPassantSquare) && _enPassantSquare.isOccupied()) {
+        if ((null != _enPassantSquare) && (null != _enPassantSquare.getPiece())) {
             throw new InternalError("Occupied square " + _enPassantSquare + "can't be the en passant square");
         }
 
