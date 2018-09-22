@@ -26,14 +26,4 @@ public class QueenImpl extends PromotablePieceImpl implements Queen {
     @Override
     public int materialValue() { return 9; }
 
-    @Override
-    protected boolean movesLikeBishop() {
-        return true;
-    }
-
-    @Override
-    protected boolean movesLikeCastle() {
-        return true;
-    }
-
 }

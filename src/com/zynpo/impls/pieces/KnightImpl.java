@@ -34,11 +34,6 @@ public class KnightImpl extends PromotablePieceImpl implements Knight {
     public int materialValue() { return 3; }
 
     @Override
-    protected boolean movesLikeKnight() {
-        return true;
-    }
-
-    @Override
     public Set<ChessSquare> potentialMoveSquares(PotentialMoveReason reason) {
         Set<ChessSquare> potentials = ChessFactory.createChessSquareSet();
 

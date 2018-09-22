@@ -26,9 +26,4 @@ public class CastleImpl extends PromotablePieceImpl implements Castle {
     @Override
     public int materialValue() { return 5; }
 
-    @Override
-    protected boolean movesLikeCastle() {
-        return true;
-    }
-
 }

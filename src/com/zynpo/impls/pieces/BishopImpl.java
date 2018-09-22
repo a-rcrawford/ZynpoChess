@@ -28,9 +28,4 @@ public class BishopImpl extends PromotablePieceImpl implements Bishop {
     @Override
     public int materialValue() { return 3; }
 
-    @Override
-    protected boolean movesLikeBishop() {
-        return true;
-    }
-
 }

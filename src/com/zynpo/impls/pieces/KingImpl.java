@@ -50,29 +50,6 @@ public class KingImpl extends ChessPieceImpl implements King {
     }
 
     @Override
-    public boolean covers(ChessSquare square) {
-        if (this.getSquare() == square) {
-            return false;
-        }
-
-        if (null == square) {
-            return false;
-        }
-
-        if (this.getBoard() != square.getBoard()) {
-            throw new IllegalArgumentException("Shouldn't be asking whether a king from one board covers a square on another.");
-        }
-
-        if (this.getSquare().colDistanceFrom(square) <= 1) {
-            if (this.getSquare().rowDistanceFrom(square) <= 1) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    @Override
     public boolean mightMoveTo(ChessSquare square) {
         if (super.mightMoveTo(square)) {
             return true;

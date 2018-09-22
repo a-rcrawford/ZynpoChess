@@ -6,9 +6,8 @@ import com.zynpo.enums.SideColor;
 import com.zynpo.impls.ChessBoardImpl;
 import com.zynpo.impls.ChessFactory;
 import com.zynpo.interfaces.ChessBoard;
-import com.zynpo.interfaces.pieces.ChessPiece;
+import com.zynpo.interfaces.pieces.*;
 import com.zynpo.interfaces.ChessSquare;
-import com.zynpo.interfaces.pieces.King;
 
 import java.util.Set;
 
@@ -41,18 +40,6 @@ abstract class ChessPieceImpl implements ChessPiece {
     }
 
     abstract protected String name();
-
-    protected boolean movesLikeCastle() {
-        return false;
-    }
-
-    protected boolean movesLikeBishop() {
-        return false;
-    }
-
-    protected boolean movesLikeKnight() {
-        return false;
-    }
 
     @Override
     public String toString() {
@@ -159,14 +146,7 @@ abstract class ChessPieceImpl implements ChessPiece {
     @Override
     public PieceIndex getIndex() { return _index; }
 
-    @Override
-    public boolean covers(ChessSquare square) {
-        if (!(this.movesLikeBishop() || this.movesLikeCastle() || this.movesLikeKnight())) {
-            throw new InternalError(
-                    "Shouldn't be calling ChessPieceImpl.covers() " +
-                    "for a piece that doesn't move like a bishop, castle, or knight.");
-        }
-
+    private boolean isDifferentSquareOnSameBoard(ChessSquare square) {
         if (null == this.getSquare()) {
             return false;
         }
@@ -176,20 +156,39 @@ abstract class ChessPieceImpl implements ChessPiece {
         }
 
         if (this.getBoard() != square.getBoard()) {
-            throw new IllegalArgumentException("Shouldn't be asking whether a piece from one board covers a square on another.");
+            throw new IllegalArgumentException("Shouldn't be comparing a "
+                    + this.name() + " from one board to a square on another.");
         }
 
         if (this.getSquare() == square) {
+            // This is not a different square ...
             return false;
         }
 
-        if (this.movesLikeBishop()) {
+        return true;
+    }
+
+    @Override
+    public boolean covers(ChessSquare square) {
+        if (!isDifferentSquareOnSameBoard(square)) {
+            return false;
+        }
+
+        if (this instanceof Pawn) {
+            if (this.getSquare().getRow() + ((Pawn) this).advanceUnit() == square.getRow()) {
+                if (this.getSquare().colDistanceFrom(square) == 1) {
+                    return true;
+                }
+            }
+        }
+
+        if ((this instanceof Bishop) || (this instanceof Queen)) {
             if (this.getSquare().rowDistanceFrom(square) == this.getSquare().colDistanceFrom(square)) {
                 return this.coversStraightWay(square);
             }
         }
 
-        if (this.movesLikeCastle()) {
+        if ((this instanceof Castle) || (this instanceof Queen)) {
             if (this.getSquare().getRow() == square.getRow()) {
                 return this.coversStraightWay(square);
             }
@@ -199,7 +198,7 @@ abstract class ChessPieceImpl implements ChessPiece {
             }
         }
 
-        if (this.movesLikeKnight()) {
+        if (this instanceof Knight) {
             if(3 == (this.getSquare().rowDistanceFrom(square) + this.getSquare().colDistanceFrom(square))) {
                 if ((this.getSquare().getRow() != square.getRow())
                     && (this.getSquare().getCol() != square.getCol())) {
@@ -208,15 +207,58 @@ abstract class ChessPieceImpl implements ChessPiece {
             }
         }
 
+        if (this instanceof King) {
+            if (this.getSquare().colDistanceFrom(square) <= 1) {
+                if (this.getSquare().rowDistanceFrom(square) <= 1) {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
-    @Override // This works fine for all Pieces other than Kings and Pawns ...
+    @Override
     public boolean mightMoveTo(ChessSquare square) {
+        if (!this.isDifferentSquareOnSameBoard(square)) {
+            return false;
+        }
+
+        ChessPiece piece = square.getPiece();
+
         if (this.covers(square)) {
-            ChessPiece piece = square.getPiece();
-            if ((null == piece) || this.opposesSideOf(piece)) {
+            if (null == piece) {
+                if (this instanceof Pawn) {
+                    if (this.getBoard().getEnPassantSquare() == square) {
+                        // Pawns can only move onto empty covered squares when en-passant is possible ...
+                        return true;
+                    }
+                } else {
+                    // The rest of the pieces can generally move onto their covered squares that aren't occupied ...
+                    return true;
+                }
+            } else if (this.opposesSideOf(piece)) {
+                // All pieces can take an opposing piece on a square they cover ...
                 return true;
+            }
+        }
+
+        if (this instanceof Pawn) {
+            if (null == piece) {
+                Pawn pawn = (Pawn) this;
+                // Pawns should always have a SquareJustInFront because they can't sit
+                // on the PromotionRow without being promoted ...
+
+                if (null == pawn.squareJustInFront().getPiece()) {
+
+                    if (pawn.squareJustInFront() == square) {
+                        return true;
+                    }
+
+                    if ((0 == this.getMovedCount()) && (pawn.jumpTwoSquare() == square)) {
+                        return true;
+                    }
+                }
             }
         }
 
@@ -265,10 +307,13 @@ abstract class ChessPieceImpl implements ChessPiece {
 
     @Override
     public Set<ChessSquare> potentialMoveSquares(PotentialMoveReason reason) {
-        if (!(this.movesLikeBishop() || this.movesLikeCastle())) {
+        final boolean movesLikeBishop = (this instanceof Bishop) || (this instanceof Queen);
+        final boolean movesLikeCastle = (this instanceof Castle) || (this instanceof Queen);
+
+        if (!(movesLikeBishop || movesLikeCastle)) {
             throw new InternalError(
                     "Shouldn't be calling ChessPieceImpl.potentialMoveSquares() " +
-                    "for a piece that doesn't move like a bishop or a castle.");
+                    "for a " + this.name() + " that doesn't move like a bishop or a castle.");
         }
 
         Set<ChessSquare> potentials = ChessFactory.createChessSquareSet();
@@ -281,12 +326,12 @@ abstract class ChessPieceImpl implements ChessPiece {
                     continue;
                 }
 
-                if ((!this.movesLikeBishop()) && (Math.abs(rowDirection) == Math.abs(colDirection))) {
+                if ((!movesLikeBishop) && (Math.abs(rowDirection) == Math.abs(colDirection))) {
                     // Don't check for potential diagonal moves if this piece doesn't move like a bishop ...
                     continue;
                 }
 
-                if ((!this.movesLikeCastle()) && ((0 == rowDirection) || (0 == colDirection))) {
+                if ((!movesLikeCastle) && ((0 == rowDirection) || (0 == colDirection))) {
                     // Don't check for potential horizontal or vertical moves if this piece doesn't move like a castle ...
                     continue;
                 }
