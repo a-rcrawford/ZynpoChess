@@ -9,13 +9,21 @@ import com.zynpo.interfaces.pieces.Pawn;
 
 public class BishopImpl extends PromotablePieceImpl implements Bishop {
 
-    BishopImpl(PieceIndex index, ChessSquare square) { super(index, square); }
+    BishopImpl(PieceIndex index, ChessSquare square) {
+        super(index, square);
+    }
 
     BishopImpl(PieceIndex index, ChessSquare square, SideColor sideColor) {
         super(index, square, sideColor);
     }
 
-    BishopImpl(Pawn pawn) { super(pawn); }
+    BishopImpl(Bishop otherBishop, ChessSquare otherSquare) {
+        super(otherBishop, otherSquare);
+    }
+
+    BishopImpl(Pawn pawn) {
+        super(pawn);
+    }
 
     @Override
     protected String name() {
@@ -27,5 +35,10 @@ public class BishopImpl extends PromotablePieceImpl implements Bishop {
 
     @Override
     public int materialValue() { return 3; }
+
+    @Override
+    public Bishop clone(ChessSquare otherSquare) {
+        return new BishopImpl(this, otherSquare);
+    }
 
 }

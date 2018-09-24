@@ -130,6 +130,19 @@ class ChessSquareImpl implements ChessSquare {
         return false;
     }
 
+
+    @Override
+    public ChessSquare clone(ChessBoard otherBoard) {
+        ChessSquare square = new ChessSquareImpl(otherBoard, this.getRow(), this.getCol());
+
+        if (this.getPiece() != null) {
+            square.setPiece(this.getPiece().clone(square));
+        }
+
+        return square;
+    }
+
+
     @Override
     public String toString() {
         return String.format("%c%c", 'a' + _col, '1' + _row);

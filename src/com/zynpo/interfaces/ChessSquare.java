@@ -54,4 +54,6 @@ public interface ChessSquare {
      */
     int rowDistanceFrom(ChessSquare other);
     int colDistanceFrom(ChessSquare other);
+
+    ChessSquare clone(ChessBoard otherBoard);
 }

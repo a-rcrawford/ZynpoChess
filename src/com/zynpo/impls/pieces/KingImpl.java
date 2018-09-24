@@ -14,9 +14,17 @@ import java.util.Set;
 
 public class KingImpl extends ChessPieceImpl implements King {
 
-    KingImpl(PieceIndex index, ChessSquare square) { super(index, square); }
+    KingImpl(PieceIndex index, ChessSquare square) {
+        super(index, square);
+    }
 
-    KingImpl(PieceIndex index, ChessSquare square, SideColor sideColor) { super(index, square, sideColor); }
+    KingImpl(PieceIndex index, ChessSquare square, SideColor sideColor) {
+        super(index, square, sideColor);
+    }
+
+    KingImpl(King otherKing, ChessSquare otherSquare) {
+        super(otherKing, otherSquare);
+    }
 
     @Override
     protected String name() {
@@ -29,6 +37,7 @@ public class KingImpl extends ChessPieceImpl implements King {
     @Override
     public int materialValue() { return Integer.MAX_VALUE; }
 
+    /* Don't do this.  Pieces are considered equal if they are the same piece on the same side.
     @Override
     public boolean equals(Object obj) {
         if (!super.equals(obj)) {
@@ -48,6 +57,7 @@ public class KingImpl extends ChessPieceImpl implements King {
 
         return true;
     }
+    */
 
     @Override
     public boolean mightMoveTo(ChessSquare square) {
@@ -136,4 +146,9 @@ public class KingImpl extends ChessPieceImpl implements King {
         return potentials;
     }
 
+
+    @Override
+    public King clone(ChessSquare otherSquare) {
+        return new KingImpl(this, otherSquare);
+    }
 }

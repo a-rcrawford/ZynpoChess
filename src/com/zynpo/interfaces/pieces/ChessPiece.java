@@ -24,7 +24,6 @@ public interface ChessPiece {
     String notation();
 
     SideColor getSideColor();
-    SideColor getOpposingSideColor();
     boolean onSameSideAs(ChessPiece other);
     boolean opposesSideOf(ChessPiece other);
 
@@ -38,4 +37,6 @@ public interface ChessPiece {
     boolean coversAnyOf(Iterable<ChessSquare> squares);
 
     Set<ChessSquare> potentialMoveSquares(PotentialMoveReason reason);
+
+    ChessPiece clone(ChessSquare otherSquare);
 }

@@ -42,6 +42,36 @@ public class ChessBoardImpl implements ChessBoard {
         }
     }
 
+
+    private
+    ChessBoardImpl(ChessBoard otherBoard) {
+        if (this.getRowCount() != otherBoard.getRowCount()) {
+            throw new InternalError("Cloning a board with an unexpected number of rows");
+        }
+
+        if (this.getColCount() != otherBoard.getColCount()) {
+            throw new InternalError("Cloning a board with an unexpected number of columns");
+        }
+
+        _squares = new ChessSquare[getRowCount() * getColCount()];
+
+        for (int row = 0; row < getRowCount(); ++row) {
+            for(int col = 0; col < getColCount(); ++col) {
+                int i = row * getColCount() + col;
+                _squares[i] = otherBoard.getSquare(row, col).clone(this);
+            }
+        }
+
+        this.setEnPassantSquare(otherBoard.getEnPassantSquare());
+    }
+
+
+    @Override
+    public ChessBoard clone() {
+        return new ChessBoardImpl(this);
+    }
+
+
     @Override
     public boolean squareExists(int row, int col) {
         return (0 <= row) &&

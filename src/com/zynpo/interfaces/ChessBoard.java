@@ -22,4 +22,6 @@ public interface ChessBoard extends Iterable<ChessSquare> {
     ChessPiece getPiece(PieceIndex index);
 
     ChessSquare getEnPassantSquare();
+
+    ChessBoard clone();
 }

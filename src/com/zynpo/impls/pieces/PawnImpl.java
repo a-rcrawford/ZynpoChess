@@ -17,9 +17,17 @@ public class PawnImpl extends ChessPieceImpl implements Pawn {
 
     private PromotablePiece _promotedToPiece;
 
-    PawnImpl(PieceIndex index, ChessSquare square) { super(index, square); }
+    PawnImpl(PieceIndex index, ChessSquare square) {
+        super(index, square);
+    }
 
-    PawnImpl(PieceIndex index, ChessSquare square, SideColor sideColor) { super(index, square, sideColor); }
+    PawnImpl(Pawn otherPawn, ChessSquare otherSquare) {
+        super(otherPawn, otherSquare);
+    }
+
+    PawnImpl(PieceIndex index, ChessSquare square, SideColor sideColor) {
+        super(index, square, sideColor);
+    }
 
     @Override
     protected String name() {
@@ -174,6 +182,12 @@ public class PawnImpl extends ChessPieceImpl implements Pawn {
         }
 
         return potentials;
+    }
+
+
+    @Override
+    public Pawn clone(ChessSquare otherSquare) {
+        return new PawnImpl(this, otherSquare);
     }
 
 }

@@ -14,10 +14,16 @@ import java.util.Set;
 
 public class KnightImpl extends PromotablePieceImpl implements Knight {
 
-    KnightImpl(PieceIndex index, ChessSquare square) { super(index, square); }
+    KnightImpl(PieceIndex index, ChessSquare square) {
+        super(index, square);
+    }
 
     KnightImpl(PieceIndex index, ChessSquare square, SideColor sideColor) {
         super(index, square, sideColor);
+    }
+
+    KnightImpl(Knight otherKnight, ChessSquare otherSquare) {
+        super(otherKnight, otherSquare);
     }
 
     KnightImpl(Pawn pawn) { super(pawn); }
@@ -68,5 +74,10 @@ public class KnightImpl extends PromotablePieceImpl implements Knight {
         }
 
         return potentials;
+    }
+
+    @Override
+    public Knight clone(ChessSquare otherSquare) {
+        return new KnightImpl(this, otherSquare);
     }
 }

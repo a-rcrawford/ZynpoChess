@@ -13,6 +13,10 @@ public class CastleImpl extends PromotablePieceImpl implements Castle {
 
     CastleImpl(PieceIndex index, ChessSquare square, SideColor sideColor) { super(index, square, sideColor); }
 
+    CastleImpl(Castle otherCastle, ChessSquare otherSquare) {
+        super(otherCastle, otherSquare);
+    }
+
     CastleImpl(Pawn pawn) { super(pawn); }
 
     @Override
@@ -25,5 +29,10 @@ public class CastleImpl extends PromotablePieceImpl implements Castle {
 
     @Override
     public int materialValue() { return 5; }
+
+    @Override
+    public Castle clone(ChessSquare otherSquare) {
+        return new CastleImpl(this, otherSquare);
+    }
 
 }

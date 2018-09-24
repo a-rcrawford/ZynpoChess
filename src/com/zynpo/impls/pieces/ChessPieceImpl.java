@@ -39,6 +39,15 @@ abstract class ChessPieceImpl implements ChessPiece {
         this.setSquare(square);
     }
 
+
+    ChessPieceImpl(ChessPiece otherPiece, ChessSquare otherSquare) {
+        _index = otherPiece.getIndex();
+        _movedCount = otherPiece.getMovedCount();
+        _sideColor = otherPiece.getSideColor();
+        this.setSquare(otherSquare);
+    }
+
+
     abstract protected String name();
 
     @Override
@@ -130,9 +139,6 @@ abstract class ChessPieceImpl implements ChessPiece {
 
     @Override
     public SideColor getSideColor() { return _sideColor; }
-
-    @Override
-    public SideColor getOpposingSideColor() { return _sideColor.opposingSideColor(); }
 
     @Override
     public boolean onSameSideAs(ChessPiece other) { return this.getSideColor() == other.getSideColor(); }

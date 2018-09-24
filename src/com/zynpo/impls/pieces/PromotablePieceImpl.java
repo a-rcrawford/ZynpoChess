@@ -24,6 +24,11 @@ public abstract class PromotablePieceImpl extends ChessPieceImpl implements Prom
     }
 
 
+    PromotablePieceImpl(PromotablePiece otherPiece, ChessSquare otherSquare) {
+        super(otherPiece, otherSquare);
+    }
+
+
     PromotablePieceImpl(Pawn pawn) {
         super(pawn.getIndex(), pawn.getSquare(), pawn.getSideColor());
         _origPawn = pawn;
@@ -35,6 +40,8 @@ public abstract class PromotablePieceImpl extends ChessPieceImpl implements Prom
 
 
     @Override
-    public Pawn getOrigPawn() { return _origPawn; }
+    public Pawn getOrigPawn() {
+        return _origPawn;
+    }
 
 }

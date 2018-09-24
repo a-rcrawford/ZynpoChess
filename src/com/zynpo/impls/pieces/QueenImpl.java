@@ -13,6 +13,10 @@ public class QueenImpl extends PromotablePieceImpl implements Queen {
 
     QueenImpl(PieceIndex index, ChessSquare square, SideColor sideColor) { super(index, square, sideColor); }
 
+    QueenImpl(Queen otherQueen, ChessSquare otherSquare) {
+        super(otherQueen, otherSquare);
+    }
+
     QueenImpl(Pawn pawn) { super(pawn); }
 
     @Override
@@ -25,5 +29,10 @@ public class QueenImpl extends PromotablePieceImpl implements Queen {
 
     @Override
     public int materialValue() { return 9; }
+
+    @Override
+    public Queen clone(ChessSquare otherSquare) {
+        return new QueenImpl(this, otherSquare);
+    }
 
 }

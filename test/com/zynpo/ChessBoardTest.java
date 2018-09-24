@@ -71,6 +71,24 @@ public class ChessBoardTest extends Assert {
 
 
     @Test
+    public void equalityTestInitialBoard() {
+        ChessBoard board = ChessFactory.createBoard();
+        ChessBoard board2 = ChessFactory.createBoard();
+
+        assertFalse(board == board2);
+        assertEquals(board, board2);
+
+        board2 = board;
+        assertTrue(board == board2);
+        assertEquals(board, board2);
+
+        board2 = board.clone();
+        assertFalse(board == board2);
+        assertEquals(board, board2);
+    }
+
+
+    @Test
     public void equalityTestSimplePawns() {
         ChessBoard board = ChessFactory.createBoard();
         ChessBoard board2 = ChessFactory.createBoard();
@@ -107,6 +125,10 @@ public class ChessBoardTest extends Assert {
         blackPawn = (Pawn) board2.getSquare("a7").getPiece();
         blackPawn.setSquare(blackPawn.jumpTwoSquare());
 
+        assertEquals(board, board2);
+
+        board2 = board.clone();
+        assertFalse(board == board2);
         assertEquals(board, board2);
     }
 
@@ -157,6 +179,10 @@ public class ChessBoardTest extends Assert {
         assertNotEquals(board, board2);
         blackNight2.setSquare(board2.getSquare("g8"));
         // Should now be equal ...
+        assertEquals(board, board2);
+
+        board2 = board.clone();
+        assertFalse(board == board2);
         assertEquals(board, board2);
     }
 
@@ -222,8 +248,10 @@ public class ChessBoardTest extends Assert {
         whiteCastle.setSquare(whiteCastle.getOrigSquare());
         blackNight.setSquare(board.getSquare("h6"));
 
-        // Now the boards are different because the king can only castle on the second board ...
-        assertNotEquals(board, board2);
+        // FALSE STATEMENT: Now the boards are different because the king can only castle on the second board ...
+        //assertNotEquals(board, board2);
+        // TRUE STATEMENT: Boards are considered equal if they have the same pieces in the same position ...
+        assertEquals(board, board2);
 
         // Make the second board the same, because its white king can no longer castle ...
         Castle whiteCastle2 = (Castle) board2.getSquare("h1").getPiece();
@@ -233,6 +261,10 @@ public class ChessBoardTest extends Assert {
         blackNight2.setSquare(board2.getSquare("h6"));
 
         // Now the boards should be the same again ...
+        assertEquals(board, board2);
+
+        board2 = board.clone();
+        assertFalse(board == board2);
         assertEquals(board, board2);
     }
 
