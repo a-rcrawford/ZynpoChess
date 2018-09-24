@@ -148,12 +148,14 @@ public class ChessBoardTest extends Assert {
         whitePawn2.setSquare(whitePawn2.squareJustInFront());
         blackPawn2.setSquare(blackPawn2.squareJustInFront());
 
-        // Should not be equal because the first board can en-passant, and the second can't ...
-        assertNotEquals(board, board2);
+        // FALSE STATEMENT: Should not be equal because the first board can en-passant, and the second can't ...
+        //assertNotEquals(board, board2);
+        // TRUE STATEMENT: Consider two boards equal if they have the same pieces in the same places ...
+        assertEquals(board, board2);
 
         blackNight.setSquare(board.getSquare("g8"));
+        assertNotEquals(board, board2);
         blackNight2.setSquare(board2.getSquare("g8"));
-
         // Should now be equal ...
         assertEquals(board, board2);
     }

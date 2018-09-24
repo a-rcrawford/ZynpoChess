@@ -132,11 +132,22 @@ public class ChessBoardImpl implements ChessBoard {
 
         ChessBoard other = (ChessBoard) obj;
 
+        // Don't do the following ...
+        // Instead consider two boards equal if the same pieces are in the same places ...
+        /*
         if (null != this.getEnPassantSquare()) {
             if (!this.getEnPassantSquare().equals(other.getEnPassantSquare())) {
                 return false;
             }
         } else if (null != other.getEnPassantSquare()) {
+            return false;
+        } */
+
+        if (this.getRowCount() != other.getRowCount()) {
+            return false;
+        }
+
+        if (this.getColCount() != other.getColCount()) {
             return false;
         }
 

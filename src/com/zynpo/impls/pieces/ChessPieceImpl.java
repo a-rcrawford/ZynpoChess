@@ -56,17 +56,17 @@ abstract class ChessPieceImpl implements ChessPiece {
             return false;
         }
 
-        if (!(obj instanceof ChessPieceImpl)) {
+        if (!(obj instanceof ChessPiece)) {
             return false;
         }
 
-        ChessPieceImpl other = (ChessPieceImpl) obj;
+        ChessPiece other = (ChessPiece) obj;
 
         if (this.getSideColor() != other.getSideColor()) {
             return false;
         }
 
-        if (!this.name().equals(other.name())) {
+        if (!this.notation().equals(other.notation())) {
             return false;
         }
 
