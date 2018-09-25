@@ -62,6 +62,15 @@ public class ChessBoardImpl implements ChessBoard {
             }
         }
 
+        _pieces = new ChessPiece[PieceIndex.values().length];
+
+        for (int i = 0; i < _pieces.length; ++i) {
+            ChessPiece pieceToClone = ((ChessBoardImpl) otherBoard)._pieces[i];
+            ChessSquare square = (pieceToClone.getSquare() == null ? null :
+                    getSquare(pieceToClone.getSquare().getIndex()));
+            _pieces[i] = pieceToClone.clone(square);
+        }
+
         this.setEnPassantSquare(otherBoard.getEnPassantSquare());
     }
 

@@ -85,6 +85,7 @@ public class ChessBoardTest extends Assert {
         board2 = board.clone();
         assertFalse(board == board2);
         assertEquals(board, board2);
+        assertEquals(board2, board);
     }
 
 

@@ -11,5 +11,4 @@ public interface MoveRecord {
     ChessPiece pieceMoved(); // Contains new piece in case of promotion
     ChessPiece pieceTaken(); // null if no piece was taken
     Castle castledWith(); // Which Castle participated in castling?
-    boolean endsGame(); // Did this move end the game?
 }

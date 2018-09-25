@@ -135,9 +135,9 @@ class ChessSquareImpl implements ChessSquare {
     public ChessSquare clone(ChessBoard otherBoard) {
         ChessSquare square = new ChessSquareImpl(otherBoard, this.getRow(), this.getCol());
 
-        if (this.getPiece() != null) {
-            square.setPiece(this.getPiece().clone(square));
-        }
+        //if (this.getPiece() != null) {
+        //    square.setPiece(this.getPiece().clone(square));
+        //}
 
         return square;
     }
