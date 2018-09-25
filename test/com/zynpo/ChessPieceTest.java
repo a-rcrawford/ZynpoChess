@@ -12,6 +12,33 @@ import java.util.Set;
 
 public class ChessPieceTest extends Assert {
 
+    @Test
+    public void pieceSetCanContainMultipleSamePieces() {
+        ChessBoard board = ChessFactory.createBoard();
+
+        Set<ChessPiece> pieces = ChessFactory.createChessPieceSet();
+        pieces.add(board.getSquare("a2").getPiece());
+        pieces.add(board.getSquare("b2").getPiece());
+        pieces.add(board.getSquare("c2").getPiece());
+        pieces.add(board.getSquare("a7").getPiece());
+
+        assertEquals(4, pieces.size());
+
+        Pawn pawn = (Pawn) board.getSquare("a2").getPiece();
+        assertTrue(pieces.contains(pawn));
+        pawn = (Pawn) board.getSquare("b2").getPiece();
+        assertTrue(pieces.contains(pawn));
+        pawn = (Pawn) board.getSquare("c2").getPiece();
+        assertTrue(pieces.contains(pawn));
+        pawn = (Pawn) board.getSquare("a7").getPiece();
+        assertTrue(pieces.contains(pawn));
+        pawn = (Pawn) board.getSquare("b7").getPiece();
+        assertFalse(pieces.contains(pawn));
+
+        Castle castle = (Castle) board.getSquare("a1").getPiece();
+        assertFalse(pieces.contains(castle));
+    }
+
     @Test(expected = InternalError.class)
     public void cantMovePieceFromOneBoardToAnother() {
         ChessBoard board = ChessFactory.createBoard();

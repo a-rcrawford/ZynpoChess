@@ -18,6 +18,20 @@ class ChessPieceSet implements Set<ChessPiece> {
         _board = null;
     }
 
+
+    ChessPieceSet(ChessPieceSet chessPieceSet, ChessBoard otherBoard) {
+        _bitMask = chessPieceSet._bitMask;
+
+        if (0 != _bitMask) {
+            _board = otherBoard;
+        }
+    }
+
+
+    ChessPieceSet clone(ChessBoard otherBoard) {
+        return new ChessPieceSet(this, otherBoard);
+    }
+
     @Override
     public synchronized boolean add(ChessPiece piece) {
 
