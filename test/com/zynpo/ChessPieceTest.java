@@ -24,16 +24,33 @@ public class ChessPieceTest extends Assert {
 
         assertEquals(4, pieces.size());
 
+        Object[] piecesAsObjects = pieces.toArray();
+        ChessPiece[] piecesAsArray = pieces.toArray(new ChessPiece[5]);
+
         Pawn pawn = (Pawn) board.getSquare("a2").getPiece();
         assertTrue(pieces.contains(pawn));
+        assertEquals(piecesAsObjects[0], pawn);
+        assertEquals(piecesAsArray[0], pawn);
+
         pawn = (Pawn) board.getSquare("b2").getPiece();
         assertTrue(pieces.contains(pawn));
+        assertEquals(piecesAsObjects[1], pawn);
+        assertEquals(piecesAsArray[1], pawn);
+
         pawn = (Pawn) board.getSquare("c2").getPiece();
         assertTrue(pieces.contains(pawn));
+        assertEquals(piecesAsObjects[2], pawn);
+        assertEquals(piecesAsArray[2], pawn);
+
         pawn = (Pawn) board.getSquare("a7").getPiece();
         assertTrue(pieces.contains(pawn));
+        assertEquals(piecesAsObjects[3], pawn);
+        assertEquals(piecesAsArray[3], pawn);
+
         pawn = (Pawn) board.getSquare("b7").getPiece();
         assertFalse(pieces.contains(pawn));
+        assertEquals(4, piecesAsObjects.length);
+        assertNull(piecesAsArray[4]);
 
         Castle castle = (Castle) board.getSquare("a1").getPiece();
         assertFalse(pieces.contains(castle));

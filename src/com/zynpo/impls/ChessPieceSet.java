@@ -209,8 +209,10 @@ class ChessPieceSet implements Set<ChessPiece> {
     public Object[] toArray() {
         Object[] array = new Object[size()];
 
-        for(int i = 0; i < array.length; ++i) {
-            array[i] = _board.getPiece(i);
+        int i = 0;
+
+        for (ChessPiece e : this) {
+            array[i++] = e;
         }
 
         return array;
@@ -223,12 +225,12 @@ class ChessPieceSet implements Set<ChessPiece> {
             // If array is too small, allocate the new one with the same component type
             array = (T[]) Array.newInstance(array.getClass().getComponentType(), size);
         } else if (array.length > size) {
-            // If array is to large, set the first unassigned element to null
+            // If array is too large, set the first unassigned element to null
             array[size] = null;
         }
 
         int i = 0;
-        for (ChessPiece e: this) {
+        for (ChessPiece e : this) {
             // No need for checked cast - ArrayStoreException will be thrown
             // if types are incompatible, just as required
             array[i] = (T) e;
