@@ -36,7 +36,7 @@ abstract class ChessPieceImpl implements ChessPiece {
         _index = index;
         _movedCount = 0;
         _sideColor = sideColor;
-        this.setSquare(square);
+        this.dropToSquare(square);
     }
 
 
@@ -44,7 +44,7 @@ abstract class ChessPieceImpl implements ChessPiece {
         _index = otherPiece.getIndex();
         _movedCount = otherPiece.getMovedCount();
         _sideColor = otherPiece.getSideColor();
-        this.setSquare(otherSquare);
+        this.dropToSquare(otherSquare);
     }
 
 
@@ -87,14 +87,10 @@ abstract class ChessPieceImpl implements ChessPiece {
         return _square;
     }
 
-    @Override
-    public ChessSquare setSquare(ChessSquare square) {
-        if (square == _square) {
-            return _square;
-        }
 
-        if (null != _board) {
-            ((ChessBoardImpl) _board).setEnPassantSquare(null);
+    protected void setSquare(ChessSquare square) {
+        if (square == _square) {
+            return;
         }
 
         ChessSquare priorSquare = _square;
@@ -103,10 +99,6 @@ abstract class ChessPieceImpl implements ChessPiece {
         if (null != square) {
             if (null == _board) {
                 _board = square.getBoard();
-            }
-
-            if (null == _origSquare) {
-                _origSquare = _square;
             }
 
             if (_square.getPiece() != this) {
@@ -119,16 +111,76 @@ abstract class ChessPieceImpl implements ChessPiece {
         }
 
         if ((null != square) && (null != priorSquare)) {
-            // If we just moved from a prior square to a new one,
-            // that means this piece has been moved in the game ...
-            ++_movedCount;
-
             if (square.getBoard() != priorSquare.getBoard()) {
                 throw new InternalError("Can't move " + this + " from one board to another");
             }
         }
+    }
 
-        return priorSquare;
+    @Override
+    public void dropToSquare(ChessSquare square) {
+        if (null == square) {
+            throw new InternalError("Can't drop " + this + " onto null");
+        }
+
+        if (square.getPiece() != null) {
+            throw new InternalError("Can't drop " + this + " onto "
+                    + square + " that already contains " + square.getPiece());
+        }
+
+        _movedCount = 0;
+        _origSquare = square;
+        this.setSquare(square);
+        ((ChessBoardImpl) _board).setEnPassantSquare(null);
+    }
+
+
+    @Override
+    public ChessPiece moveToSquare(ChessSquare square) {
+        if (null == this.getSquare()) {
+            throw new InternalError("Can't move " + this + " from null to " + square);
+        }
+
+        if (null == square) {
+            throw new InternalError("Can't move " + this + " to null square");
+        }
+
+        if (this.getSquare() == square) {
+            throw new InternalError("Can't move " + this + " to the same square " + square);
+        }
+
+        ChessPieceImpl takenPiece = (ChessPieceImpl) square.getPiece();
+        if (null != takenPiece) {
+            takenPiece.setSquare(null);
+        }
+
+        this.setSquare(square);
+        ++_movedCount;
+        ((ChessBoardImpl) _board).setEnPassantSquare(null);
+
+        return takenPiece;
+    }
+
+
+    @Override
+    public void takeBackToSquare(ChessSquare square, ChessPiece formerlyTakenPiece) {
+        if (null != this.getSquare()) {
+            this.getSquare().setPiece(formerlyTakenPiece);
+            --_movedCount;
+        } else {
+            if (null != formerlyTakenPiece) {
+                throw new InternalError("How can " + this
+                        + " have taken " + formerlyTakenPiece + " when it's not on a square?");
+            }
+        }
+
+        if (square.getPiece() != null) {
+            throw new InternalError("Can't take " + this
+                    + " back to " + square + " when it already contains " + square.getPiece());
+        }
+
+        this.setSquare(square);
+        ((ChessBoardImpl) _board).setEnPassantSquare(null);
     }
 
     @Override

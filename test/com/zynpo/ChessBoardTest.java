@@ -97,34 +97,34 @@ public class ChessBoardTest extends Assert {
         assertEquals(board, board2);
 
         Pawn whitePawn = (Pawn) board.getSquare("a2").getPiece();
-        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+        whitePawn.moveToSquare(whitePawn.jumpTwoSquare());
 
         assertNotEquals(board, board2);
 
         whitePawn = (Pawn) board2.getSquare("a2").getPiece();
-        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+        whitePawn.moveToSquare(whitePawn.jumpTwoSquare());
 
         assertEquals(board, board2);
 
         Pawn blackPawn = (Pawn) board.getSquare("a7").getPiece();
-        blackPawn.setSquare(blackPawn.jumpTwoSquare());
+        blackPawn.moveToSquare(blackPawn.jumpTwoSquare());
 
         assertNotEquals(board, board2);
 
         blackPawn = (Pawn) board2.getSquare("b7").getPiece();
-        blackPawn.setSquare(blackPawn.jumpTwoSquare());
+        blackPawn.moveToSquare(blackPawn.jumpTwoSquare());
 
         whitePawn = (Pawn) board.getSquare("b2").getPiece();
-        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+        whitePawn.moveToSquare(whitePawn.jumpTwoSquare());
 
         whitePawn = (Pawn) board2.getSquare("b2").getPiece();
-        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+        whitePawn.moveToSquare(whitePawn.jumpTwoSquare());
 
         blackPawn = (Pawn) board.getSquare("b7").getPiece();
-        blackPawn.setSquare(blackPawn.jumpTwoSquare());
+        blackPawn.moveToSquare(blackPawn.jumpTwoSquare());
 
         blackPawn = (Pawn) board2.getSquare("a7").getPiece();
-        blackPawn.setSquare(blackPawn.jumpTwoSquare());
+        blackPawn.moveToSquare(blackPawn.jumpTwoSquare());
 
         assertEquals(board, board2);
 
@@ -143,15 +143,15 @@ public class ChessBoardTest extends Assert {
         //-----------------------------------------------
 
         Pawn whitePawn = (Pawn) board.getSquare("a2").getPiece();
-        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+        whitePawn.moveToSquare(whitePawn.jumpTwoSquare());
 
         Knight blackNight = (Knight) board.getSquare("g8").getPiece();
-        blackNight.setSquare(board.getSquare("h6"));
+        blackNight.moveToSquare(board.getSquare("h6"));
 
-        whitePawn.setSquare(whitePawn.squareJustInFront());
+        whitePawn.moveToSquare(whitePawn.squareJustInFront());
 
         Pawn blackPawn = (Pawn) board.getSquare("b7").getPiece();
-        blackPawn.setSquare(blackPawn.jumpTwoSquare());
+        blackPawn.moveToSquare(blackPawn.jumpTwoSquare());
 
         //-----------------------------------------------
         // Position the second board just like it,
@@ -159,26 +159,26 @@ public class ChessBoardTest extends Assert {
         //-----------------------------------------------
 
         Pawn whitePawn2 = (Pawn) board2.getSquare("a2").getPiece();
-        whitePawn2.setSquare(whitePawn2.squareJustInFront());
+        whitePawn2.moveToSquare(whitePawn2.squareJustInFront());
 
         Knight blackNight2 = (Knight) board2.getSquare("g8").getPiece();
-        blackNight2.setSquare(board2.getSquare("h6"));
+        blackNight2.moveToSquare(board2.getSquare("h6"));
 
-        whitePawn2.setSquare(whitePawn2.squareJustInFront());
+        whitePawn2.moveToSquare(whitePawn2.squareJustInFront());
 
         Pawn blackPawn2 = (Pawn) board2.getSquare("b7").getPiece();
-        blackPawn2.setSquare(blackPawn2.squareJustInFront());
-        whitePawn2.setSquare(whitePawn2.squareJustInFront());
-        blackPawn2.setSquare(blackPawn2.squareJustInFront());
+        blackPawn2.moveToSquare(blackPawn2.squareJustInFront());
+        whitePawn2.moveToSquare(whitePawn2.squareJustInFront());
+        blackPawn2.moveToSquare(blackPawn2.squareJustInFront());
 
         // FALSE STATEMENT: Should not be equal because the first board can en-passant, and the second can't ...
         //assertNotEquals(board, board2);
         // TRUE STATEMENT: Consider two boards equal if they have the same pieces in the same places ...
         assertEquals(board, board2);
 
-        blackNight.setSquare(board.getSquare("g8"));
+        blackNight.moveToSquare(board.getSquare("g8"));
         assertNotEquals(board, board2);
-        blackNight2.setSquare(board2.getSquare("g8"));
+        blackNight2.moveToSquare(board2.getSquare("g8"));
         // Should now be equal ...
         assertEquals(board, board2);
 
@@ -198,20 +198,20 @@ public class ChessBoardTest extends Assert {
         //--------------------------------------------------------
 
         Pawn whitePawn = (Pawn) board.getSquare("e2").getPiece();
-        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+        whitePawn.moveToSquare(whitePawn.jumpTwoSquare());
 
         Knight blackNight = (Knight) board.getSquare("g8").getPiece();
-        blackNight.setSquare(board.getSquare("h6"));
+        blackNight.moveToSquare(board.getSquare("h6"));
 
         Bishop whiteBishop = (Bishop) board.getSquare("f1").getPiece();
-        whiteBishop.setSquare(board.getSquare("e2"));
+        whiteBishop.moveToSquare(board.getSquare("e2"));
 
-        blackNight.setSquare(board.getSquare("g8"));
+        blackNight.moveToSquare(board.getSquare("g8"));
 
         Knight whiteKnight = (Knight) board.getSquare("g1").getPiece();
-        whiteKnight.setSquare(board.getSquare("f3"));
+        whiteKnight.moveToSquare(board.getSquare("f3"));
 
-        blackNight.setSquare(board.getSquare("h6"));
+        blackNight.moveToSquare(board.getSquare("h6"));
 
         King whiteKing = (King) board.getSquare("e1").getPiece();
         assertTrue(whiteKing.mightMoveTo(board.getSquare("g1")));
@@ -221,20 +221,20 @@ public class ChessBoardTest extends Assert {
         //--------------------------------------------------------
 
         Pawn whitePawn2 = (Pawn) board2.getSquare("e2").getPiece();
-        whitePawn2.setSquare(whitePawn2.jumpTwoSquare());
+        whitePawn2.moveToSquare(whitePawn2.jumpTwoSquare());
 
         Knight blackNight2 = (Knight) board2.getSquare("g8").getPiece();
-        blackNight2.setSquare(board2.getSquare("h6"));
+        blackNight2.moveToSquare(board2.getSquare("h6"));
 
         Bishop whiteBishop2 = (Bishop) board2.getSquare("f1").getPiece();
-        whiteBishop2.setSquare(board2.getSquare("e2"));
+        whiteBishop2.moveToSquare(board2.getSquare("e2"));
 
-        blackNight2.setSquare(board2.getSquare("g8"));
+        blackNight2.moveToSquare(board2.getSquare("g8"));
 
         Knight whiteKnight2 = (Knight) board2.getSquare("g1").getPiece();
-        whiteKnight2.setSquare(board2.getSquare("f3"));
+        whiteKnight2.moveToSquare(board2.getSquare("f3"));
 
-        blackNight2.setSquare(board2.getSquare("h6"));
+        blackNight2.moveToSquare(board2.getSquare("h6"));
 
         King whiteKing2 = (King) board2.getSquare("e1").getPiece();
         assertTrue(whiteKing2.mightMoveTo(board2.getSquare("g1")));
@@ -244,10 +244,10 @@ public class ChessBoardTest extends Assert {
 
         // Make the first board different, because the white king can no longer castle ...
         Castle whiteCastle = (Castle) board.getSquare("h1").getPiece();
-        whiteCastle.setSquare(board.getSquare("f1"));
-        blackNight.setSquare(board.getSquare("g8"));
-        whiteCastle.setSquare(whiteCastle.getOrigSquare());
-        blackNight.setSquare(board.getSquare("h6"));
+        whiteCastle.moveToSquare(board.getSquare("f1"));
+        blackNight.moveToSquare(board.getSquare("g8"));
+        whiteCastle.moveToSquare(whiteCastle.getOrigSquare());
+        blackNight.moveToSquare(board.getSquare("h6"));
 
         // FALSE STATEMENT: Now the boards are different because the king can only castle on the second board ...
         //assertNotEquals(board, board2);
@@ -256,10 +256,10 @@ public class ChessBoardTest extends Assert {
 
         // Make the second board the same, because its white king can no longer castle ...
         Castle whiteCastle2 = (Castle) board2.getSquare("h1").getPiece();
-        whiteCastle2.setSquare(board2.getSquare("g1"));
-        blackNight2.setSquare(board2.getSquare("g8"));
-        whiteCastle2.setSquare(whiteCastle2.getOrigSquare());
-        blackNight2.setSquare(board2.getSquare("h6"));
+        whiteCastle2.moveToSquare(board2.getSquare("g1"));
+        blackNight2.moveToSquare(board2.getSquare("g8"));
+        whiteCastle2.moveToSquare(whiteCastle2.getOrigSquare());
+        blackNight2.moveToSquare(board2.getSquare("h6"));
 
         // Now the boards should be the same again ...
         assertEquals(board, board2);

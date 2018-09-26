@@ -45,20 +45,8 @@ class ChessSquareImpl implements ChessSquare {
     public ChessPiece getPiece() { return _piece; }
 
     @Override
-    public ChessPiece setPiece(ChessPiece piece) {
-        if (piece == _piece)
-            return _piece;
-
-        ChessPiece priorPiece = _piece;
+    public void setPiece(ChessPiece piece) {
         _piece = piece;
-
-        if ((null != _piece) && (_piece.getSquare() != this))
-            _piece.setSquare(this);
-
-        if ((null != priorPiece) && (priorPiece.getSquare() == this))
-            priorPiece.setSquare(null);
-
-        return priorPiece;
     }
 
     @Override

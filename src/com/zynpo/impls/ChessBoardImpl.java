@@ -145,8 +145,14 @@ public class ChessBoardImpl implements ChessBoard {
     public void setEnPassantSquare(ChessSquare enPassantSquare) {
         _enPassantSquare = enPassantSquare;
 
-        if ((null != _enPassantSquare) && (null !=_enPassantSquare.getPiece())) {
-            throw new InternalError("Occupied square " + _enPassantSquare + "can't be the en passant square");
+        if (null != _enPassantSquare) {
+            if ((_enPassantSquare.getRow() != 2) && (_enPassantSquare.getRow() != 5)) {
+                throw new InternalError("En passant square must be on row 3 or 6; can't be " + _enPassantSquare);
+            }
+
+            if ((null != _enPassantSquare) && (null != _enPassantSquare.getPiece())) {
+                throw new InternalError("Occupied square " + _enPassantSquare + " can't be the en passant square");
+            }
         }
     }
 

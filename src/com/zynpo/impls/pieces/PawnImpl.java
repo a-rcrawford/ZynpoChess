@@ -111,8 +111,12 @@ public class PawnImpl extends ChessPieceImpl implements Pawn {
         }
     }
 
+
+    private boolean _takenByEnPassant = false;
+
+
     @Override
-    public ChessSquare setSquare(ChessSquare square) {
+    public ChessPiece moveToSquare(ChessSquare square) {
         ChessSquare possibleEnPassantSquare = null;
 
         if ((this.getSquare() == this.getOrigSquare()) && (this.jumpTwoSquare() == square)) {
@@ -132,11 +136,38 @@ public class PawnImpl extends ChessPieceImpl implements Pawn {
             }
         }
 
-        ChessSquare priorSquare = super.setSquare(square);
+        ChessPiece takenPiece = super.moveToSquare(square);
+
+        if (this.getBoard().getEnPassantSquare() == square) {
+            if (null != takenPiece) {
+                throw new InternalError("En-passant square shouldn't have been occupied by a " + takenPiece);
+            }
+
+            takenPiece = (Pawn) square.getRelativeSquare( -this.advanceUnit(), 0).getPiece();
+            ((PawnImpl) takenPiece).setSquare(null);
+            ((PawnImpl) takenPiece)._takenByEnPassant = true;
+        }
+
         ((ChessBoardImpl) this.getBoard()).setEnPassantSquare(possibleEnPassantSquare);
 
-        return priorSquare;
+        return takenPiece;
     }
+
+
+    @Override
+    public void takeBackToSquare(ChessSquare square, ChessPiece formerlyTakenPiece) {
+        super.takeBackToSquare(square, formerlyTakenPiece);
+
+        if ((formerlyTakenPiece instanceof Pawn) && (1 == formerlyTakenPiece.getMovedCount())) {
+            // That last move could have been en-passant ...
+            PawnImpl formerlyTakenPawn = (PawnImpl) formerlyTakenPiece;
+            if (formerlyTakenPawn._takenByEnPassant) {
+                formerlyTakenPawn.setSquare(formerlyTakenPawn.squareJustInFront());
+                formerlyTakenPawn._takenByEnPassant = false;
+            }
+        }
+    }
+
 
     @Override
     public PromotablePiece getPromotedToPiece() {
@@ -187,7 +218,9 @@ public class PawnImpl extends ChessPieceImpl implements Pawn {
 
     @Override
     public Pawn clone(ChessSquare otherSquare) {
-        return new PawnImpl(this, otherSquare);
+        PawnImpl clonedPawn = new PawnImpl(this, otherSquare);
+        clonedPawn._takenByEnPassant = _takenByEnPassant;
+        return clonedPawn;
     }
 
 }

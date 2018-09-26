@@ -62,7 +62,7 @@ public class ChessPieceTest extends Assert {
         ChessBoard board2 = ChessFactory.createBoard();
 
         Pawn pawn = (Pawn) board.getSquare("a2").getPiece();
-        pawn.setSquare(board2.getSquare("a4"));
+        pawn.moveToSquare(board2.getSquare("a4"));
     }
 
     @Test
@@ -99,9 +99,9 @@ public class ChessPieceTest extends Assert {
         }
 
         // Pieces are still counted as equal if they haven't moved the same number of times ...
-        knight2.setSquare(board2.getSquare("c3"));
+        knight2.moveToSquare(board2.getSquare("c3"));
         assertEquals(knight, knight2);
-        knight.setSquare(board.getSquare("a3"));
+        knight.moveToSquare(board.getSquare("a3"));
         assertEquals(knight, knight2);
     }
 
@@ -126,7 +126,7 @@ public class ChessPieceTest extends Assert {
 
         Pawn whitePawn = (Pawn) board.getSquare("d2").getPiece();
         assertEquals(0, whitePawn.getMovedCount());
-        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+        whitePawn.moveToSquare(whitePawn.jumpTwoSquare());
         assertEquals(board.getSquare("d4"), whitePawn.getSquare());
         // Not considered the en-passant square if no pawn can ever move to it ...
         assertNull(board.getEnPassantSquare());
@@ -134,18 +134,18 @@ public class ChessPieceTest extends Assert {
 
         Pawn blackPawn = (Pawn) board.getSquare("d7").getPiece();
         assertEquals(0, blackPawn.getMovedCount());
-        blackPawn.setSquare(blackPawn.squareJustInFront());
+        blackPawn.moveToSquare(blackPawn.squareJustInFront());
         assertEquals(board.getSquare("d6"), blackPawn.getSquare());
         assertNull(board.getEnPassantSquare());
         assertEquals(1, blackPawn.getMovedCount());
 
-        whitePawn.setSquare(whitePawn.squareJustInFront());
+        whitePawn.moveToSquare(whitePawn.squareJustInFront());
         assertEquals(board.getSquare("d5"), whitePawn.getSquare());
         assertNull(board.getEnPassantSquare());
         assertEquals(2, whitePawn.getMovedCount());
 
         blackPawn = (Pawn) board.getSquare("c7").getPiece();
-        blackPawn.setSquare(blackPawn.jumpTwoSquare());
+        blackPawn.moveToSquare(blackPawn.jumpTwoSquare());
         assertEquals(board.getSquare("c5"), blackPawn.getSquare());
         // The white pawn on d5 can take the black pawn on c5 via en-passant ...
         assertEquals(board.getSquare("c6"), board.getEnPassantSquare());
@@ -164,33 +164,33 @@ public class ChessPieceTest extends Assert {
         Pawn whitePawn = (Pawn) board.getSquare("h2").getPiece();
         assertEquals(0, whitePawn.getMovedCount());
         assertNull(board.getEnPassantSquare());
-        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+        whitePawn.moveToSquare(whitePawn.jumpTwoSquare());
         assertEquals(board.getSquare("h4"), whitePawn.getSquare());
         // No pawn is able to take the pawn on h4 via en-passant ...
         assertNull(board.getEnPassantSquare());
         assertEquals(1, whitePawn.getMovedCount());
 
         Pawn blackPawn = (Pawn) board.getSquare("d7").getPiece();
-        blackPawn.setSquare(blackPawn.jumpTwoSquare());
+        blackPawn.moveToSquare(blackPawn.jumpTwoSquare());
         assertEquals(board.getSquare("d5"), blackPawn.getSquare());
         assertEquals(1, blackPawn.getMovedCount());
 
         Castle whiteCastle = (Castle) board.getSquare("h1").getPiece();
         assertEquals(0, whiteCastle.getMovedCount());
-        whiteCastle.setSquare(board.getSquare("h3"));
+        whiteCastle.moveToSquare(board.getSquare("h3"));
         assertEquals(1, whiteCastle.getMovedCount());
         assertNull(board.getEnPassantSquare());
 
-        blackPawn.setSquare(blackPawn.squareJustInFront());
+        blackPawn.moveToSquare(blackPawn.squareJustInFront());
         assertEquals(board.getSquare("d4"), blackPawn.getSquare());
         assertEquals(2, blackPawn.getMovedCount());
         assertNull(board.getEnPassantSquare());
 
-        whiteCastle.setSquare(board.getSquare("b3"));
+        whiteCastle.moveToSquare(board.getSquare("b3"));
         assertEquals(2, whiteCastle.getMovedCount());
         assertNull(board.getEnPassantSquare());
 
-        blackPawn.setSquare(blackPawn.squareJustInFront());
+        blackPawn.moveToSquare(blackPawn.squareJustInFront());
         assertEquals(board.getSquare("d3"), blackPawn.getSquare());
         assertCoveredSquares(whiteCastle, "a3", "b2", "c3", "d3", "b4", "b5", "b6", "b7");
         assertMightMoveToSquares(whiteCastle, "a3", "c3", "d3", "b4", "b5", "b6", "b7");
@@ -208,25 +208,25 @@ public class ChessPieceTest extends Assert {
         assertMightMoveToSquares(whiteKnight, "a3", "c3");
         assertMightMoveToNextSquares(whiteKnight, "a3", "c3", "d2");
 
-        whiteKnight.setSquare(board.getSquare("c3"));
+        whiteKnight.moveToSquare(board.getSquare("c3"));
 
         Knight blackKnight = (Knight) board.getSquare("b8").getPiece();
-        blackKnight.setSquare(board.getSquare("a6"));
+        blackKnight.moveToSquare(board.getSquare("a6"));
 
-        whiteKnight.setSquare(board.getSquare("b5"));
+        whiteKnight.moveToSquare(board.getSquare("b5"));
 
         assertCoveredSquares(blackKnight, "b8", "c7", "c5", "b4");
         assertMightMoveToSquares(blackKnight, "b8", "c5", "b4");
         assertMightMoveToNextSquares(blackKnight, "b8", "c7", "c5", "b4");
 
         blackKnight = (Knight) board.getSquare("g8").getPiece();
-        blackKnight.setSquare(board.getSquare("f6"));
+        blackKnight.moveToSquare(board.getSquare("f6"));
 
         assertCoveredSquares(whiteKnight, "a7", "c7", "d6", "d4", "c3", "a3");
         assertMightMoveToSquares(whiteKnight, "a7", "c7", "d6", "d4", "c3", "a3");
         assertMightMoveToNextSquares(whiteKnight, "a7", "c7", "d6", "d4", "c3", "a3");
 
-        whiteKnight.setSquare(board.getSquare("a6"));
+        whiteKnight.moveToSquare(board.getSquare("a6"));
 
         assertCoveredSquares(blackKnight, "e8", "g8", "h7", "h5", "g4", "e4", "d5", "d7");
         assertMightMoveToSquares(blackKnight, "g8", "h5", "g4", "e4", "d5");
@@ -246,16 +246,16 @@ public class ChessPieceTest extends Assert {
         assertMightMoveToNextSquares(whiteBishop, "b2", "a3", "d2", "e3", "f4", "g5", "h6");
 
         Pawn whitePawn = (Pawn) board.getSquare("d2").getPiece();
-        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+        whitePawn.moveToSquare(whitePawn.jumpTwoSquare());
 
         Pawn blackPawn = (Pawn) board.getSquare("g7").getPiece();
-        blackPawn.setSquare(blackPawn.jumpTwoSquare());
+        blackPawn.moveToSquare(blackPawn.jumpTwoSquare());
 
-        whiteBishop.setSquare(board.getSquare("d2"));
+        whiteBishop.moveToSquare(board.getSquare("d2"));
         assertEquals(1, whiteBishop.getMovedCount());
 
         blackPawn = (Pawn) board.getSquare("a7").getPiece();
-        blackPawn.setSquare(board.getSquare("a5"));
+        blackPawn.moveToSquare(board.getSquare("a5"));
 
         assertCoveredSquares(whiteBishop, "c1", "c3", "b4", "a5", "e1", "e3", "f4", "g5");
         assertMightMoveToSquares(whiteBishop, "c1", "c3", "b4", "a5", "e3", "f4", "g5");
@@ -263,9 +263,9 @@ public class ChessPieceTest extends Assert {
         assertMightMoveToNextSquares(whiteBishop, "c1", "c3", "b4", "a5", "e3", "f4", "g5", "h6");
 
         Bishop blackBishop = (Bishop) board.getSquare("f8").getPiece();
-        blackBishop.setSquare(board.getSquare("g7"));
+        blackBishop.moveToSquare(board.getSquare("g7"));
 
-        whiteBishop.setSquare(board.getSquare("g5"));
+        whiteBishop.moveToSquare(board.getSquare("g5"));
 
         assertCoveredSquares(blackBishop, "f8", "h8", "h6", "f6", "e5", "d4");
         assertMightMoveToSquares(blackBishop, "f8", "h6", "f6", "e5", "d4");
@@ -286,12 +286,12 @@ public class ChessPieceTest extends Assert {
                 "e2", "f3", "g4", "h5");
 
         Pawn whitePawn = (Pawn) board.getSquare("d2").getPiece();
-        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+        whitePawn.moveToSquare(whitePawn.jumpTwoSquare());
 
         Pawn blackPawn = (Pawn) board.getSquare("e7").getPiece();
-        blackPawn.setSquare(blackPawn.jumpTwoSquare());
+        blackPawn.moveToSquare(blackPawn.jumpTwoSquare());
 
-        whitePawn.setSquare(board.getSquare("e5"));
+        whitePawn.moveToSquare(board.getSquare("e5"));
 
         Queen blackQueen = (Queen) board.getSquare("d8").getPiece();
 
@@ -302,7 +302,8 @@ public class ChessPieceTest extends Assert {
                 "d7", "d6", "d5", "d4", "d3", "d2", "d1",
                 "e7", "f6", "g5", "h4");
 
-        blackPawn.setSquare(board.getSquare("h4"));
+        blackPawn = (Pawn) board.getSquare("h7").getPiece();
+        blackPawn.moveToSquare(board.getSquare("h5"));
 
         assertCoveredSquares(whiteQueen, "c1", "c2", "d2", "d3", "d4", "d5", "d6", "d7", "e2", "e1");
         assertMightMoveToSquares(whiteQueen, "d2", "d3", "d4", "d5", "d6", "d7");
@@ -324,36 +325,36 @@ public class ChessPieceTest extends Assert {
         assertMightMoveToNextSquares(whiteKing, "d1", "d2", "e2", "f2", "f1");
 
         Pawn whitePawn = (Pawn) board.getSquare("e2").getPiece();
-        whitePawn.setSquare(whitePawn.jumpTwoSquare());
+        whitePawn.moveToSquare(whitePawn.jumpTwoSquare());
         //System.out.println(board);
 
         Pawn blackPawn = (Pawn) board.getSquare("f7").getPiece();
-        blackPawn.setSquare(blackPawn.jumpTwoSquare());
+        blackPawn.moveToSquare(blackPawn.jumpTwoSquare());
         //System.out.println(board);
 
-        whiteKing.setSquare(board.getSquare("e2"));
+        whiteKing.moveToSquare(board.getSquare("e2"));
         //System.out.println(board);
 
-        blackPawn.setSquare(blackPawn.squareJustInFront());
+        blackPawn.moveToSquare(blackPawn.squareJustInFront());
         //System.out.println(board);
 
         assertCoveredSquares(whiteKing, "e1", "d1", "d2", "d3", "e3", "f3", "f2", "f1");
         assertMightMoveToSquares(whiteKing, "e1", "d3", "e3", "f3");
         assertMightMoveToNextSquares(whiteKing, "e1", "d1", "d2", "d3", "e3", "f3", "f2", "f1");
 
-        whiteKing.setSquare(board.getSquare("d3"));
+        whiteKing.moveToSquare(board.getSquare("d3"));
         //System.out.println(board);
 
-        blackPawn.setSquare(blackPawn.squareJustInFront());
+        blackPawn.moveToSquare(blackPawn.squareJustInFront());
         //System.out.println(board);
         assertEquals(3, blackPawn.getMovedCount());
         assertEquals(board.getSquare("f3"), blackPawn.getSquare());
 
-        whiteKing.setSquare(board.getSquare("e3"));
+        whiteKing.moveToSquare(board.getSquare("e3"));
         //System.out.println(board);
 
         blackPawn = (Pawn) board.getSquare("a7").getPiece();
-        blackPawn.setSquare(blackPawn.squareJustInFront());
+        blackPawn.moveToSquare(blackPawn.squareJustInFront());
         //System.out.println(board);
 
         assertCoveredSquares(whiteKing, "e2", "d2", "d3", "d4", "e4", "f4", "f3", "f2");

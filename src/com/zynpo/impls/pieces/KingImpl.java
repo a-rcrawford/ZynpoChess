@@ -60,6 +60,48 @@ public class KingImpl extends ChessPieceImpl implements King {
     */
 
     @Override
+    public ChessPiece moveToSquare(ChessSquare square) {
+        ChessPiece takenPiece = super.moveToSquare(square);
+
+        if ((null == takenPiece)
+             && (this.getMovedCount() == 1)
+             && (2 == this.getSquare().colDistanceFrom(this.getOrigSquare()))) {
+
+            Castle castle = null;
+
+            if (2 == this.getSquare().colsAwayFromCount(this.getOrigSquare())) {
+                castle = (Castle) this.getSquare().getRelativeSquare(0, 1).getPiece();
+                castle.moveToSquare(this.getSquare().getRelativeSquare(0, -1));
+            } else {
+                castle = (Castle) this.getSquare().getRelativeSquare(0, -2).getPiece();
+                castle.moveToSquare(this.getSquare().getRelativeSquare(0, 1));
+            }
+        }
+
+        return takenPiece;
+    }
+
+
+    @Override
+    public void takeBackToSquare(ChessSquare square, ChessPiece formerlyTakenPiece) {
+        if ((this.getMovedCount() == 1) && (this.getSquare().colDistanceFrom(this.getOrigSquare()) == 2)) {
+            // Taking back a castling ...
+            Castle castle = null;
+
+            if (2 == this.getSquare().colsAwayFromCount(this.getOrigSquare())) {
+                castle = (Castle) this.getSquare().getRelativeSquare(0, -1).getPiece();
+            } else {
+                castle = (Castle) this.getSquare().getRelativeSquare(0, 1).getPiece();
+            }
+
+            castle.takeBackToSquare(castle.getOrigSquare(), null);
+        }
+
+        super.takeBackToSquare(square, formerlyTakenPiece);
+    }
+
+
+    @Override
     public boolean mightMoveTo(ChessSquare square) {
         if (super.mightMoveTo(square)) {
             return true;

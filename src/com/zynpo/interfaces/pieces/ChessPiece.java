@@ -14,11 +14,13 @@ public interface ChessPiece {
     ChessSquare getSquare();
 
     /**
-     * Set this Piece's square to the given parameter
+     * Move this piece to the given parameter
      * @param square to be occupied by this Piece
-     * @return the square that was occupied by this piece prior
      */
-    ChessSquare setSquare(ChessSquare square);
+    void dropToSquare(ChessSquare square);
+    ChessPiece moveToSquare(ChessSquare square);
+    void takeBackToSquare(ChessSquare square, ChessPiece formerlyTakenPiece);
+
     ChessSquare getOrigSquare();
     ChessBoard getBoard();
     String notation();

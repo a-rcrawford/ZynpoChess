@@ -35,7 +35,7 @@ public interface ChessSquare {
      * @param piece to occupy this Square
      * @return the piece that was occupying this Square prior
      */
-    ChessPiece setPiece(ChessPiece piece);
+    void setPiece(ChessPiece piece);
 
     ChessSquare getRelativeSquare(int rowOffset, int colOffset);
 

@@ -296,18 +296,18 @@ public class ChessSquareTest extends Assert {
         Knight knight = (Knight) board.getSquare("b1").getPiece();
         Knight knight2 = (Knight) board2.getSquare("b1").getPiece();
 
-        knight.setSquare(board.getSquare("c3"));
+        knight.moveToSquare(board.getSquare("c3"));
 
-        knight2.setSquare(board2.getSquare("a3"));
-        knight2.setSquare(board2.getSquare("b5"));
-        knight2.setSquare(board2.getSquare("c3"));
+        knight2.moveToSquare(board2.getSquare("a3"));
+        knight2.moveToSquare(board2.getSquare("b5"));
+        knight2.moveToSquare(board2.getSquare("c3"));
 
         // Though they have moved a different number of times, the
         // knights on this square are considered equal ...
         assertEquals(board.getSquare("c3"), board2.getSquare("c3"));
 
-        knight.setSquare(board.getSquare("a2"));
-        knight.setSquare(board.getSquare("c3"));
+        knight.moveToSquare(board.getSquare("a2"));
+        knight.moveToSquare(board.getSquare("c3"));
 
         // Now the knights on this square have moved the same number of times ...
         assertEquals(board.getSquare("c3"), board2.getSquare("c3"));
