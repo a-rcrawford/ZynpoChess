@@ -167,6 +167,10 @@ abstract class ChessPieceImpl implements ChessPiece {
         if (null != this.getSquare()) {
             this.getSquare().setPiece(formerlyTakenPiece);
             --_movedCount;
+            if (_movedCount < 0) {
+                throw new InternalError("" + this
+                        + " getMovedCount() should never have dropped to " + _movedCount);
+            }
         } else {
             if (null != formerlyTakenPiece) {
                 throw new InternalError("How can " + this

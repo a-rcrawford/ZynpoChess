@@ -154,6 +154,12 @@ public class ChessPieceTest extends Assert {
         assertCoveredSquares(whitePawn, "c6", "e6");
         assertMightMoveToSquares(whitePawn,"c6"); // dxc5ep
         assertMightMoveToNextSquares(whitePawn,"c6", "d6", "e6");
+
+        blackPawn.takeBackToSquare(board.getSquare("c7"), null);
+        assertEquals(0, blackPawn.getMovedCount());
+
+        whitePawn.takeBackToSquare(board.getSquare("d4"), null);
+        assertEquals(1, whitePawn.getMovedCount());
     }
 
 
@@ -289,9 +295,12 @@ public class ChessPieceTest extends Assert {
         whitePawn.moveToSquare(whitePawn.jumpTwoSquare());
 
         Pawn blackPawn = (Pawn) board.getSquare("e7").getPiece();
-        blackPawn.moveToSquare(blackPawn.jumpTwoSquare());
+        ChessPiece takenPiece = blackPawn.moveToSquare(blackPawn.jumpTwoSquare());
+        assertNull(takenPiece);
 
-        whitePawn.moveToSquare(board.getSquare("e5"));
+        takenPiece = whitePawn.moveToSquare(board.getSquare("e5"));
+        assertEquals(blackPawn, takenPiece);
+        assertTrue(takenPiece == blackPawn);
 
         Queen blackQueen = (Queen) board.getSquare("d8").getPiece();
 
