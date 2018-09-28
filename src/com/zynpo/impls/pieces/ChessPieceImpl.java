@@ -152,6 +152,7 @@ abstract class ChessPieceImpl implements ChessPiece {
         ChessPieceImpl takenPiece = (ChessPieceImpl) square.getPiece();
         if (null != takenPiece) {
             takenPiece.setSquare(null);
+            ((ChessBoardImpl) _board).takePieceOutOfPlay(takenPiece);
         }
 
         this.setSquare(square);
@@ -165,7 +166,8 @@ abstract class ChessPieceImpl implements ChessPiece {
     @Override
     public void takeBackToSquare(ChessSquare square, ChessPiece formerlyTakenPiece) {
         if (null != this.getSquare()) {
-            this.getSquare().setPiece(formerlyTakenPiece);
+            ((ChessPieceImpl) formerlyTakenPiece).setSquare(this.getSquare());
+            ((ChessBoardImpl) _board).putPieceInPlay(formerlyTakenPiece);
             --_movedCount;
             if (_movedCount < 0) {
                 throw new InternalError("" + this

@@ -300,7 +300,7 @@ public class ChessBoardTest extends Assert {
      * @param board2
      * @return true if the boards equal, and all pieces have the same getMovedCount()
      */
-    public boolean boardsEqualWithSamePieceMovedCounts(ChessBoard board, ChessBoard board2) {
+    public static boolean boardsEqualWithSamePieceMovedCounts(ChessBoard board, ChessBoard board2) {
         assertEquals(board.getRowCount(), board2.getRowCount());
         assertEquals(board.getColCount(), board2.getColCount());
         assertEquals(board, board2);

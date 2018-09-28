@@ -1,6 +1,7 @@
 package com.zynpo.impls;
 
 import com.zynpo.constant.ChessBoardSpecs;
+import com.zynpo.enums.PieceFlags;
 import com.zynpo.enums.PieceIndex;
 import com.zynpo.enums.SideColor;
 import com.zynpo.impls.pieces.ChessPieceFactory;
@@ -15,6 +16,7 @@ public class ChessBoardImpl implements ChessBoard {
 
     private ChessSquare[] _squares;
     private ChessPiece[] _pieces;
+    private ChessPieceSet _piecesInPlay;
 
     private ChessSquare _enPassantSquare = null;
 
@@ -40,6 +42,8 @@ public class ChessBoardImpl implements ChessBoard {
         for (int i = 0; i < _pieces.length; ++i) {
             _pieces[i] = ChessPieceFactory.createPiece(i, this);
         }
+
+        _piecesInPlay = new ChessPieceSet(PieceFlags.AllPieces.getValue(), this);
     }
 
 
@@ -70,6 +74,8 @@ public class ChessBoardImpl implements ChessBoard {
                     getSquare(pieceToClone.getSquare().getIndex()));
             _pieces[i] = pieceToClone.clone(square);
         }
+
+        _piecesInPlay = ((ChessBoardImpl) otherBoard)._piecesInPlay.clone(this);
 
         this.setEnPassantSquare(otherBoard.getEnPassantSquare());
     }
@@ -132,15 +138,33 @@ public class ChessBoardImpl implements ChessBoard {
         return new ChessSquareSet(this).iterator();
     }
 
-    @Override
+
     public ChessPiece getPiece(int index) {
         return _pieces[index];
     }
 
-    @Override
-    public ChessPiece getPiece(PieceIndex index) {
-        return getPiece(index.getValue());
+
+    public void putPieceInPlay(ChessPiece piece) {
+        _piecesInPlay.add(piece);
     }
+
+
+    public void takePieceOutOfPlay(ChessPiece piece) {
+        _piecesInPlay.remove(piece);
+    }
+
+
+    @Override
+    public Set<ChessPiece> getPiecesInPlay(PieceFlags pieceFlags) {
+        return _piecesInPlay.getSubSet(pieceFlags);
+    }
+
+
+    @Override
+    public Set<ChessPiece> getPiecesOutOfPlay(PieceFlags pieceFlags) {
+        return _piecesInPlay.getAllNotInSet(pieceFlags);
+    }
+
 
     public void setEnPassantSquare(ChessSquare enPassantSquare) {
         _enPassantSquare = enPassantSquare;
@@ -176,17 +200,6 @@ public class ChessBoardImpl implements ChessBoard {
         }
 
         ChessBoard other = (ChessBoard) obj;
-
-        // Don't do the following ...
-        // Instead consider two boards equal if the same pieces are in the same places ...
-        /*
-        if (null != this.getEnPassantSquare()) {
-            if (!this.getEnPassantSquare().equals(other.getEnPassantSquare())) {
-                return false;
-            }
-        } else if (null != other.getEnPassantSquare()) {
-            return false;
-        } */
 
         if (this.getRowCount() != other.getRowCount()) {
             return false;

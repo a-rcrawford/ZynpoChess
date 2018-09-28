@@ -1,7 +1,7 @@
 package com.zynpo.interfaces;
 
 
-import com.zynpo.enums.PieceIndex;
+import com.zynpo.enums.PieceFlags;
 import com.zynpo.interfaces.pieces.ChessPiece;
 
 import java.util.Set;
@@ -18,8 +18,9 @@ public interface ChessBoard extends Iterable<ChessSquare> {
     ChessSquare getSquare(String notation);
     Set<ChessSquare> getSquares(String... notations);
 
-    ChessPiece getPiece(int index);
-    ChessPiece getPiece(PieceIndex index);
+    //ChessPiece getPiece(int index);
+    Set<ChessPiece> getPiecesInPlay(PieceFlags pieceFlags);
+    Set<ChessPiece> getPiecesOutOfPlay(PieceFlags pieceFlags);
 
     ChessSquare getEnPassantSquare();
 

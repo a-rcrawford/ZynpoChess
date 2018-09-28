@@ -3,6 +3,7 @@ package com.zynpo.impls;
 import java.lang.reflect.Array;
 import java.util.*;
 
+import com.zynpo.enums.PieceFlags;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.pieces.ChessPiece;
 
@@ -19,12 +20,17 @@ class ChessPieceSet implements Set<ChessPiece> {
     }
 
 
-    ChessPieceSet(ChessPieceSet chessPieceSet, ChessBoard otherBoard) {
+    ChessPieceSet(ChessPieceSet chessPieceSet, ChessBoard board) {
         _bitMask = chessPieceSet._bitMask;
 
         if (0 != _bitMask) {
-            _board = otherBoard;
+            _board = board;
         }
+    }
+
+    public ChessPieceSet(int bitMask, ChessBoard board) {
+        _bitMask = bitMask;
+        _board = board;
     }
 
 
@@ -132,7 +138,7 @@ class ChessPieceSet implements Set<ChessPiece> {
 
                     if ((bit & _iteratorBitMask) == bit) {
                         _iteratorBitMask &= ~bit; // Turn this bit off
-                        return _board.getPiece(_bitIndex++);
+                        return ((ChessBoardImpl) _board).getPiece(_bitIndex++);
                     } else {
                         ++_bitIndex;
                     }
@@ -200,6 +206,14 @@ class ChessPieceSet implements Set<ChessPiece> {
         }
 
         return false;
+    }
+
+    public Set<ChessPiece> getSubSet(PieceFlags pieceFlags) {
+        return new ChessPieceSet(_bitMask & pieceFlags.getValue(), _board);
+    }
+
+    public Set<ChessPiece> getAllNotInSet(PieceFlags pieceFlags) {
+        return new ChessPieceSet((~_bitMask) & pieceFlags.getValue(), _board);
     }
 
     @Override

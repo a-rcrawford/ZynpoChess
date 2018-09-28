@@ -37,28 +37,6 @@ public class KingImpl extends ChessPieceImpl implements King {
     @Override
     public int materialValue() { return Integer.MAX_VALUE; }
 
-    /* Don't do this.  Pieces are considered equal if they are the same piece on the same side.
-    @Override
-    public boolean equals(Object obj) {
-        if (!super.equals(obj)) {
-            return false;
-        }
-
-        King other = (King) obj;
-
-        for (int colOffset : new int[] { 2, -2}) {
-            boolean thisMightCastle = this.mightMoveTo(this.getSquare().getRelativeSquare(0, colOffset));
-            boolean otherMightCastle = other.mightMoveTo(other.getSquare().getRelativeSquare(0, colOffset));
-
-            if (thisMightCastle != otherMightCastle) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-    */
-
     @Override
     public ChessPiece moveToSquare(ChessSquare square) {
         ChessPiece takenPiece = super.moveToSquare(square);
