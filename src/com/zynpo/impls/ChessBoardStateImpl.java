@@ -12,7 +12,7 @@ import com.zynpo.interfaces.pieces.King;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChessBoardStateImpl /*implements ChessBoardState*/ {
+public class ChessBoardStateImpl /* implements ChessBoardState */ {
 
     private ChessBoard _board;
     private SideColor _sideToMove;

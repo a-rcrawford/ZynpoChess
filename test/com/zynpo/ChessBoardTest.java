@@ -77,15 +77,38 @@ public class ChessBoardTest extends Assert {
 
         assertFalse(board == board2);
         assertEquals(board, board2);
+        assertTrue(boardsEqualWithSamePieceMovedCounts(board, board2));
 
         board2 = board;
         assertTrue(board == board2);
         assertEquals(board, board2);
+        assertTrue(boardsEqualWithSamePieceMovedCounts(board, board2));
 
         board2 = board.clone();
         assertFalse(board == board2);
         assertEquals(board, board2);
         assertEquals(board2, board);
+        assertTrue(boardsEqualWithSamePieceMovedCounts(board, board2));
+        assertTrue(boardsEqualWithSamePieceMovedCounts(board2, board));
+    }
+
+
+    @Test
+    public void inequalityTestInitialBoard() {
+        ChessBoard board = ChessFactory.createBoard();
+        ChessBoard board2 = ChessFactory.createBoard();
+
+        Knight whiteKnight = (Knight) board.getSquare("b1").getPiece();
+        Knight blackKnight = (Knight) board.getSquare("b8").getPiece();
+
+        whiteKnight.moveToSquare(board.getSquare("a3"));
+        blackKnight.moveToSquare(board.getSquare("a6"));
+
+        whiteKnight.moveToSquare(board.getSquare("b1"));
+        blackKnight.moveToSquare(board.getSquare("b8"));
+
+        assertEquals(board, board2);
+        assertFalse(boardsEqualWithSamePieceMovedCounts(board, board2));
     }
 
 
@@ -94,7 +117,7 @@ public class ChessBoardTest extends Assert {
         ChessBoard board = ChessFactory.createBoard();
         ChessBoard board2 = ChessFactory.createBoard();
 
-        assertEquals(board, board2);
+        assertTrue(boardsEqualWithSamePieceMovedCounts(board, board2));
 
         Pawn whitePawn = (Pawn) board.getSquare("a2").getPiece();
         whitePawn.moveToSquare(whitePawn.jumpTwoSquare());
@@ -104,7 +127,7 @@ public class ChessBoardTest extends Assert {
         whitePawn = (Pawn) board2.getSquare("a2").getPiece();
         whitePawn.moveToSquare(whitePawn.jumpTwoSquare());
 
-        assertEquals(board, board2);
+        assertTrue(boardsEqualWithSamePieceMovedCounts(board, board2));
 
         Pawn blackPawn = (Pawn) board.getSquare("a7").getPiece();
         blackPawn.moveToSquare(blackPawn.jumpTwoSquare());
@@ -127,6 +150,7 @@ public class ChessBoardTest extends Assert {
         blackPawn.moveToSquare(blackPawn.jumpTwoSquare());
 
         assertEquals(board, board2);
+        assertTrue(boardsEqualWithSamePieceMovedCounts(board, board2));
 
         board2 = board.clone();
         assertFalse(board == board2);
@@ -267,6 +291,37 @@ public class ChessBoardTest extends Assert {
         board2 = board.clone();
         assertFalse(board == board2);
         assertEquals(board, board2);
+    }
+
+
+    /**
+     * Shouldn't even be calling this routine if board != board2
+     * @param board
+     * @param board2
+     * @return true if the boards equal, and all pieces have the same getMovedCount()
+     */
+    public boolean boardsEqualWithSamePieceMovedCounts(ChessBoard board, ChessBoard board2) {
+        assertEquals(board.getRowCount(), board2.getRowCount());
+        assertEquals(board.getColCount(), board2.getColCount());
+        assertEquals(board, board2);
+
+        for (int row = 0; row < board.getRowCount(); ++row) {
+            for (int col = 0; col < board.getColCount(); ++col) {
+                ChessPiece piece = board.getSquare(row, col).getPiece();
+                ChessPiece piece2 = board2.getSquare(row, col).getPiece();
+                assertEquals(piece, piece2);
+
+                if (null != piece) {
+                    if (piece.getMovedCount() != piece2.getMovedCount()) {
+                        System.out.println("" + piece + " move count differs: "
+                                + piece.getMovedCount() + " vs. " + piece2.getMovedCount());
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
 }
