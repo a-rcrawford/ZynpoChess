@@ -111,8 +111,24 @@ public class KingImpl extends ChessPieceImpl implements King {
 
 
             if ((null != castle) && (0 == castle.getMovedCount()) && castle.mightMoveTo(castleDestSquare)) {
-                // Later make sure that the King must not
-                // 1) be in check, 2) move through check, 3) move into check.
+                SideColor opposingSideColor = SideColor.White == this.getSideColor() ? SideColor.Black : SideColor.White;
+
+                if ((this.getSquare().coveredBy(opposingSideColor))) {
+                    // Can't castle out of check ...
+                    return false;
+                }
+
+                if (castleDestSquare.coveredBy(opposingSideColor)) {
+                    // Can't castle through check ...
+                    return false;
+                }
+
+                if (square.coveredBy(opposingSideColor)) {
+                    // Can't castle into check ...
+                    return false;
+                }
+
+                // At this point we know that castling this way is permitted ...
                 return true;
             }
         }

@@ -2,6 +2,7 @@ package com.zynpo.impls;
 
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
+import com.zynpo.interfaces.MoveRecord;
 import com.zynpo.interfaces.pieces.ChessPiece;
 
 import java.util.Set;
@@ -38,5 +39,8 @@ public class ChessFactory {
 
         return chessPieceSet;
     }
+
+
+    public static MoveRecord createMoveRecord()
 
 }

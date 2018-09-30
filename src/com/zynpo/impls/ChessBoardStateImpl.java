@@ -27,6 +27,7 @@ public class ChessBoardStateImpl implements ChessBoardState {
     ChessBoardStateImpl(ChessBoard board, SideColor sideToMove) {
         _board = board.clone();
         _sideToMove = sideToMove;
+        SideColor opposingSideColor;
 
         King sideToMoveKing = null;
         Set<ChessPiece> piecesToMoveInPlay = null;
@@ -37,30 +38,31 @@ public class ChessBoardStateImpl implements ChessBoardState {
                 sideToMoveKing = (King) _board.getPiecesInPlay(PieceFlags.WhiteKing).toArray()[0];
                 piecesToMoveInPlay = _board.getPiecesInPlay(PieceFlags.AllWhitePieces);
                 opposingPiecesInPlay = _board.getPiecesInPlay(PieceFlags.AllBlackPieces);
+                opposingSideColor = SideColor.Black;
                 break;
             case Black:
                 sideToMoveKing = (King) _board.getPiecesInPlay(PieceFlags.BlackKing).toArray()[0];
                 piecesToMoveInPlay = _board.getPiecesInPlay(PieceFlags.AllBlackPieces);
                 opposingPiecesInPlay = _board.getPiecesInPlay(PieceFlags.AllWhitePieces);
+                opposingSideColor = SideColor.White;
                 break;
             default:
                 throw new InternalError("Can't construct ChessBoardState when sideToMove = " + sideToMove);
         }
 
-        // Assume the side to move is not in check until proven otherwise ...
-        _sideToMoveIsInCheck = false;
-
-        for (ChessPiece opposingPiece : opposingPiecesInPlay) {
-            if (opposingPiece.covers(sideToMoveKing.getSquare())) {
-                _sideToMoveIsInCheck = true;
-                break;
-            }
-        }
+        _sideToMoveIsInCheck = sideToMoveKing.getSquare().coveredBy(opposingSideColor);
 
         _validMoves = new ArrayList<>();
 
-        // TODO: Pick up from right here ...
-        // Especially hard to figure out if the side to move king can castle ...
+        for (ChessPiece pieceToMove : piecesToMoveInPlay) {
+            for (ChessSquare square : pieceToMove.potentialMoveSquares(PotentialMoveReason.ForNextMove)) {
+                ChessPiece takenPiece = pieceToMove.moveToSquare(square);
+
+                if (!sideToMoveKing.getSquare().coveredBy(opposingSideColor)) {
+                    _validMoves.add()
+                }
+            }
+        }
     }
 
 

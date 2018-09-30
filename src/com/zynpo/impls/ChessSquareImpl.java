@@ -1,9 +1,12 @@
 package com.zynpo.impls;
 
+import com.zynpo.enums.PieceFlags;
 import com.zynpo.enums.SideColor;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
 import com.zynpo.interfaces.pieces.ChessPiece;
+
+import java.util.Set;
 
 
 class ChessSquareImpl implements ChessSquare {
@@ -118,14 +121,23 @@ class ChessSquareImpl implements ChessSquare {
         return false;
     }
 
+    @Override
+    public boolean coveredBy(SideColor sideColor) {
+        Set<ChessPiece> pieces = this.getBoard().getPiecesInPlay(
+                SideColor.White == sideColor ? PieceFlags.AllWhitePieces : PieceFlags.AllBlackPieces);
+
+        for (ChessPiece piece : pieces) {
+            if (piece.covers(this)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     @Override
     public ChessSquare clone(ChessBoard otherBoard) {
         ChessSquare square = new ChessSquareImpl(otherBoard, this.getRow(), this.getCol());
-
-        //if (this.getPiece() != null) {
-        //    square.setPiece(this.getPiece().clone(square));
-        //}
 
         return square;
     }

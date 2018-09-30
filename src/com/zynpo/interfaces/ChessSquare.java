@@ -56,4 +56,6 @@ public interface ChessSquare {
     int colDistanceFrom(ChessSquare other);
 
     ChessSquare clone(ChessBoard otherBoard);
+
+    boolean coveredBy(SideColor sideColor);
 }

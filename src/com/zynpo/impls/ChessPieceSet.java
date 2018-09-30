@@ -6,6 +6,8 @@ import java.util.*;
 import com.zynpo.enums.PieceFlags;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.pieces.ChessPiece;
+import com.zynpo.interfaces.pieces.Pawn;
+import com.zynpo.interfaces.pieces.PromotablePiece;
 
 
 class ChessPieceSet implements Set<ChessPiece> {
@@ -138,7 +140,12 @@ class ChessPieceSet implements Set<ChessPiece> {
 
                     if ((bit & _iteratorBitMask) == bit) {
                         _iteratorBitMask &= ~bit; // Turn this bit off
-                        return ((ChessBoardImpl) _board).getPiece(_bitIndex++);
+                        ChessPiece piece = ((ChessBoardImpl) _board).getPiece(_bitIndex++);
+                        if ((piece instanceof Pawn) && (((Pawn) piece).getPromotedToPiece() != null)) {
+                            piece = ((Pawn) piece).getPromotedToPiece();
+                        }
+
+                        return piece;
                     } else {
                         ++_bitIndex;
                     }
@@ -209,7 +216,13 @@ class ChessPieceSet implements Set<ChessPiece> {
     }
 
     public Set<ChessPiece> getSubSet(PieceFlags pieceFlags) {
-        return new ChessPieceSet(_bitMask & pieceFlags.getValue(), _board);
+        ChessPieceSet pieces = new ChessPieceSet(_bitMask & pieceFlags.getValue(), _board);
+
+        // Consider pawns that got promoted to matching pieceFlags.
+        // That means if pieceFlags contains just pawns, ones that got promoted should be excluded.
+        // That also means that if peiceFlags contains promotable pieces, promoted pawns should be included.
+
+        return pieces;
     }
 
     public Set<ChessPiece> getAllNotInSet(PieceFlags pieceFlags) {
