@@ -41,6 +41,6 @@ public class ChessFactory {
     }
 
 
-    public static MoveRecord createMoveRecord()
+    //public static MoveRecord createMoveRecord()
 
 }

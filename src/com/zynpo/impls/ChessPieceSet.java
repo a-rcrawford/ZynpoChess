@@ -4,10 +4,9 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 import com.zynpo.enums.PieceFlags;
+import com.zynpo.enums.PieceIndex;
 import com.zynpo.interfaces.ChessBoard;
-import com.zynpo.interfaces.pieces.ChessPiece;
-import com.zynpo.interfaces.pieces.Pawn;
-import com.zynpo.interfaces.pieces.PromotablePiece;
+import com.zynpo.interfaces.pieces.*;
 
 
 class ChessPieceSet implements Set<ChessPiece> {
@@ -215,19 +214,51 @@ class ChessPieceSet implements Set<ChessPiece> {
         return false;
     }
 
+
     public Set<ChessPiece> getSubSet(PieceFlags pieceFlags) {
-        ChessPieceSet pieces = new ChessPieceSet(_bitMask & pieceFlags.getValue(), _board);
 
-        // Consider pawns that got promoted to matching pieceFlags.
-        // That means if pieceFlags contains just pawns, ones that got promoted should be excluded.
-        // That also means that if peiceFlags contains promotable pieces, promoted pawns should be included.
+        int filterBitMask = pieceFlags.getValue();
 
-        return pieces;
+        boolean pawnsDesired = PieceFlags.AllPawns.containsAnyOf(filterBitMask);
+        boolean castlesDesired = PieceFlags.AllCastles.containsAnyOf(filterBitMask);
+        boolean knightsDesired = PieceFlags.AllKnights.containsAnyOf(filterBitMask);
+        boolean bishopsDesired = PieceFlags.AllBishops.containsAnyOf(filterBitMask);
+        boolean queensDesired = PieceFlags.AllQueens.containsAnyOf(filterBitMask);
+
+        // Pawns in play might have been promoted to other PromotablePieces, which complicates things ...
+        for (int bitIndex = PieceIndex.WhitePawnA.getValue(); bitIndex <= PieceIndex.BlackPawnH.getValue(); ++bitIndex) {
+            boolean turnBitOn;
+            PromotablePiece promotedToPiece = ((Pawn) _board.getPiece(bitIndex)).getPromotedToPiece();
+            if (null == promotedToPiece) {
+                turnBitOn = pawnsDesired;
+            } else if (promotedToPiece instanceof Queen) {
+                turnBitOn = queensDesired;
+            } else if (promotedToPiece instanceof Knight){
+                turnBitOn = knightsDesired;
+            } else if (promotedToPiece instanceof Castle) {
+                turnBitOn = castlesDesired;
+            } else if (promotedToPiece instanceof Bishop) {
+                turnBitOn = bishopsDesired;
+            } else {
+                throw new InternalError("What was this Pawn promoted to? " + promotedToPiece);
+            }
+
+            if (turnBitOn) {
+                filterBitMask |= (1 << bitIndex);
+            } else {
+                filterBitMask &= ~(1 << bitIndex);
+            }
+        }
+
+        return new ChessPieceSet(filterBitMask & _bitMask, _board);
     }
+
 
     public Set<ChessPiece> getAllNotInSet(PieceFlags pieceFlags) {
+        // Because pieces out of play aren't counted as promoted, this is fine ...
         return new ChessPieceSet((~_bitMask) & pieceFlags.getValue(), _board);
     }
+
 
     @Override
     public synchronized int size() { return Integer.bitCount(_bitMask); }

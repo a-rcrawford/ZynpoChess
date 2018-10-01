@@ -165,10 +165,15 @@ abstract class ChessPieceImpl implements ChessPiece {
 
     @Override
     public void takeBackToSquare(ChessSquare square, ChessPiece formerlyTakenPiece) {
+        // TODO: Take back move that undoes promotion ...
         if (null != this.getSquare()) {
-            ((ChessPieceImpl) formerlyTakenPiece).setSquare(this.getSquare());
-            ((ChessBoardImpl) _board).putPieceInPlay(formerlyTakenPiece);
+            if (null != formerlyTakenPiece) {
+                ((ChessPieceImpl) formerlyTakenPiece).setSquare(this.getSquare());
+                ((ChessBoardImpl) _board).putPieceInPlay(formerlyTakenPiece);
+            }
+
             --_movedCount;
+
             if (_movedCount < 0) {
                 throw new InternalError("" + this
                         + " getMovedCount() should never have dropped to " + _movedCount);

@@ -21,7 +21,7 @@ public class ChessPieceFactory {
             return new KnightImpl(index, square);
         } else if (PieceFlags.AllBishops.contains(index)) {
             return new BishopImpl(index, square);
-        } else if (PieceFlags.BothQueens.contains(index)) {
+        } else if (PieceFlags.AllQueens.contains(index)) {
             return new QueenImpl(index, square);
         } else if (PieceFlags.BothKings.contains(index)) {
             return new KingImpl(index, square);

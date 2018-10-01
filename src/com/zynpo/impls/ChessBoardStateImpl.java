@@ -59,7 +59,7 @@ public class ChessBoardStateImpl implements ChessBoardState {
                 ChessPiece takenPiece = pieceToMove.moveToSquare(square);
 
                 if (!sideToMoveKing.getSquare().coveredBy(opposingSideColor)) {
-                    _validMoves.add()
+                    //_validMoves.add(ChessFactory.createMoveRecord());
                 }
             }
         }

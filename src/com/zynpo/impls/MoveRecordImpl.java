@@ -7,6 +7,7 @@ import com.zynpo.interfaces.MoveRecord;
 import com.zynpo.interfaces.pieces.ChessPiece;
 import com.zynpo.interfaces.pieces.King;
 import com.zynpo.interfaces.pieces.Pawn;
+import com.zynpo.interfaces.pieces.PromotablePiece;
 
 public class MoveRecordImpl implements MoveRecord {
 
@@ -14,6 +15,7 @@ public class MoveRecordImpl implements MoveRecord {
 
     private ChessPiece _pieceMoved;
     private ChessPiece _pieceTaken;
+    private PromotablePiece _promotedToPiece;
 
     private ChessSquare _squareDeparted;
     private ChessSquare _squareOccupied;
@@ -21,12 +23,14 @@ public class MoveRecordImpl implements MoveRecord {
 
     public MoveRecordImpl(ChessPiece pieceMoved,
                           ChessPiece pieceTaken,
+                          PromotablePiece promotedToPiece,
                           ChessSquare squareDeparted,
                           ChessSquare squareOccupied,
                           ChessSquare squareOfTakenPiece) {
 
         _pieceMoved = pieceMoved;
         _pieceTaken = pieceTaken;
+        _promotedToPiece = promotedToPiece;
 
         _squareDeparted = squareDeparted;
         _squareOccupied = squareOccupied;
@@ -77,6 +81,12 @@ public class MoveRecordImpl implements MoveRecord {
     @Override
     public ChessPiece pieceMoved() {
         return _pieceMoved;
+    }
+
+
+    @Override
+    public PromotablePiece promotedToPiece() {
+        return _promotedToPiece;
     }
 
 

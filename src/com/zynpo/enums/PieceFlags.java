@@ -58,9 +58,11 @@ public enum PieceFlags {
     BlackBishops(BlackLeftBishop._value | BlackRightBishop._value),
     AllBishops(WhiteBishops._value | BlackBishops._value),
 
-    BothQueens(WhiteQueen._value | BlackQueen._value),
+    AllQueens(WhiteQueen._value | BlackQueen._value),
 
     BothKings(WhiteKing._value | BlackKing._value),
+
+    PromotablePieces(AllCastles._value | AllKnights._value | AllBishops._value | AllQueens._value),
 
     AllPieces(0xFFFFFFFF);
 

@@ -7,6 +7,7 @@ import com.zynpo.enums.SideColor;
 import com.zynpo.impls.pieces.ChessPieceFactory;
 import com.zynpo.interfaces.*;
 import com.zynpo.interfaces.pieces.ChessPiece;
+import com.zynpo.interfaces.pieces.Pawn;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -138,9 +139,23 @@ public class ChessBoardImpl implements ChessBoard {
         return new ChessSquareSet(this).iterator();
     }
 
+    @Override
+    public ChessPiece getPiece(PieceIndex index) {
+        return getPiece(index.getValue());
+    }
 
+    @Override
     public ChessPiece getPiece(int index) {
-        return _pieces[index];
+        ChessPiece piece = _pieces[index];
+
+        if (piece instanceof Pawn) {
+            Pawn pawn = (Pawn) piece;
+            if (pawn.getPromotedToPiece() != null) {
+                piece = pawn.getPromotedToPiece();
+            }
+        }
+
+        return piece;
     }
 
 
