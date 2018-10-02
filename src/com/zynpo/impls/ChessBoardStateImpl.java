@@ -1,9 +1,6 @@
 package com.zynpo.impls;
 
-import com.zynpo.enums.PieceFlags;
-import com.zynpo.enums.PieceIndex;
-import com.zynpo.enums.PotentialMoveReason;
-import com.zynpo.enums.SideColor;
+import com.zynpo.enums.*;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessBoardState;
 import com.zynpo.interfaces.ChessSquare;
@@ -55,11 +52,17 @@ public class ChessBoardStateImpl implements ChessBoardState {
         _validMoves = new ArrayList<>();
 
         for (ChessPiece pieceToMove : piecesToMoveInPlay) {
-            for (ChessSquare square : pieceToMove.potentialMoveSquares(PotentialMoveReason.ForNextMove)) {
-                ChessPiece takenPiece = pieceToMove.moveToSquare(square);
+            ChessSquare departedSquare = pieceToMove.getSquare();
 
-                if (!sideToMoveKing.getSquare().coveredBy(opposingSideColor)) {
-                    //_validMoves.add(ChessFactory.createMoveRecord());
+            for (ChessSquare occupiedSquare : pieceToMove.potentialMoveSquares(PotentialMoveReason.ForNextMove)) {
+                ChessPiece takenPiece = pieceToMove.moveToSquare(occupiedSquare);
+                boolean isValidMove = !sideToMoveKing.getSquare().coveredBy(opposingSideColor);
+                pieceToMove.takeBackToSquare(departedSquare, takenPiece);
+
+                if (isValidMove) {
+                    _validMoves.add(new MoveRecordImpl(pieceToMove,
+                            takenPiece, null, departedSquare, occupiedSquare,
+                            takenPiece.getSquare(), GameStatus.NotDetermined));
                 }
             }
         }

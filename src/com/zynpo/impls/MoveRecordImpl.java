@@ -1,13 +1,16 @@
 package com.zynpo.impls;
 
+import com.zynpo.enums.GameStatus;
 import com.zynpo.enums.PieceFlags;
-import com.zynpo.enums.SideColor;
+import com.zynpo.impls.pieces.PromotablePieceImpl;
 import com.zynpo.interfaces.ChessSquare;
 import com.zynpo.interfaces.MoveRecord;
 import com.zynpo.interfaces.pieces.ChessPiece;
 import com.zynpo.interfaces.pieces.King;
 import com.zynpo.interfaces.pieces.Pawn;
 import com.zynpo.interfaces.pieces.PromotablePiece;
+
+import java.util.Set;
 
 public class MoveRecordImpl implements MoveRecord {
 
@@ -21,12 +24,15 @@ public class MoveRecordImpl implements MoveRecord {
     private ChessSquare _squareOccupied;
     private ChessSquare _squareOfTakenPiece;
 
+    private GameStatus _gameStatus;
+
     public MoveRecordImpl(ChessPiece pieceMoved,
                           ChessPiece pieceTaken,
                           PromotablePiece promotedToPiece,
                           ChessSquare squareDeparted,
                           ChessSquare squareOccupied,
-                          ChessSquare squareOfTakenPiece) {
+                          ChessSquare squareOfTakenPiece,
+                          GameStatus gameStatus) {
 
         _pieceMoved = pieceMoved;
         _pieceTaken = pieceTaken;
@@ -36,16 +42,68 @@ public class MoveRecordImpl implements MoveRecord {
         _squareOccupied = squareOccupied;
         _squareOfTakenPiece = squareOfTakenPiece;
 
-        if (!(_pieceMoved instanceof Pawn)) {
+        _gameStatus = gameStatus;
+
+        if (null == _gameStatus) {
+            gameStatus = GameStatus.NotDetermined;
+        }
+
+        boolean mustDifferentiateRow = false;
+        boolean mustDifferentiateCol = false;
+
+        if (_pieceMoved instanceof Pawn) {
+            Pawn pawn = (Pawn) _pieceMoved;
+
+            if (_squareOccupied.getRow() == pawn.promotionRow()) {
+                if (null == _promotedToPiece) {
+                    // Put an abstract promotable piece in place if we don't know what it is yet ...
+                    _promotedToPiece = new PromotablePieceImpl(pawn);
+                }
+            }
+
+            if (null != pieceTaken) {
+                // When a pawn takes something the column is always specified in the notation ...
+                mustDifferentiateCol = true;
+            }
+        } else {
             _notation = _pieceMoved.notation();
         }
 
-        if (null != _pieceTaken) {
+        int similarPieceFlags = PieceFlags.similarPiecesOfSameSide(pieceMoved);
+        Set<ChessPiece> similarPieces = pieceMoved.getBoard().getPiecesInPlay(similarPieceFlags);
+
+        for (ChessPiece similarPiece : similarPieces) {
+            if (similarPiece.mightMoveTo(squareOccupied)) {
+                if (similarPiece.getSquare().getCol() != squareDeparted.getCol()) {
+                    mustDifferentiateCol = true;
+                } else if (similarPiece.getSquare().getRow() != squareDeparted.getRow()) {
+                    mustDifferentiateRow = true;
+                } else {
+                    throw new InternalError(similarPiece + " similar to " + pieceMoved + " might move to " + squareOccupied + "?");
+                }
+            }
+        }
+
+        if (mustDifferentiateCol) {
+            _notation += squareDeparted.getCol();
+        }
+
+        if (mustDifferentiateRow) {
+            _notation += squareDeparted.getRow();
+        }
+
+        if (null == pieceTaken) {
+            _notation += squareOccupied;
+        } else {
             _notation += "x" + squareOfTakenPiece;
 
             if (!_squareOfTakenPiece.equals(squareOccupied)) {
                 _notation += "ep";
             }
+        }
+
+        if (null != promotedToPiece) {
+            _notation += "=" + promotedToPiece.notation();
         }
 
         if (_pieceMoved instanceof King) {
@@ -56,19 +114,16 @@ public class MoveRecordImpl implements MoveRecord {
             }
         }
 
-        if (pieceMoved.getSideColor() == SideColor.White) {
-            King opposingKing = (King) pieceMoved.getBoard().getPiecesInPlay(PieceFlags.BlackKing).toArray()[0];
-            if (opposingKing.getSquare().coveredBy(SideColor.White)) {
+        switch (_gameStatus) {
+            case WhiteInCheck:
+            case BlackInCheck:
                 _notation += "+";
-            }
-        } else {
-            King opposingKing = (King) pieceMoved.getBoard().getPiecesInPlay(PieceFlags.WhiteKing).toArray()[0];
-            if (opposingKing.getSquare().coveredBy(SideColor.Black)) {
-                _notation += "+";
-            }
+                break;
+            case WhiteWinByCheckmate:
+            case BlackWinByCheckmate:
+                _notation += "++";
+                break;
         }
-
-        // TODO: Append another + to signify checkmate if the opposingKing can't get out of check.
     }
 
 

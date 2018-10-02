@@ -7,7 +7,7 @@ import com.zynpo.interfaces.pieces.Pawn;
 import com.zynpo.interfaces.pieces.PromotablePiece;
 
 
-public abstract class PromotablePieceImpl extends ChessPieceImpl implements PromotablePiece {
+public class PromotablePieceImpl extends ChessPieceImpl implements PromotablePiece {
 
     protected Pawn _origPawn;
 
@@ -28,8 +28,13 @@ public abstract class PromotablePieceImpl extends ChessPieceImpl implements Prom
         super(otherPiece, otherSquare);
     }
 
+    @Override
+    public PromotablePiece clone(ChessSquare otherSquare) {
+        return new PromotablePieceImpl(this, otherSquare);
+    }
 
-    PromotablePieceImpl(Pawn pawn) {
+
+    public PromotablePieceImpl(Pawn pawn) {
         super(pawn.getIndex(), pawn.getSquare(), pawn.getSideColor());
         _origPawn = pawn;
 
@@ -38,6 +43,24 @@ public abstract class PromotablePieceImpl extends ChessPieceImpl implements Prom
         }
     }
 
+
+    @Override
+    protected String name() {
+        return "Undetermined Promotion";
+    }
+
+
+    @Override
+    public String notation() {
+        // Meaning we don't know what this will be promoted to yet ...
+        return "?";
+    }
+
+
+    @Override
+    public int materialValue() {
+        throw new InternalError("Can't ask for materialValue of Undetermined Promotion");
+    }
 
     @Override
     public Pawn getOrigPawn() {

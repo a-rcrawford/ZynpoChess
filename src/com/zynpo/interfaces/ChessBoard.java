@@ -22,6 +22,7 @@ public interface ChessBoard extends Iterable<ChessSquare> {
     ChessPiece getPiece(PieceIndex index);
     ChessPiece getPiece(int index);
 
+    Set<ChessPiece> getPiecesInPlay(int pieceFlags);
     Set<ChessPiece> getPiecesInPlay(PieceFlags pieceFlags);
     Set<ChessPiece> getPiecesOutOfPlay(PieceFlags pieceFlags);
 

@@ -216,14 +216,16 @@ class ChessPieceSet implements Set<ChessPiece> {
 
 
     public Set<ChessPiece> getSubSet(PieceFlags pieceFlags) {
+        return getSubSet(pieceFlags.getValue());
+    }
 
-        int filterBitMask = pieceFlags.getValue();
+    public Set<ChessPiece> getSubSet(int pieceFlags) {
 
-        boolean pawnsDesired = PieceFlags.AllPawns.containsAnyOf(filterBitMask);
-        boolean castlesDesired = PieceFlags.AllCastles.containsAnyOf(filterBitMask);
-        boolean knightsDesired = PieceFlags.AllKnights.containsAnyOf(filterBitMask);
-        boolean bishopsDesired = PieceFlags.AllBishops.containsAnyOf(filterBitMask);
-        boolean queensDesired = PieceFlags.AllQueens.containsAnyOf(filterBitMask);
+        boolean pawnsDesired = PieceFlags.AllPawns.containsAnyOf(pieceFlags);
+        boolean castlesDesired = PieceFlags.AllCastles.containsAnyOf(pieceFlags);
+        boolean knightsDesired = PieceFlags.AllKnights.containsAnyOf(pieceFlags);
+        boolean bishopsDesired = PieceFlags.AllBishops.containsAnyOf(pieceFlags);
+        boolean queensDesired = PieceFlags.AllQueens.containsAnyOf(pieceFlags);
 
         // Pawns in play might have been promoted to other PromotablePieces, which complicates things ...
         for (int bitIndex = PieceIndex.WhitePawnA.getValue(); bitIndex <= PieceIndex.BlackPawnH.getValue(); ++bitIndex) {
@@ -244,13 +246,13 @@ class ChessPieceSet implements Set<ChessPiece> {
             }
 
             if (turnBitOn) {
-                filterBitMask |= (1 << bitIndex);
+                pieceFlags |= (1 << bitIndex);
             } else {
-                filterBitMask &= ~(1 << bitIndex);
+                pieceFlags &= ~(1 << bitIndex);
             }
         }
 
-        return new ChessPieceSet(filterBitMask & _bitMask, _board);
+        return new ChessPieceSet(pieceFlags & _bitMask, _board);
     }
 
 

@@ -1,6 +1,8 @@
 package com.zynpo.enums;
 
 
+import com.zynpo.interfaces.pieces.*;
+
 public enum PieceFlags {
     None(0),
     WhiteLeftCastle(PieceIndex.WhiteLeftCastle),
@@ -84,6 +86,32 @@ public enum PieceFlags {
         _value = fromIndex(index);
     }
 
+    public static int similarPiecesOfSameSide(ChessPiece piece) {
+        int similarPieceFlags;
+
+        if (piece instanceof Pawn) {
+            similarPieceFlags = PieceFlags.AllPawns.getValue();
+        } else if (piece instanceof Castle) {
+            similarPieceFlags = PieceFlags.AllCastles.getValue();
+        } else if (piece instanceof Knight) {
+            similarPieceFlags = PieceFlags.AllKnights.getValue();
+        } else if (piece instanceof Bishop) {
+            similarPieceFlags = PieceFlags.AllBishops.getValue();
+        } else if (piece instanceof Queen) {
+            similarPieceFlags = PieceFlags.AllQueens.getValue();
+        } else {
+            throw new InternalError("Shouldn't be asking for similarPiecesOfSameSide() on " + piece);
+        }
+
+        // Don't return flags that match the piece paramater passed in ...
+        similarPieceFlags &= ~(1 << piece.getIndex().getValue());
+
+        if (SideColor.White == piece.getSideColor()) {
+            return PieceFlags.AllWhitePieces.getValue() & similarPieceFlags;
+        } else {
+            return PieceFlags.AllBlackPieces.getValue() & similarPieceFlags;
+        }
+    }
 
     public boolean containsAllOf(int pieceFlags) {
         return this.getValue() == (this.getValue() | pieceFlags);

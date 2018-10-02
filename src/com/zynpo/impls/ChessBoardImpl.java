@@ -170,8 +170,14 @@ public class ChessBoardImpl implements ChessBoard {
 
 
     @Override
-    public Set<ChessPiece> getPiecesInPlay(PieceFlags pieceFlags) {
+    public Set<ChessPiece> getPiecesInPlay(int pieceFlags) {
         return _piecesInPlay.getSubSet(pieceFlags);
+    }
+
+
+    @Override
+    public Set<ChessPiece> getPiecesInPlay(PieceFlags pieceFlags) {
+        return getPiecesInPlay(pieceFlags.getValue());
     }
 
 

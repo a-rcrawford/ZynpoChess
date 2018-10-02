@@ -3,17 +3,19 @@ package com.zynpo.enums;
 public enum GameStatus {
     NotDetermined(-1),
     InPlay(0),
-    DrawByStalemate(1),
-    DrawByInsufficientMaterial(2),
-    DrawByRepetition(3),
-    DrawByLackOfProgress(4),
-    DrawByAgreement(5),
-    WhiteWinByCheckmate(6),
-    WhiteWinByTimeOut(7),
-    WhiteWinByResignation(8),
-    BlackWinByCheckmate(9),
-    BlackWinByTimeOut(10),
-    BlackWinByResignation(11);
+    WhiteInCheck(1),
+    BlackInCheck(2),
+    DrawByStalemate(3),
+    DrawByInsufficientMaterial(4),
+    DrawByRepetition(5),
+    DrawByLackOfProgress(6),
+    DrawByAgreement(7),
+    WhiteWinByCheckmate(8),
+    WhiteWinByTimeOut(9),
+    WhiteWinByResignation(10),
+    BlackWinByCheckmate(11),
+    BlackWinByTimeOut(12),
+    BlackWinByResignation(13);
 
     private int _value;
 
