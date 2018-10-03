@@ -108,10 +108,25 @@ public class ChessBoardStateImpl implements ChessBoardState {
         }
 
         sb.append("\r\nPlayer to move: " + this.getSideToMove() + "\r\n");
-        sb.append(this.getValidMoves().size() + " available moves: ");
 
-        for (MoveRecord moveRecord : this.getValidMoves()) {
-            sb.append(moveRecord + " ");
+        if (0 == this.getValidMoves().size()) {
+            sb.append("Final Game Status: ");
+            // The game is over for some reason, so determine why ...
+            if (this.sideToMoveIsInCheck()) {
+                if (this.getSideToMove() == SideColor.White) {
+                    sb.append(GameStatus.BlackWinByCheckmate + "\r\n");
+                } else {
+                    sb.append(GameStatus.WhiteWinByCheckmate + "\r\n");
+                }
+            } else {
+                sb.append(GameStatus.DrawByStalemate + "\r\n");
+            }
+        } else {
+            sb.append(this.getValidMoves().size() + " available moves: ");
+
+            for (MoveRecord moveRecord : this.getValidMoves()) {
+                sb.append(moveRecord + " ");
+            }
         }
 
         return sb.toString();
