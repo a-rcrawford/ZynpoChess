@@ -140,8 +140,14 @@ class ChessPieceSet implements Set<ChessPiece> {
                     if ((bit & _iteratorBitMask) == bit) {
                         _iteratorBitMask &= ~bit; // Turn this bit off
                         ChessPiece piece = ((ChessBoardImpl) _board).getPiece(_bitIndex++);
-                        if ((piece instanceof Pawn) && (((Pawn) piece).getPromotedToPiece() != null)) {
-                            piece = ((Pawn) piece).getPromotedToPiece();
+                        if (piece instanceof Pawn) {
+                            Pawn pawn = (Pawn) piece;
+                            if (null != pawn.getPromotedToPiece()) {
+                                if (null != pawn.getPromotedToPiece().getSquare()) {
+                                    // The promotedToPiece is on the board, so return it ...
+                                    piece = pawn.getPromotedToPiece();
+                                }
+                            }
                         }
 
                         return piece;
