@@ -1,6 +1,11 @@
 package com.zynpo.interfaces;
 
+import com.zynpo.enums.GameStatus;
+import com.zynpo.exceptions.InvalidMoveException;
+import com.zynpo.exceptions.MoveException;
 import com.zynpo.interfaces.pieces.ChessPiece;
+
+import java.util.Set;
 
 public interface ChessLikeGame {
 
@@ -18,7 +23,19 @@ public interface ChessLikeGame {
      */
     boolean takenPiecesSwitchSides();
 
-    boolean isValidMove(ChessPiece pieceToMove, ChessSquare squareOccupied);
+    GameStatus doMove(String notation) throws MoveException;
+    GameStatus doMove(ChessPiece pieceToMove, ChessSquare squareToOccupy) throws InvalidMoveException;
+    Set<ChessSquare> getValidMoveSquares(ChessPiece pieceToMove);
+    void takeBackLastMove();
 
+    GameStatus reviewFirst();
+    GameStatus reviewNext();
+    GameStatus reviewPrevious();
+    GameStatus reviewLast();
 
+    String getAllMoves();
+    String loadAllMoves(String csvMoves) throws MoveException;
+
+    boolean setOverallGameStatus(GameStatus gameStatus);
+    GameStatus getOverallGameStatus();
 }
