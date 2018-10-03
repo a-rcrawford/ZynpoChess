@@ -89,4 +89,32 @@ public class ChessBoardStateImpl implements ChessBoardState {
         return _validMoves;
     }
 
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(this.getBoard() + "\r\n");
+        sb.append("Taken white pieces: ");
+
+        for (ChessPiece piece : getBoard().getPiecesOutOfPlay(PieceFlags.AllWhitePieces)) {
+            sb.append(piece + " ");
+        }
+
+        sb.append("\r\nTaken black pieces: ");
+
+        for (ChessPiece piece : getBoard().getPiecesOutOfPlay(PieceFlags.AllBlackPieces)) {
+            sb.append(piece + " ");
+        }
+
+        sb.append("\r\nPlayer to move: " + this.getSideToMove() + "\r\n");
+        sb.append(this.getValidMoves().size() + " available moves: ");
+
+        for (MoveRecord moveRecord : this.getValidMoves()) {
+            sb.append(moveRecord + " ");
+        }
+
+        return sb.toString();
+    }
+
 }

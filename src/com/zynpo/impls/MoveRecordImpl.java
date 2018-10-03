@@ -134,6 +134,12 @@ public class MoveRecordImpl implements MoveRecord {
 
 
     @Override
+    public String toString() {
+        return notation();
+    }
+
+
+    @Override
     public ChessPiece pieceMoved() {
         return _pieceMoved;
     }
