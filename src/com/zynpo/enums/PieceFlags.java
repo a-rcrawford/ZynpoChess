@@ -86,6 +86,18 @@ public enum PieceFlags {
         _value = fromIndex(index);
     }
 
+    public static int piecesOfSameSide(PieceFlags pieceFlags, SideColor sideColor) {
+        return piecesOfSameSide(pieceFlags.getValue(), sideColor);
+    }
+
+    public static int piecesOfSameSide(int pieceFlags, SideColor sideColor) {
+        if (SideColor.White == sideColor) {
+            return PieceFlags.AllWhitePieces.getValue() & pieceFlags;
+        } else {
+            return PieceFlags.AllBlackPieces.getValue() & pieceFlags;
+        }
+    }
+
     public static int similarPiecesOfSameSide(ChessPiece piece) {
         int similarPieceFlags;
 

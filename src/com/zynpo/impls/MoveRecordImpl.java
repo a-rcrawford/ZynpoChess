@@ -2,7 +2,11 @@ package com.zynpo.impls;
 
 import com.zynpo.enums.GameStatus;
 import com.zynpo.enums.PieceFlags;
+import com.zynpo.enums.SideColor;
+import com.zynpo.exceptions.InvalidMoveException;
+import com.zynpo.exceptions.MoveException;
 import com.zynpo.impls.pieces.PromotablePieceImpl;
+import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
 import com.zynpo.interfaces.MoveRecord;
 import com.zynpo.interfaces.pieces.ChessPiece;
@@ -25,6 +29,66 @@ public class MoveRecordImpl implements MoveRecord {
     private ChessSquare _squareOfTakenPiece;
 
     private GameStatus _gameStatus;
+
+
+    public MoveRecordImpl(String notation, SideColor sideToMove, ChessBoard board) throws MoveException {
+        if (null == notation) {
+            throw new IllegalArgumentException("Can't construct MoveRecord out of null");
+        }
+
+        notation = notation.trim();
+        final String origNotation = notation;
+
+        if (notation.length() == 0) {
+            throw new IllegalArgumentException("Can't construct MoveRecord out of empty string");
+        }
+
+        int pieceToMoveFlags = PieceFlags.piecesOfSameSide(PieceFlags.AllPawns, sideToMove);
+
+        try {
+            if (notation.startsWith("R") || notation.startsWith("C")) {
+                pieceToMoveFlags = PieceFlags.piecesOfSameSide(PieceFlags.AllCastles, sideToMove);
+                notation = notation.substring(1); // Trim the piece char away from the front.
+            } else if (notation.startsWith("N")) {
+                pieceToMoveFlags = PieceFlags.piecesOfSameSide(PieceFlags.AllKnights, sideToMove);
+                notation = notation.substring(1);
+            } else if (notation.startsWith("B")) {
+                pieceToMoveFlags = PieceFlags.piecesOfSameSide(PieceFlags.AllBishops, sideToMove);
+                notation = notation.substring(1);
+            } else if (notation.startsWith("Q")) {
+                pieceToMoveFlags = PieceFlags.piecesOfSameSide(PieceFlags.AllQueens, sideToMove);
+                notation = notation.substring(1);
+            } else if (notation.startsWith("K")) {
+                pieceToMoveFlags = PieceFlags.piecesOfSameSide(PieceFlags.BothKings, sideToMove);
+                notation = notation.substring(1);
+            }
+
+            String startCol = "";
+            String startRow = "";
+
+            if (('a' <= notation.charAt(0)) && (notation.charAt(0) <= 'a' + (board.getColCount() - 1))) {
+                startCol = notation.substring(0, 0);
+                notation = notation.substring(1);
+            }
+
+            if (('1' <= notation.charAt(0)) && (notation.charAt(0) <= '1' + (board.getRowCount() - 1))) {
+                startRow = notation.substring(0, 0);
+                notation = notation.substring(1);
+            }
+
+            boolean pieceTaken = (notation.charAt(0) == 'x');
+
+            if (pieceTaken) {
+                notation = notation.substring(1);
+            }
+
+            // TODO: Pick up from here ...
+
+        } catch (StringIndexOutOfBoundsException sioobe) {
+            throw new InvalidMoveException(origNotation + " is an invalid move", sioobe);
+        }
+    }
+
 
     public MoveRecordImpl(ChessPiece pieceMoved,
                           ChessPiece pieceTaken,

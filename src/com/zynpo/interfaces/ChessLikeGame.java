@@ -25,13 +25,14 @@ public interface ChessLikeGame {
 
     GameStatus doMove(String notation) throws MoveException;
     GameStatus doMove(ChessPiece pieceToMove, ChessSquare squareToOccupy) throws InvalidMoveException;
+
     Set<ChessSquare> getValidMoveSquares(ChessPiece pieceToMove);
     void takeBackLastMove();
 
-    GameStatus reviewFirst();
-    GameStatus reviewNext();
-    GameStatus reviewPrevious();
-    GameStatus reviewLast();
+    ChessBoardState reviewFirst();
+    ChessBoardState reviewNext() throws IndexOutOfBoundsException;
+    ChessBoardState reviewPrevious() throws IndexOutOfBoundsException;
+    ChessBoardState reviewLast();
 
     String getAllMoves();
     String loadAllMoves(String csvMoves) throws MoveException;
