@@ -137,7 +137,7 @@ public enum PieceFlags {
         return 0 == (this.getValue() & pieceFlags);
     }
 
-    public boolean contains(int index) {
-        return this.containsAllOf(index);
+    public boolean contains(PieceIndex index) {
+        return this.containsAllOf(1 << index.getValue());
     }
 }

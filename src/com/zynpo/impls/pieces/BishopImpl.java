@@ -21,7 +21,7 @@ public class BishopImpl extends PromotablePieceImpl implements Bishop {
         super(otherBishop, otherSquare);
     }
 
-    BishopImpl(Pawn pawn) {
+    public BishopImpl(Pawn pawn) {
         super(pawn);
     }
 

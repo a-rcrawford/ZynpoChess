@@ -6,7 +6,7 @@ import com.zynpo.enums.SideColor;
 import com.zynpo.exceptions.AmbiguousMoveException;
 import com.zynpo.exceptions.InvalidMoveException;
 import com.zynpo.exceptions.MoveException;
-import com.zynpo.impls.pieces.PromotablePieceImpl;
+import com.zynpo.impls.pieces.*;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessSquare;
 import com.zynpo.interfaces.MoveRecord;
@@ -32,7 +32,7 @@ public class MoveRecordImpl implements MoveRecord {
     private GameStatus _gameStatus;
 
 
-    public MoveRecordImpl(String notation, SideColor sideToMove, ChessBoard board) throws MoveException {
+    public MoveRecord fromNotation(String notation, SideColor sideToMove, ChessBoard board) throws MoveException {
         if (null == notation) {
             throw new IllegalArgumentException("Can't construct MoveRecord out of null");
         }
@@ -103,21 +103,19 @@ public class MoveRecordImpl implements MoveRecord {
                 notation = notation.substring(1);
             }
 
-            boolean pieceTaken = (notation.charAt(0) == 'x');
+            boolean pieceIsTaken = (notation.charAt(0) == 'x');
 
-            if (pieceTaken) {
+            if (pieceIsTaken) {
                 notation = notation.substring(1);
             } else if (enPassant) {
                 throw new InvalidMoveException("Must x = take something to do ep = en-passant: " + origNotation);
             }
 
             if (enPassant) {
-                if (!PieceFlags.AllPawns.contains(pieceToMoveFlags)) {
+                if (!PieceFlags.AllPawns.containsAllOf(pieceToMoveFlags)) {
                     throw new InvalidMoveException("Only a pawn can take ep = en-passant: " + origNotation);
                 }
             }
-
-            // TODO: Detect Pawn promotions ...
 
             ChessSquare squareOccupied;
             ChessSquare squareOfTakenPiece = null;
@@ -137,7 +135,7 @@ public class MoveRecordImpl implements MoveRecord {
                     squareOfTakenPiece = likelySquareOccupied;
                 } else {
                     squareOccupied = likelySquareOccupied;
-                    if (pieceTaken) {
+                    if (pieceIsTaken) {
                         squareOfTakenPiece = squareOccupied;
                     }
                 }
@@ -176,12 +174,43 @@ public class MoveRecordImpl implements MoveRecord {
                 pieceMoved = possiblePieceToMove;
             }
 
-            this(pieceMoved,
-                    pieceTaken,
-                    )
+            PromotablePiece promotedToPiece = null;
+
+            if (pieceMoved instanceof Pawn) {
+                Pawn pawn = (Pawn) pieceMoved;
+                if (pawn.promotionRow() == squareOccupied.getRow()) {
+                    // This pawn needs to be promoted ...
+                    if (notation.endsWith("Q")) {
+                        promotedToPiece = new QueenImpl(pawn);
+                    } else if (notation.endsWith("N")) {
+                        promotedToPiece = new KnightImpl(pawn);
+                    } else if (notation.endsWith("R") || notation.endsWith("C")) {
+                        promotedToPiece = new CastleImpl(pawn);
+                    } else if (notation.endsWith("B")) {
+                        promotedToPiece = new BishopImpl(pawn);
+                    } else {
+                        throw new InvalidMoveException("Pawn promotion needs to be specified: " + origNotation);
+                    }
+
+                    notation = notation.substring(0, notation.length() - 2);
+
+                    if (notation.endsWith("=")) {
+                        notation = notation.substring(0, notation.length() - 2);
+                    }
+                }
+            }
+
+            return new MoveRecordImpl(
+                    pieceMoved,
+                    null != squareOfTakenPiece ? squareOfTakenPiece.getPiece() : null,
+                    promotedToPiece,
+                    pieceMoved.getSquare(),
+                    squareOccupied,
+                    squareOfTakenPiece,
+                    expectedGameStatus);
 
         } catch (StringIndexOutOfBoundsException sioobe) {
-            throw new InvalidMoveException(origNotation + " is an invalid move", sioobe);
+            throw new InvalidMoveException("\"" + origNotation + "\" is an invalid move", sioobe);
         }
     }
 

@@ -17,7 +17,7 @@ public class QueenImpl extends PromotablePieceImpl implements Queen {
         super(otherQueen, otherSquare);
     }
 
-    QueenImpl(Pawn pawn) { super(pawn); }
+    public QueenImpl(Pawn pawn) { super(pawn); }
 
     @Override
     protected String name() {

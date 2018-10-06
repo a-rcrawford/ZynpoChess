@@ -17,7 +17,7 @@ public class CastleImpl extends PromotablePieceImpl implements Castle {
         super(otherCastle, otherSquare);
     }
 
-    CastleImpl(Pawn pawn) { super(pawn); }
+    public CastleImpl(Pawn pawn) { super(pawn); }
 
     @Override
     protected String name() {

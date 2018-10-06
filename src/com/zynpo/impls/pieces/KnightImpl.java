@@ -26,7 +26,7 @@ public class KnightImpl extends PromotablePieceImpl implements Knight {
         super(otherKnight, otherSquare);
     }
 
-    KnightImpl(Pawn pawn) { super(pawn); }
+    public KnightImpl(Pawn pawn) { super(pawn); }
 
     @Override
     protected String name() {
