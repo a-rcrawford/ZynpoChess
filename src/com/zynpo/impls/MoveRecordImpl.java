@@ -3,6 +3,7 @@ package com.zynpo.impls;
 import com.zynpo.enums.GameStatus;
 import com.zynpo.enums.PieceFlags;
 import com.zynpo.enums.SideColor;
+import com.zynpo.exceptions.AmbiguousMoveException;
 import com.zynpo.exceptions.InvalidMoveException;
 import com.zynpo.exceptions.MoveException;
 import com.zynpo.impls.pieces.PromotablePieceImpl;
@@ -43,9 +44,35 @@ public class MoveRecordImpl implements MoveRecord {
             throw new IllegalArgumentException("Can't construct MoveRecord out of empty string");
         }
 
-        int pieceToMoveFlags = PieceFlags.piecesOfSameSide(PieceFlags.AllPawns, sideToMove);
-
         try {
+
+            GameStatus expectedGameStatus;
+
+            if (notation.endsWith("++")) {
+                expectedGameStatus = (SideColor.White == sideToMove ?
+                        GameStatus.BlackWinByCheckmate : GameStatus.WhiteWinByCheckmate);
+                notation = notation.substring(0, notation.length() - 3);
+            } else if (notation.endsWith("#")) {
+                expectedGameStatus = (SideColor.White == sideToMove ?
+                        GameStatus.BlackWinByCheckmate : GameStatus.WhiteWinByCheckmate);
+                notation = notation.substring(0, notation.length() - 2);
+            } else if (notation.endsWith("+")) {
+                expectedGameStatus = (SideColor.White == sideToMove ?
+                        GameStatus.WhiteInCheck : GameStatus.BlackInCheck);
+                notation = notation.substring(0, notation.length() - 2);
+            } else {
+                expectedGameStatus = GameStatus.InPlay;
+            }
+
+            boolean enPassant = false;
+
+            if (notation.endsWith("ep")) {
+                enPassant = true;
+                notation = notation.substring(0, notation.length() - 3);
+            }
+
+            int pieceToMoveFlags = PieceFlags.piecesOfSameSide(PieceFlags.AllPawns, sideToMove);
+
             if (notation.startsWith("R") || notation.startsWith("C")) {
                 pieceToMoveFlags = PieceFlags.piecesOfSameSide(PieceFlags.AllCastles, sideToMove);
                 notation = notation.substring(1); // Trim the piece char away from the front.
@@ -80,9 +107,78 @@ public class MoveRecordImpl implements MoveRecord {
 
             if (pieceTaken) {
                 notation = notation.substring(1);
+            } else if (enPassant) {
+                throw new InvalidMoveException("Must x = take something to do ep = en-passant: " + origNotation);
             }
 
-            // TODO: Pick up from here ...
+            if (enPassant) {
+                if (!PieceFlags.AllPawns.contains(pieceToMoveFlags)) {
+                    throw new InvalidMoveException("Only a pawn can take ep = en-passant: " + origNotation);
+                }
+            }
+
+            // TODO: Detect Pawn promotions ...
+
+            ChessSquare squareOccupied;
+            ChessSquare squareOfTakenPiece = null;
+
+            {
+                ChessSquare likelySquareOccupied;
+
+                String squareStr = notation.substring(notation.length() - 3);
+                likelySquareOccupied = board.getSquare(squareStr);
+
+                if (null == likelySquareOccupied) {
+                    throw new InvalidMoveException("Can't determine the meaning of square: " + squareStr);
+                }
+
+                if (enPassant) {
+                    squareOccupied = board.getEnPassantSquare();
+                    squareOfTakenPiece = likelySquareOccupied;
+                } else {
+                    squareOccupied = likelySquareOccupied;
+                    if (pieceTaken) {
+                        squareOfTakenPiece = squareOccupied;
+                    }
+                }
+            }
+
+            Set<ChessPiece> possiblePiecesToMove = board.getPiecesInPlay(pieceToMoveFlags);
+
+            if (possiblePiecesToMove.isEmpty()) {
+                throw new InvalidMoveException("No piece found to make such a move: " + origNotation);
+            }
+
+            Set<ChessPiece> possiblePiecesToMove2 = ChessFactory.createChessPieceSet();
+
+            for (ChessPiece possiblePieceToMove : possiblePiecesToMove) {
+                if (possiblePieceToMove.mightMoveTo(squareOccupied)) {
+                    if (startCol.isEmpty() || possiblePieceToMove.getSquare().toString().startsWith(startCol)) {
+                        if (startRow.isEmpty() || possiblePieceToMove.getSquare().toString().endsWith(startRow)) {
+                            possiblePiecesToMove2.add(possiblePieceToMove);
+                        }
+                    }
+                }
+            }
+
+            if (possiblePiecesToMove2.isEmpty()) {
+                throw new InvalidMoveException("Couldn't find piece to move to " + squareOccupied + ": " + origNotation);
+            }
+
+            if (1 < possiblePiecesToMove2.size()) {
+                // TODO: Consider checking whether only one is a valid move ...
+                throw new AmbiguousMoveException("More than one piece fits move description: " + origNotation);
+            }
+
+            ChessPiece pieceMoved = null;
+
+            for (ChessPiece possiblePieceToMove : possiblePiecesToMove2) {
+                pieceMoved = possiblePieceToMove;
+            }
+
+            this(pieceMoved,
+                    pieceTaken,
+                    )
 
         } catch (StringIndexOutOfBoundsException sioobe) {
             throw new InvalidMoveException(origNotation + " is an invalid move", sioobe);
