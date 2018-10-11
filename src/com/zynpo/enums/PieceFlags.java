@@ -66,7 +66,9 @@ public enum PieceFlags {
 
     PromotablePieces(AllCastles._value | AllKnights._value | AllBishops._value | AllQueens._value),
 
-    AllPieces(0xFFFFFFFF);
+    AllPieces(0xFFFFFFFF),
+
+    AllPiecesOtherThanKings(AllPieces._value & ~BothKings._value);
 
     private int _value;
 

@@ -2,12 +2,15 @@ package com.zynpo.impls;
 
 import com.zynpo.enums.GameStatus;
 import com.zynpo.enums.PieceFlags;
+import com.zynpo.enums.PieceIndex;
 import com.zynpo.enums.SideColor;
 import com.zynpo.exceptions.AmbiguousMoveException;
 import com.zynpo.exceptions.InvalidMoveException;
+import com.zynpo.exceptions.MisrepresentedMoveException;
 import com.zynpo.exceptions.MoveException;
 import com.zynpo.impls.pieces.*;
 import com.zynpo.interfaces.ChessBoard;
+import com.zynpo.interfaces.ChessBoardState;
 import com.zynpo.interfaces.ChessSquare;
 import com.zynpo.interfaces.MoveRecord;
 import com.zynpo.interfaces.pieces.ChessPiece;
@@ -180,6 +183,8 @@ public class MoveRecordImpl implements MoveRecord {
                 Pawn pawn = (Pawn) pieceMoved;
                 if (pawn.promotionRow() == squareOccupied.getRow()) {
                     // This pawn needs to be promoted ...
+                    boolean promotionSpecified = true;
+
                     if (notation.endsWith("Q")) {
                         promotedToPiece = new QueenImpl(pawn);
                     } else if (notation.endsWith("N")) {
@@ -189,10 +194,13 @@ public class MoveRecordImpl implements MoveRecord {
                     } else if (notation.endsWith("B")) {
                         promotedToPiece = new BishopImpl(pawn);
                     } else {
-                        throw new InvalidMoveException("Pawn promotion needs to be specified: " + origNotation);
+                        promotedToPiece = new PromotablePieceImpl(pawn);
+                        promotionSpecified = false;
                     }
 
-                    notation = notation.substring(0, notation.length() - 2);
+                    if (promotionSpecified) {
+                        notation = notation.substring(0, notation.length() - 2);
+                    }
 
                     if (notation.endsWith("=")) {
                         notation = notation.substring(0, notation.length() - 2);
@@ -200,14 +208,20 @@ public class MoveRecordImpl implements MoveRecord {
                 }
             }
 
-            return new MoveRecordImpl(
+            MoveRecord moveRecord = new MoveRecordImpl(
                     pieceMoved,
                     null != squareOfTakenPiece ? squareOfTakenPiece.getPiece() : null,
                     promotedToPiece,
                     pieceMoved.getSquare(),
                     squareOccupied,
-                    squareOfTakenPiece,
-                    expectedGameStatus);
+                    squareOfTakenPiece);
+
+            if (moveRecord.gameStatus() != expectedGameStatus) {
+                throw new MisrepresentedMoveException("Move " + origNotation + " resulted in status "
+                        + moveRecord.gameStatus() + " not " + expectedGameStatus);
+            }
+
+            return moveRecord;
 
         } catch (StringIndexOutOfBoundsException sioobe) {
             throw new InvalidMoveException("\"" + origNotation + "\" is an invalid move", sioobe);
@@ -220,8 +234,7 @@ public class MoveRecordImpl implements MoveRecord {
                           PromotablePiece promotedToPiece,
                           ChessSquare squareDeparted,
                           ChessSquare squareOccupied,
-                          ChessSquare squareOfTakenPiece,
-                          GameStatus gameStatus) {
+                          ChessSquare squareOfTakenPiece) {
 
         _pieceMoved = pieceMoved;
         _pieceTaken = pieceTaken;
@@ -231,11 +244,11 @@ public class MoveRecordImpl implements MoveRecord {
         _squareOccupied = squareOccupied;
         _squareOfTakenPiece = squareOfTakenPiece;
 
-        _gameStatus = gameStatus;
+        //_gameStatus = gameStatus;
 
-        if (null == _gameStatus) {
-            gameStatus = GameStatus.NotDetermined;
-        }
+        //if (null == _gameStatus) {
+        //    gameStatus = GameStatus.NotDetermined;
+        //}
 
         boolean mustDifferentiateRow = false;
         boolean mustDifferentiateCol = false;
@@ -246,7 +259,8 @@ public class MoveRecordImpl implements MoveRecord {
             if (_squareOccupied.getRow() == pawn.promotionRow()) {
                 if (null == _promotedToPiece) {
                     // Put an abstract promotable piece in place if we don't know what it is yet ...
-                    _promotedToPiece = new PromotablePieceImpl(pawn);
+                    //_promotedToPiece = new PromotablePieceImpl(pawn);
+                    throw new InternalError("Promotion piece should have been specified for " + pieceMoved);
                 }
             }
 
@@ -302,6 +316,14 @@ public class MoveRecordImpl implements MoveRecord {
                 _notation = "O-O-O";
             }
         }
+
+        // TODO: This needs work ...
+        ChessBoardState boardState = new ChessBoardStateImpl(
+                pieceMoved.getBoard(),
+                pieceMoved.getSideColor().opposingSideColor(),
+                false);
+
+        _gameStatus = boardState.getGameStatus();
 
         switch (_gameStatus) {
             case WhiteInCheck:

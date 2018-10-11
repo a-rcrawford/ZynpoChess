@@ -1,5 +1,6 @@
 package com.zynpo.interfaces;
 
+import com.zynpo.enums.GameStatus;
 import com.zynpo.interfaces.pieces.ChessPiece;
 import com.zynpo.interfaces.pieces.PromotablePiece;
 
@@ -13,4 +14,6 @@ public interface MoveRecord {
     ChessSquare squareDeparted(); // null if pieceMoved was dropped into play
     ChessSquare squareOccupied(); // Square the pieceMoved landed on
     ChessSquare squareOfTakenPiece(); // In case of "en passant"
+
+    GameStatus gameStatus();
 }

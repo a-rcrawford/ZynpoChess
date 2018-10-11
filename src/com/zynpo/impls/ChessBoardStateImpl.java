@@ -1,12 +1,17 @@
 package com.zynpo.impls;
 
 import com.zynpo.enums.*;
+import com.zynpo.impls.pieces.BishopImpl;
+import com.zynpo.impls.pieces.CastleImpl;
+import com.zynpo.impls.pieces.KnightImpl;
+import com.zynpo.impls.pieces.QueenImpl;
 import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessBoardState;
 import com.zynpo.interfaces.ChessSquare;
 import com.zynpo.interfaces.MoveRecord;
 import com.zynpo.interfaces.pieces.ChessPiece;
 import com.zynpo.interfaces.pieces.King;
+import com.zynpo.interfaces.pieces.Pawn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +22,12 @@ public class ChessBoardStateImpl implements ChessBoardState {
     private ChessBoard _board;
     private SideColor _sideToMove;
     private boolean _sideToMoveIsInCheck;
-
+    private boolean _sideToMoveHasValidMove;
     private List<MoveRecord> _validMoves;
+    private GameStatus _gameStatus;
 
 
-    ChessBoardStateImpl(ChessBoard board, SideColor sideToMove) {
+    ChessBoardStateImpl(ChessBoard board, SideColor sideToMove, boolean findAllValidMoves) {
         _board = board.clone();
         _sideToMove = sideToMove;
         SideColor opposingSideColor;
@@ -49,7 +55,13 @@ public class ChessBoardStateImpl implements ChessBoardState {
 
         _sideToMoveIsInCheck = sideToMoveKing.getSquare().coveredBy(opposingSideColor);
 
-        _validMoves = new ArrayList<>();
+        if (findAllValidMoves) {
+            _validMoves = new ArrayList<>();
+        } else {
+            _validMoves = null;
+        }
+
+        _sideToMoveHasValidMove = false;
 
         for (ChessPiece pieceToMove : piecesToMoveInPlay) {
             ChessSquare departedSquare = pieceToMove.getSquare();
@@ -60,9 +72,62 @@ public class ChessBoardStateImpl implements ChessBoardState {
                 pieceToMove.takeBackToSquare(departedSquare, takenPiece);
 
                 if (isValidMove) {
-                    _validMoves.add(new MoveRecordImpl(pieceToMove,
-                            takenPiece, null, departedSquare, occupiedSquare,
-                            takenPiece.getSquare(), GameStatus.NotDetermined));
+                    _sideToMoveHasValidMove = true;
+
+                    if (findAllValidMoves) {
+                        if ((pieceToMove instanceof Pawn) && (((Pawn) pieceToMove).promotionRow() == occupiedSquare.getRow())) {
+                            _validMoves.add(new MoveRecordImpl(pieceToMove,
+                                    takenPiece, new KnightImpl((Pawn) pieceToMove), departedSquare, occupiedSquare,
+                                    takenPiece.getSquare(), GameStatus.NotDetermined));
+
+                            _validMoves.add(new MoveRecordImpl(pieceToMove,
+                                    takenPiece, new BishopImpl((Pawn) pieceToMove), departedSquare, occupiedSquare,
+                                    takenPiece.getSquare(), GameStatus.NotDetermined));
+
+                            _validMoves.add(new MoveRecordImpl(pieceToMove,
+                                    takenPiece, new CastleImpl((Pawn) pieceToMove), departedSquare, occupiedSquare,
+                                    takenPiece.getSquare(), GameStatus.NotDetermined));
+
+                            _validMoves.add(new MoveRecordImpl(pieceToMove,
+                                    takenPiece, new QueenImpl((Pawn) pieceToMove), departedSquare, occupiedSquare,
+                                    takenPiece.getSquare(), GameStatus.NotDetermined));
+                        } else {
+                            _validMoves.add(new MoveRecordImpl(pieceToMove,
+                                    takenPiece, null, departedSquare, occupiedSquare,
+                                    takenPiece.getSquare(), GameStatus.NotDetermined));
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            if (_sideToMoveHasValidMove && !findAllValidMoves) {
+                break;
+            }
+        }
+
+        if (0 == this.getValidMoves().size()) {
+            // The game is over for some reason, so determine why ...
+            if (this.sideToMoveIsInCheck()) {
+                if (this.getSideToMove() == SideColor.White) {
+                    _gameStatus = GameStatus.BlackWinByCheckmate;
+                } else {
+                    _gameStatus = GameStatus.WhiteWinByCheckmate;
+                }
+            } else {
+                _gameStatus = GameStatus.DrawByStalemate;
+            }
+        } else {
+            _gameStatus = GameStatus.InPlay;
+
+            Set<ChessPiece> allPiecesOtherThanKings = _board.getPiecesInPlay(PieceFlags.AllPiecesOtherThanKings);
+
+            if (1 == allPiecesOtherThanKings.size()) {
+                for (ChessPiece singlePiece : allPiecesOtherThanKings) {
+                    if (!(singlePiece instanceof Pawn)) {
+                        _gameStatus = GameStatus.DrawByInsufficientMaterial;
+                    }
                 }
             }
         }
@@ -85,8 +150,22 @@ public class ChessBoardStateImpl implements ChessBoardState {
     }
 
     @Override
+    public boolean sideToMoveHasValidMove() {
+        return _sideToMoveHasValidMove;
+    }
+
+    @Override
     public List<MoveRecord> getValidMoves() {
+        if (this.sideToMoveHasValidMove() && (null == _validMoves)) {
+            throw new InternalError("Shouldn't call getValidMoves() ChessBoardState constructed with findAllValidMoves = false");
+        }
+
         return _validMoves;
+    }
+
+    @Override
+    public GameStatus getGameStatus() {
+        return _gameStatus;
     }
 
 
@@ -109,24 +188,19 @@ public class ChessBoardStateImpl implements ChessBoardState {
 
         sb.append("\r\nPlayer to move: " + this.getSideToMove() + "\r\n");
 
-        if (0 == this.getValidMoves().size()) {
-            sb.append("Final Game Status: ");
-            // The game is over for some reason, so determine why ...
-            if (this.sideToMoveIsInCheck()) {
-                if (this.getSideToMove() == SideColor.White) {
-                    sb.append(GameStatus.BlackWinByCheckmate + "\r\n");
-                } else {
-                    sb.append(GameStatus.WhiteWinByCheckmate + "\r\n");
-                }
-            } else {
-                sb.append(GameStatus.DrawByStalemate + "\r\n");
-            }
-        } else {
-            sb.append(this.getValidMoves().size() + " available moves: ");
+        switch (this.getGameStatus()) {
+            case InPlay:
+            case WhiteInCheck:
+            case BlackInCheck:
+                sb.append(this.getValidMoves().size() + " available moves: ");
 
-            for (MoveRecord moveRecord : this.getValidMoves()) {
-                sb.append(moveRecord + " ");
-            }
+                for (MoveRecord moveRecord : this.getValidMoves()) {
+                    sb.append(moveRecord + " ");
+                }
+
+                break;
+            default:
+                sb.append("Final Game Status: " + this.getGameStatus());
         }
 
         return sb.toString();
