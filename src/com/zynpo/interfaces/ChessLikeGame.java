@@ -24,9 +24,7 @@ public interface ChessLikeGame {
     boolean takenPiecesSwitchSides();
 
     GameStatus doMove(String notation) throws MoveException;
-    GameStatus doMove(ChessPiece pieceToMove, ChessSquare squareToOccupy) throws InvalidMoveException;
 
-    Set<ChessSquare> getValidMoveSquares(ChessPiece pieceToMove);
     void takeBackLastMove();
 
     ChessBoardState reviewFirst();
@@ -36,6 +34,8 @@ public interface ChessLikeGame {
 
     String getAllMoves();
     String loadAllMoves(String csvMoves) throws MoveException;
+
+    boolean playerToMoveCanForceDraw();
 
     boolean setOverallGameStatus(GameStatus gameStatus);
     GameStatus getOverallGameStatus();

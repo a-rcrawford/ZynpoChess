@@ -16,4 +16,5 @@ public interface MoveRecord {
     ChessSquare squareOfTakenPiece(); // In case of "en passant"
 
     GameStatus gameStatus();
+    ChessBoardState resultingBoardState();
 }

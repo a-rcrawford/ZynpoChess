@@ -31,10 +31,10 @@ public class MoveRecordImpl implements MoveRecord {
     private ChessSquare _squareOccupied;
     private ChessSquare _squareOfTakenPiece;
 
-    private GameStatus _gameStatus;
+    private ChessBoardState _resultingBoardState;
 
 
-    public MoveRecord fromNotation(String notation, SideColor sideToMove, ChessBoard board) throws MoveException {
+    public static MoveRecord fromNotation(String notation, SideColor sideToMove, ChessBoard board) throws MoveException {
         if (null == notation) {
             throw new IllegalArgumentException("Can't construct MoveRecord out of null");
         }
@@ -310,14 +310,14 @@ public class MoveRecordImpl implements MoveRecord {
             }
         }
 
-        ChessBoardState boardState = new ChessBoardStateImpl(
+        _resultingBoardState = new ChessBoardStateImpl(
                 pieceMoved.getBoard(),
                 pieceMoved.getSideColor().opposingSideColor(),
                 false);
 
-        _gameStatus = boardState.getGameStatus();
+        GameStatus gameStatus = _resultingBoardState.getGameStatus();
 
-        switch (_gameStatus) {
+        switch (gameStatus) {
             case WhiteInCheck:
             case BlackInCheck:
                 _notation += "+";
@@ -380,6 +380,12 @@ public class MoveRecordImpl implements MoveRecord {
 
     @Override
     public GameStatus gameStatus() {
-        return _gameStatus;
+        return _resultingBoardState.getGameStatus();
+    }
+
+
+    @Override
+    public ChessBoardState resultingBoardState() {
+        return _resultingBoardState;
     }
 }

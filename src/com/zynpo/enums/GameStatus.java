@@ -1,7 +1,6 @@
 package com.zynpo.enums;
 
 public enum GameStatus {
-    NotDetermined(-1),
     InPlay(0),
     WhiteInCheck(1),
     BlackInCheck(2),
@@ -20,4 +19,15 @@ public enum GameStatus {
     private int _value;
 
     GameStatus(int value) { _value = value; }
+
+    public boolean meansGameIsOver() {
+        switch (this) {
+            case InPlay:
+            case WhiteInCheck:
+            case BlackInCheck:
+                return false;
+            default:
+                return true;
+        }
+    }
 }
