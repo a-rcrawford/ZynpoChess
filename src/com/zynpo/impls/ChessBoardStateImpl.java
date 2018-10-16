@@ -64,37 +64,37 @@ public class ChessBoardStateImpl implements ChessBoardState {
         _sideToMoveHasValidMove = false;
 
         for (ChessPiece pieceToMove : piecesToMoveInPlay) {
-            ChessSquare departedSquare = pieceToMove.getSquare();
+            ChessSquare squareDeparted = pieceToMove.getSquare();
 
-            for (ChessSquare occupiedSquare : pieceToMove.potentialMoveSquares(PotentialMoveReason.ForNextMove)) {
-                ChessPiece takenPiece = pieceToMove.moveToSquare(occupiedSquare);
+            for (ChessSquare squareOccupied : pieceToMove.potentialMoveSquares(PotentialMoveReason.ForNextMove)) {
+                ChessPiece takenPiece = pieceToMove.moveToSquare(squareOccupied);
                 boolean isValidMove = !sideToMoveKing.getSquare().coveredBy(opposingSideColor);
-                pieceToMove.takeBackToSquare(departedSquare, takenPiece);
+                pieceToMove.takeBackToSquare(squareDeparted, takenPiece);
 
                 if (isValidMove) {
                     _sideToMoveHasValidMove = true;
 
                     if (findAllValidMoves) {
-                        if ((pieceToMove instanceof Pawn) && (((Pawn) pieceToMove).promotionRow() == occupiedSquare.getRow())) {
+                        if ((pieceToMove instanceof Pawn) && (((Pawn) pieceToMove).promotionRow() == squareOccupied.getRow())) {
                             _validMoves.add(new MoveRecordImpl(pieceToMove,
-                                    takenPiece, new KnightImpl((Pawn) pieceToMove), departedSquare, occupiedSquare,
-                                    takenPiece.getSquare(), GameStatus.NotDetermined));
+                                    takenPiece, new KnightImpl((Pawn) pieceToMove), squareDeparted, squareOccupied,
+                                    takenPiece.getSquare()));
 
                             _validMoves.add(new MoveRecordImpl(pieceToMove,
-                                    takenPiece, new BishopImpl((Pawn) pieceToMove), departedSquare, occupiedSquare,
-                                    takenPiece.getSquare(), GameStatus.NotDetermined));
+                                    takenPiece, new BishopImpl((Pawn) pieceToMove), squareDeparted, squareOccupied,
+                                    takenPiece.getSquare()));
 
                             _validMoves.add(new MoveRecordImpl(pieceToMove,
-                                    takenPiece, new CastleImpl((Pawn) pieceToMove), departedSquare, occupiedSquare,
-                                    takenPiece.getSquare(), GameStatus.NotDetermined));
+                                    takenPiece, new CastleImpl((Pawn) pieceToMove), squareDeparted, squareOccupied,
+                                    takenPiece.getSquare()));
 
                             _validMoves.add(new MoveRecordImpl(pieceToMove,
-                                    takenPiece, new QueenImpl((Pawn) pieceToMove), departedSquare, occupiedSquare,
-                                    takenPiece.getSquare(), GameStatus.NotDetermined));
+                                    takenPiece, new QueenImpl((Pawn) pieceToMove), squareDeparted, squareOccupied,
+                                    takenPiece.getSquare()));
                         } else {
                             _validMoves.add(new MoveRecordImpl(pieceToMove,
-                                    takenPiece, null, departedSquare, occupiedSquare,
-                                    takenPiece.getSquare(), GameStatus.NotDetermined));
+                                    takenPiece, null, squareDeparted, squareOccupied,
+                                    takenPiece.getSquare()));
                         }
                     } else {
                         break;

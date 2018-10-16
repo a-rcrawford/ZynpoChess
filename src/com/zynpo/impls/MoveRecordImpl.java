@@ -2,7 +2,6 @@ package com.zynpo.impls;
 
 import com.zynpo.enums.GameStatus;
 import com.zynpo.enums.PieceFlags;
-import com.zynpo.enums.PieceIndex;
 import com.zynpo.enums.SideColor;
 import com.zynpo.exceptions.AmbiguousMoveException;
 import com.zynpo.exceptions.InvalidMoveException;
@@ -244,12 +243,6 @@ public class MoveRecordImpl implements MoveRecord {
         _squareOccupied = squareOccupied;
         _squareOfTakenPiece = squareOfTakenPiece;
 
-        //_gameStatus = gameStatus;
-
-        //if (null == _gameStatus) {
-        //    gameStatus = GameStatus.NotDetermined;
-        //}
-
         boolean mustDifferentiateRow = false;
         boolean mustDifferentiateCol = false;
 
@@ -317,7 +310,6 @@ public class MoveRecordImpl implements MoveRecord {
             }
         }
 
-        // TODO: This needs work ...
         ChessBoardState boardState = new ChessBoardStateImpl(
                 pieceMoved.getBoard(),
                 pieceMoved.getSideColor().opposingSideColor(),
@@ -383,5 +375,11 @@ public class MoveRecordImpl implements MoveRecord {
     @Override
     public ChessSquare squareOfTakenPiece() {
         return _squareOfTakenPiece;
+    }
+
+
+    @Override
+    public GameStatus gameStatus() {
+        return _gameStatus;
     }
 }
