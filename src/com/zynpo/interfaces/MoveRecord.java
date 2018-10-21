@@ -4,7 +4,7 @@ import com.zynpo.enums.GameStatus;
 import com.zynpo.interfaces.pieces.ChessPiece;
 import com.zynpo.interfaces.pieces.PromotablePiece;
 
-public interface MoveRecord {
+public interface MoveRecord extends Comparable<MoveRecord> {
     String notation(); // Nf3, Bb5, etc.
 
     ChessPiece pieceMoved(); // Contains new piece in case of promotion

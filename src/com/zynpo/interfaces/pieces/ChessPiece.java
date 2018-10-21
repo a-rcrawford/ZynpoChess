@@ -9,7 +9,7 @@ import com.zynpo.interfaces.ChessSquare;
 import java.util.Set;
 
 
-public interface ChessPiece {
+public interface ChessPiece extends Comparable<ChessPiece> {
 
     ChessSquare getSquare();
 

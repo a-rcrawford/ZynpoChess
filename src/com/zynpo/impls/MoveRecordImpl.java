@@ -19,7 +19,7 @@ import com.zynpo.interfaces.pieces.PromotablePiece;
 
 import java.util.Set;
 
-public class MoveRecordImpl implements MoveRecord {
+public class MoveRecordImpl implements MoveRecord, Comparable<MoveRecord> {
 
     private String _notation;
 
@@ -327,6 +327,30 @@ public class MoveRecordImpl implements MoveRecord {
                 _notation += "++";
                 break;
         }
+    }
+
+
+    @Override
+    public int compareTo(MoveRecord other) {
+        int comparison = this.pieceMoved().compareTo(other.pieceMoved());
+
+        if (0 != comparison) {
+            return comparison;
+        }
+
+        comparison = this.squareDeparted().compareTo(other.squareDeparted());
+
+        if (0 != comparison) {
+            return comparison;
+        }
+
+        comparison = this.squareOccupied().compareTo(other.squareOccupied());
+
+        if (0 != comparison) {
+            return comparison;
+        }
+
+        // TODO: Pick up from here ...
     }
 
 

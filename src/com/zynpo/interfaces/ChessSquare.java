@@ -4,7 +4,7 @@ import com.zynpo.enums.SideColor;
 import com.zynpo.interfaces.pieces.ChessPiece;
 
 
-public interface ChessSquare {
+public interface ChessSquare extends Comparable<ChessSquare> {
 
     int getIndex();
 

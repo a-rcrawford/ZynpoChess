@@ -9,7 +9,7 @@ import com.zynpo.interfaces.pieces.ChessPiece;
 import java.util.Set;
 
 
-class ChessSquareImpl implements ChessSquare {
+class ChessSquareImpl implements ChessSquare, Comparable<ChessSquare> {
 
     private ChessBoard _board;
     private int _row;
@@ -120,6 +120,21 @@ class ChessSquareImpl implements ChessSquare {
 
         return false;
     }
+
+
+    @Override
+    public int compareTo(ChessSquare other) {
+        if (this.getRow() != other.getRow()) {
+            return (this.getRow() < other.getRow()) ? -1 : 1;
+        }
+
+        if (this.getCol() != other.getCol()) {
+            return (this.getCol() < other.getCol()) ? -1 : 1;
+        }
+
+        return 0;
+    }
+
 
     @Override
     public boolean coveredBy(SideColor sideColor) {

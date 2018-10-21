@@ -12,7 +12,7 @@ import com.zynpo.interfaces.ChessSquare;
 import java.util.Set;
 
 
-abstract class ChessPieceImpl implements ChessPiece {
+abstract class ChessPieceImpl implements ChessPiece, Comparable<ChessPiece> {
 
     private SideColor _sideColor;
     private ChessBoard _board;
@@ -80,6 +80,25 @@ abstract class ChessPieceImpl implements ChessPiece {
         }
 
         return true;
+    }
+
+    @Override
+    public int compareTo(ChessPiece other) {
+        if (this.getSideColor() != other.getSideColor()) {
+            return (this.getSideColor() == SideColor.Black) ? -1 : 1;
+        }
+
+        if (this.materialValue() != other.materialValue()) {
+            return (this.materialValue() < other.materialValue()) ? -1 : 1;
+        }
+
+        if ((this instanceof Knight) && (other instanceof Bishop)) {
+            return -1;
+        } else if ((other instanceof Knight) && (this instanceof Bishop)) {
+            return 1;
+        }
+
+        return 0;
     }
 
     @Override
