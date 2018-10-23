@@ -14,6 +14,7 @@ import com.zynpo.interfaces.pieces.King;
 import com.zynpo.interfaces.pieces.Pawn;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -107,6 +108,10 @@ public class ChessBoardStateImpl implements ChessBoardState {
             }
         }
 
+        if (_sideToMoveHasValidMove && findAllValidMoves) {
+            Collections.sort(_validMoves);
+        }
+
         if (0 == this.getValidMoves().size()) {
             // The game is over for some reason, so determine why ...
             if (this.sideToMoveIsInCheck()) {
@@ -131,6 +136,11 @@ public class ChessBoardStateImpl implements ChessBoardState {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        // TODO: Pick up from here.
     }
 
 

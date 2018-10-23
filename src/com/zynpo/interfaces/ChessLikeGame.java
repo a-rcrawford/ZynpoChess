@@ -33,7 +33,7 @@ public interface ChessLikeGame {
     ChessBoardState reviewLast();
 
     String getAllMoves();
-    String loadAllMoves(String csvMoves) throws MoveException;
+    void loadAllMoves(String csvMoves) throws MoveException;
 
     boolean playerToMoveCanForceDraw();
 

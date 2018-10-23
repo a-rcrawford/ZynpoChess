@@ -331,6 +331,50 @@ public class MoveRecordImpl implements MoveRecord, Comparable<MoveRecord> {
 
 
     @Override
+    public boolean equals(Object obj) {
+        if (null == obj) {
+            return false;
+        }
+
+        if (!(obj instanceof MoveRecord)) {
+            return false;
+        }
+
+        MoveRecord other = (MoveRecord) obj;
+
+        if (!this.pieceMoved().equals(other.pieceMoved())) {
+            return false;
+        }
+
+        if (!this.squareDeparted().equals(other.squareDeparted())) {
+            return false;
+        }
+
+        if (!this.squareOccupied().equals(other.squareOccupied())) {
+            return false;
+        }
+
+        if (this.pieceTaken() != null) {
+            if (!this.pieceTaken().equals(other.pieceTaken())) {
+                return false;
+            }
+        } else if (other.pieceTaken() != null) {
+            return false;
+        }
+
+        if (this.promotedToPiece() != null) {
+            if (!this.promotedToPiece().equals(other.promotedToPiece())) {
+                return false;
+            }
+        } else if (other.promotedToPiece() != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    @Override
     public int compareTo(MoveRecord other) {
         int comparison = this.pieceMoved().compareTo(other.pieceMoved());
 
@@ -350,7 +394,27 @@ public class MoveRecordImpl implements MoveRecord, Comparable<MoveRecord> {
             return comparison;
         }
 
-        // TODO: Pick up from here ...
+        if ((this.pieceTaken() == null) && (other.pieceTaken() != null)) {
+            return 1;
+        }
+
+        if ((this.pieceTaken() != null) && (other.pieceTaken() == null)) {
+            return -1;
+        }
+
+        if ((this.pieceTaken() != null) && (other.pieceTaken() != null)) {
+            comparison = this.pieceTaken().compareTo(other.pieceTaken());
+
+            if (0 != comparison) {
+                return comparison;
+            }
+        }
+
+        if ((this.promotedToPiece() != null) && (other.promotedToPiece() != null)) {
+            comparison = this.promotedToPiece().compareTo(other.promotedToPiece());
+        }
+
+        return comparison;
     }
 
 

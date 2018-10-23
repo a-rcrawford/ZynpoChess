@@ -98,4 +98,33 @@ public class ChessGameImpl implements ChessGame {
         _currentViewIndex = _boardStates.size() - 1;
         return _boardStates.get(_currentViewIndex);
     }
+
+
+    @Override
+    public String getAllMoves() {
+        StringBuilder sb = new StringBuilder();
+
+        for (MoveRecord move : _moves) {
+            sb.append(move.notation());
+            sb.append(", ");
+        }
+
+        return sb.substring(0, sb.length() - 3);
+    }
+
+
+    @Override
+    public void loadAllMoves(String csvMoves) throws MoveException {
+        if (_moves.size() != 0) {
+            throw new InternalError("ChessGame should only loadAllMoves() when no moves have been made yet.");
+        }
+
+        String[] moves = csvMoves.split(",");
+
+        for (String move : moves) {
+            doMove(move);
+        }
+    }
+
+    // TODO: playerToMoveCanForceDraw()
 }
