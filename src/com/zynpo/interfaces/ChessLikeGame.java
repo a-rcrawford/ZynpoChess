@@ -1,11 +1,11 @@
 package com.zynpo.interfaces;
 
 import com.zynpo.enums.GameStatus;
-import com.zynpo.exceptions.InvalidMoveException;
+import com.zynpo.enums.SideColor;
 import com.zynpo.exceptions.MoveException;
-import com.zynpo.interfaces.pieces.ChessPiece;
 
 import java.util.Set;
+
 
 public interface ChessLikeGame {
 
@@ -24,8 +24,7 @@ public interface ChessLikeGame {
     boolean takenPiecesSwitchSides();
 
     GameStatus doMove(String notation) throws MoveException;
-
-    void takeBackLastMove();
+    GameStatus takeBackLastMove();
 
     ChessBoardState reviewFirst();
     ChessBoardState reviewNext() throws IndexOutOfBoundsException;
@@ -35,7 +34,7 @@ public interface ChessLikeGame {
     String getAllMoves();
     void loadAllMoves(String csvMoves) throws MoveException;
 
-    boolean playerToMoveCanForceDraw();
+    Set<SideColor> whoCanForceDraw();
 
     boolean setOverallGameStatus(GameStatus gameStatus);
     GameStatus getOverallGameStatus();

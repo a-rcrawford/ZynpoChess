@@ -140,7 +140,31 @@ public class ChessBoardStateImpl implements ChessBoardState {
 
     @Override
     public boolean equals(Object obj) {
-        // TODO: Pick up from here.
+        if (null == obj) {
+            return false;
+        }
+
+        if (!(obj instanceof ChessBoardState)) {
+            return false;
+        }
+
+        ChessBoardState other = (ChessBoardState) obj;
+
+        if (!this.getBoard().equals(other.getBoard())) {
+            return false;
+        }
+
+        if (this.getValidMoves().size() != other.getValidMoves().size()) {
+            return false;
+        }
+
+        for (int i = 0; i < this.getValidMoves().size(); ++i) {
+            if (!this.getValidMoves().get(i).equals(other.getValidMoves().get(i))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 

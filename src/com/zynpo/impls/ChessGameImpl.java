@@ -1,15 +1,15 @@
 package com.zynpo.impls;
 
 import com.zynpo.enums.GameStatus;
+import com.zynpo.enums.PieceFlags;
 import com.zynpo.enums.SideColor;
 import com.zynpo.exceptions.MoveException;
-import com.zynpo.interfaces.ChessBoard;
 import com.zynpo.interfaces.ChessBoardState;
 import com.zynpo.interfaces.ChessGame;
 import com.zynpo.interfaces.MoveRecord;
+import com.zynpo.interfaces.pieces.Pawn;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ChessGameImpl implements ChessGame {
 
@@ -60,9 +60,11 @@ public class ChessGameImpl implements ChessGame {
 
 
     @Override
-    public void takeBackLastMove() {
+    public GameStatus takeBackLastMove() {
         _moves.remove(_moves.size() - 1);
         _boardStates.remove(_boardStates.size() - 1);
+
+        return _boardStates.get(_boardStates.size() - 1).getGameStatus();
     }
 
 
@@ -126,5 +128,74 @@ public class ChessGameImpl implements ChessGame {
         }
     }
 
-    // TODO: playerToMoveCanForceDraw()
+
+    // TODO: Still have to determine whether the same board state came up 5 times in the last 5 consecutive moves ...
+    // Pass in the number of moves to check, to see how many times it came up ...
+    // int overHowManyLastMoves = 10
+    private int countOfCurrentBoardState() {
+        int count = 1;
+        ChessBoardState currentState = _boardStates.get(_boardStates.size() - 1);
+        int currentStatePieceCount = currentState.getBoard().getPiecesInPlay(PieceFlags.AllPieces).size();
+
+        for (int i = _boardStates.size() - 3; 0 <= i; i -= 2) {
+            ChessBoardState earlierState = _boardStates.get(i);
+            if (earlierState.equals(currentState)) {
+                ++count;
+            } else {
+                int earlierStatePieceCount = earlierState.getBoard().getPiecesInPlay(PieceFlags.AllPieces).size();
+
+                if (currentStatePieceCount < earlierStatePieceCount) {
+                    // There's no way any more earlier board states can equal this one ...
+                    break;
+                }
+            }
+        }
+
+        return count;
+    }
+
+
+    private int countOfMovesWithoutProgress() {
+        int count;
+        for (count = 0; count < _moves.size(); ++count) {
+            MoveRecord move = _moves.get(_moves.size() - count - 1);
+
+            if (move.pieceMoved() instanceof Pawn) {
+                // Count's over because a pawn moving constitutes progress ...
+                break;
+            }
+
+            if (null != move.pieceTaken()) {
+                // Count's over because a captured piece constitutes progress ...
+                break;
+            }
+        }
+
+        return count;
+    }
+
+    @Override
+    public Set<SideColor> whoCanForceDraw() {
+        Set<SideColor> canForceDrawSet = new TreeSet<>();
+
+        int countOfCurrentBoardState = countOfCurrentBoardState();
+        int countOfMovesWithoutProgress = countOfMovesWithoutProgress();
+
+        if (5 <= countOfCurrentBoardState) {
+            setOverallGameStatus(GameStatus.DrawByRepetition);
+        } else if (3 <= countOfCurrentBoardState) {
+            // The player who just moved may force draw ...
+            canForceDrawSet.add((_moves.size() & 1) == 1 ? SideColor.White : SideColor.Black);
+        }
+
+        if (150 <= countOfMovesWithoutProgress) {
+            setOverallGameStatus(GameStatus.DrawByLackOfProgress);
+            canForceDrawSet.clear();
+        } else if (100 <= countOfMovesWithoutProgress) {
+            canForceDrawSet.add(SideColor.White);
+            canForceDrawSet.add(SideColor.Black);
+        }
+
+        return canForceDrawSet;
+    }
 }
